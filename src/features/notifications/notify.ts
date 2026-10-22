@@ -1,0 +1,49 @@
+import * as Notifications from 'expo-notifications';
+
+import type { ParsedTxn } from '@/features/sms/parser/types';
+
+const CHANNEL_ID = 'transactions';
+
+export async function ensureNotificationPermission(): Promise<boolean> {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+  await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
+    name: 'Transactions',
+    importance: Notifications.AndroidImportance.DEFAULT,
+  });
+  const current = await Notifications.getPermissionsAsync();
+  if (current.granted) return true;
+  return (await Notifications.requestPermissionsAsync()).granted;
+}
+
+export function buildNotificationContent(txn: ParsedTxn, category: string) {
+  const kind = txn.type === 'DEBIT' ? 'Debit' : 'Credit';
+  const card = txn.cardLast4 ? ` · card ****${txn.cardLast4}` : '';
+  return {
+    title: `${txn.amount} ${txn.currency} · ${txn.merchant ?? txn.bank}`,
+    body: `${category} · ${kind}${card}`,
+  };
+}
+
+export async function notifyTransaction({
+  txn,
+  category,
+}: {
+  txn: ParsedTxn;
+  category: string;
+}): Promise<void> {
+  try {
+    await Notifications.scheduleNotificationAsync({
+      content: buildNotificationContent(txn, category),
+      trigger: { channelId: CHANNEL_ID },
+    });
+  } catch {
+    // A failed notification must not stop the pipeline.
+  }
+}
