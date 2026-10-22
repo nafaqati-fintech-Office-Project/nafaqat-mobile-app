@@ -45,12 +45,26 @@
       "expo-web-browser",
       "expo-secure-store",
       "expo-localization",
-      ["expo-build-properties", { "android": { "usesCleartextTraffic": true } }],
-      "expo-notifications"
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      "expo-notifications",
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d04820ad-5757-4f0a-acd8-9cee9e223e33"
+      }
     }
   }
 }

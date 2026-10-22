@@ -1,0 +1,49 @@
+import { StyleSheet, View } from 'react-native';
+
+import type { StoredTransaction } from './transactionsRepo';
+import { AppText } from '@/components/AppText';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { colors, fontSizes, radius, shadows, spacing } from '@/theme';
+import { intlLocale } from '@/utils/intl';
+import { formatMoney } from '@/utils/money';
+
+export function TransactionRow({ item }: { item: StoredTransaction }) {
+  const { language } = useLanguage();
+  const debit = item.type === 'DEBIT';
+  const amount = formatMoney(item.amount, item.currency, language);
+  const date = new Intl.DateTimeFormat(intlLocale(language), { dateStyle: 'medium' }).format(
+    new Date(item.date),
+  );
+
+  return (
+    <View style={styles.row}>
+      <View style={styles.texts}>
+        <AppText weight="semibold" style={styles.title} numberOfLines={1}>
+          {item.merchant ?? item.bank}
+        </AppText>
+        <AppText style={styles.meta} numberOfLines={1}>
+          {`${item.category} · ${date}`}
+        </AppText>
+      </View>
+      <AppText weight="bold" style={[styles.amount, { color: debit ? colors.danger : colors.success }]}>
+        {`${debit ? '-' : '+'}${amount}`}
+      </AppText>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.lg,
+    borderRadius: radius.lg,
+    backgroundColor: colors.white,
+    ...shadows.card,
+  },
+  texts: { flex: 1, gap: spacing.xxs },
+  title: { fontSize: fontSizes.md, color: colors.textPrimary },
+  meta: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  amount: { fontSize: fontSizes.sm },
+});
