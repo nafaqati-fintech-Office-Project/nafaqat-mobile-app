@@ -2,11 +2,11 @@
 
 `samples.json` is the single test set for the parser. `evaluate.ts` scores it; `accuracy.test.ts` guards it.
 
-## What is in it (400 samples, 27 of them negatives)
+## What is in it (409 samples, 27 of them negatives)
 
 | source | count | what it is | how far to trust it |
 |---|---|---|---|
-| `email` | 17 | Real alert text from bank emails and app receipts; names and account numbers replaced. | Real wording, but email layout, not SMS. |
+| `email` | 26 | Real alert text from bank emails, app receipts and a NayaPay statement (9 rows); names and account numbers replaced. | Real wording, but email layout, not SMS. |
 | `synthetic` | 77 | Written by hand: generic styles for PK/SA/AE, a batch of 31 from other banks (`fresh-1`), and negatives (OTPs, ads, declined, future charges). | Our guess at real formats. |
 | `synthetic_variation` | 306 | A stratified sample of the 2,000-row Pakistani CSV, which is a variation of the 17 email templates. | Measures robustness to template variation only. Not independent. |
 | `real` | 0 | Real SMS from real phones. | None yet: add them first. |

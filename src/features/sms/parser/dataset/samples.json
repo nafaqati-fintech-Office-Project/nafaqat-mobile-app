@@ -6210,5 +6210,149 @@
   "expected": null,
   "batch": "fresh-1",
   "id": "synthetic-0400"
+ },
+ {
+  "id": "email-0401",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Online Paid to Google One London GB Visa xxxx3493 Fees and Government Taxes Rs. 93.86 1 Aug 2026 10:10 -Rs. 282.86 Balance Rs. 4,686.79",
+  "received": "2026-08-01T10:11",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "282.86",
+   "currency": "PKR",
+   "merchant": "Google One London",
+   "txnDate": "2026-08-01T10:10"
+  }
+ },
+ {
+  "id": "email-0402",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Retail Payment Paid to SAMPLE BOUTIQUE Raast Service Fee Rs. 0 1 Aug 2026 14:11 -Rs. 70 Balance Rs. 4,616.79",
+  "received": "2026-08-01T14:12",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "70",
+   "currency": "PKR",
+   "merchant": "SAMPLE BOUTIQUE",
+   "txnDate": "2026-08-01T14:11"
+  }
+ },
+ {
+  "id": "email-0403",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Raast Out Outgoing fund transfer to A PERSON Meezan-0000 Nickname: A Person Transaction ID 6a6e1b0600a20220598a0cdc Service Charges Rs. 0 1 Aug 2026 21:12 -Rs. 2,300 Balance Rs. 2,316.79",
+  "received": "2026-08-01T21:13",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "2300",
+   "currency": "PKR",
+   "merchant": null,
+   "txnDate": "2026-08-01T21:12"
+  }
+ },
+ {
+  "id": "email-0404",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Peer to Peer Money sent to SAMPLE PERSON (sample@nayapay) NayaPay xxxx922 Service Charges Rs. 0 2 Aug 2026 12:09 -Rs. 700 Balance Rs. 1,616.79",
+  "received": "2026-08-02T12:10",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "700",
+   "currency": "PKR",
+   "merchant": "SAMPLE PERSON",
+   "txnDate": "2026-08-02T12:09"
+  }
+ },
+ {
+  "id": "email-0405",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Raast In Incoming fund transfer from A PERSON Allied Bank-0000 Transaction ID ABPAPKKA020826032344431538 Service Charges Rs. 0 2 Aug 2026 23:44 +Rs. 2,500 Balance Rs. 4,056.79",
+  "received": "2026-08-02T23:45",
+  "expected": {
+   "type": "CREDIT",
+   "amount": "2500",
+   "currency": "PKR",
+   "merchant": null,
+   "txnDate": "2026-08-02T23:44"
+  }
+ },
+ {
+  "id": "email-0406",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Online Paid to ALFA PAYMENT GATEWAY Karachi PK Visa xxxx3493 Service Charges Rs. 0 2 Aug 2026 23:45 -Rs. 2,400 Balance Rs. 1,656.79",
+  "received": "2026-08-02T23:46",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "2400",
+   "currency": "PKR",
+   "merchant": "ALFA PAYMENT GATEWAY Karachi",
+   "txnDate": "2026-08-02T23:45"
+  }
+ },
+ {
+  "id": "email-0407",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Online Transaction Paid to RENDER.COM +14158304762 US Visa xxxx3493, USD 1.89 Fees and Government Taxes Rs. 111.82 5 Aug 2026 06:15 -Rs. 637.02 Balance Rs. 549.77",
+  "received": "2026-08-05T06:16",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "637.02",
+   "currency": "PKR",
+   "merchant": "RENDER.COM",
+   "txnDate": "2026-08-05T06:15"
+  }
+ },
+ {
+  "id": "email-0408",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Peer to Peer Money received from SAMPLE PERSON (sample@nayapay) NayaPay xxxx988 Service Charges Rs. 0 20 Aug 2026 18:30 +Rs. 1,390 Balance Rs. 4,395.65",
+  "received": "2026-08-20T18:31",
+  "expected": {
+   "type": "CREDIT",
+   "amount": "1390",
+   "currency": "PKR",
+   "merchant": "SAMPLE PERSON",
+   "txnDate": "2026-08-20T18:30"
+  }
+ },
+ {
+  "id": "email-0409",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Retail Payment Paid to SUPER CARE PHARMACY Raast Service Fee Rs. 0 22 Aug 2026 14:55 -Rs. 1,340 Balance Rs. 3,055.65",
+  "received": "2026-08-22T14:56",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "1340",
+   "currency": "PKR",
+   "merchant": "SUPER CARE PHARMACY",
+   "txnDate": "2026-08-22T14:55"
+  }
  }
 ]

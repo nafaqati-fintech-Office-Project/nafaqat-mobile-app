@@ -2,7 +2,7 @@ import { AMOUNT_SRC, CURRENCY_SRC } from './rules';
 
 export const DEBIT_RE =
   /\b(?:spent|debit(?:ed)?|purchase[sd]?|paid|withdrawn|withdrawal|sent|bill\s+payment|top-?up|outgoing|transferred\s+to|retail\s+transaction|debit\s+transaction|trxn?|charged|deducted|(?<!credit\s+)(?:transaction|txn)\s+of\s+.{0,40}?\s+(?:was\s+)?made|used\s+(?:for|at))\b|الدفع|دفع|خصم|شراء|سحب/i;
-export const CREDIT_RE = /\b(?:credited|received|deposit(?:ed)?)\b|إيداع|ايداع/i;
+export const CREDIT_RE = /\b(?:credited|received|incoming|deposit(?:ed)?)\b|إيداع|ايداع/i;
 // A reversed or refunded purchase puts the money back, whatever else the message says.
 export const REVERSAL_RE = /\b(?:reversed|reversal|refund(?:ed)?)\b/i;
 export const WEAK_DEBIT_RE = /\b(?:pos|atm)\b/i;

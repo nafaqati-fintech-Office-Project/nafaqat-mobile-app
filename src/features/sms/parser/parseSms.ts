@@ -111,7 +111,8 @@ function normalizeMerchant(raw: string | undefined, body: string): string | null
     .replace(/[.,;:\s]+$/, '')
     // Card networks append the city and country: "TEA JUNCTION in ABU DHABI", "SHOP DUBAI AE".
     .replace(/\s+in\s+[A-Z][A-Z\s]*$/, '')
-    .replace(/\s+(?:AE|UAE|PK|SA|KSA)$/, '')
+    .replace(/\s+\+?\d{7,}\b/g, '')
+    .replace(/\s+(?:AE|UAE|PK|SA|KSA|GB|UK|US)$/, '')
     .trim();
   // Digits-only values and ATM locations (cash withdrawals) are not merchants.
   return merchant && !/^[\d\s:./-]+$/.test(merchant) && !/^ATM\b/i.test(merchant) ? merchant : null;
@@ -125,6 +126,17 @@ function detectType(body: string): ParsedTxn['type'] | null {
   if (credit >= 0) return 'CREDIT';
   return WEAK_DEBIT_RE.test(body) ? 'DEBIT' : null;
 }
+
+// "Service Charges Rs. 0", "Fees and Government Taxes Rs. 93.86": fees often come before the real amount,
+// and a zero amount is never the transaction, so neither may be picked as the amount.
+const FEE_LABEL =
+  '(?:service\\s+(?:fee|charges?)|fees?\\s+and\\s+(?:government\\s+)?taxes|processing\\s+fee|transaction\\s+fee|fees?|charges?|taxes?|fed|wht|gst|vat|sst)';
+const FEE_RE = new RegExp(
+  `\\b${FEE_LABEL}\\s*(?:\\(incl\\.?\\s*tax\\))?\\s*(?:of|:|-)?\\s*(?<![A-Za-z])(?:${CURRENCY_SRC})\\s*${AMOUNT_SRC}`,
+  'gi',
+);
+const ZERO_AMOUNT_RE = new RegExp(`(?<![A-Za-z])(?:${CURRENCY_SRC})\\s*0+(?:\\.0+)?(?![\\d.,]*[1-9])`, 'gi');
+const stripFees = (body: string) => body.replace(FEE_RE, ' ').replace(ZERO_AMOUNT_RE, ' ');
 
 function matchRules(sms: SmsInput) {
   const candidates = rules.filter((rule) => rule.senderMatch.test(sms.address));
@@ -142,7 +154,7 @@ function matchRules(sms: SmsInput) {
 export function parseSms(input: SmsInput): ParsedTxn | null {
   try {
     // Alerts arrive wrapped across lines (emails, long SMS); every pattern assumes one line of text.
-    const sms = { ...input, body: input.body.replace(/\s+/g, ' ').trim() };
+    const sms = { ...input, body: stripFees(input.body.replace(/\s+/g, ' ')).replace(/\s+/g, ' ').trim() };
     if (!isTransactional(sms.body)) return null;
     const matched = matchRules(sms);
     const type = detectType(sms.body);
