@@ -59,9 +59,13 @@ function buildDate(y: number, m: number, d: number, body: string): Date | null {
 // so 7/29/2020 (some UAE banks) is read as month-first.
 function extractTxnDate(body: string, receivedAt: number): number | null {
   let date: Date | null = null;
-  const named = DATE_NAMED_RE.exec(body);
-  const monthIndex = named ? MONTHS.indexOf(named[2].slice(0, 3).toLowerCase()) : -1;
-  if (named && monthIndex >= 0) date = buildDate(Number(named[3]), monthIndex + 1, Number(named[1]), body);
+  // A merchant such as "PSO SS 95 RIYASAT 1208" also looks like day-word-year, so skip words that are not months.
+  for (const named of body.matchAll(new RegExp(DATE_NAMED_RE.source, 'g'))) {
+    const monthIndex = MONTHS.indexOf(named[2].slice(0, 3).toLowerCase());
+    if (monthIndex < 0) continue;
+    date = buildDate(Number(named[3]), monthIndex + 1, Number(named[1]), body);
+    break;
+  }
   if (!date) {
     const iso = DATE_ISO_RE.exec(body);
     if (iso) date = buildDate(Number(iso[1]), Number(iso[2]), Number(iso[3]), body);
@@ -97,7 +101,11 @@ function normalizeAmount(raw: string): string | null {
 const normalizeCurrency = (raw: string): string | null =>
   CURRENCIES[raw.toLowerCase().replace(/[.\s]/g, '')] ?? null;
 
-function normalizeMerchant(raw: string | undefined): string | null {
+// "cash withdrawn from ATM at F-7 MARKAZ": the text after "at" is the ATM location, not a shop.
+const CASH_WITHDRAWAL_RE = /\bwithdraw(?:n|al)\b[^.]*\batm\b|\batm\b[^.]*\bwithdraw(?:n|al)\b/i;
+
+function normalizeMerchant(raw: string | undefined, body: string): string | null {
+  if (CASH_WITHDRAWAL_RE.test(body)) return null;
   const merchant = raw
     ?.replace(/\s+/g, ' ')
     .replace(/[.,;:\s]+$/, '')
@@ -150,7 +158,7 @@ export function parseSms(input: SmsInput): ParsedTxn | null {
       type,
       amount,
       currency,
-      merchant: normalizeMerchant(matched.groups.merchant),
+      merchant: normalizeMerchant(matched.groups.merchant, sms.body),
       cardLast4: extractCardLast4(sms.body),
       balance: extractBalance(sms.body),
       txnDate: extractTxnDate(sms.body, sms.date),

@@ -10,7 +10,7 @@ export const AMOUNT_SRC = '[\\d٠-٩][\\d٠-٩,٬]*(?:[.٫][\\d٠-٩]+)?';
 const CUR = `(?<![A-Za-z])(?<currency>${CURRENCY_SRC})`;
 const AMT = `(?<amount>${AMOUNT_SRC})`;
 const END =
-  '(?=\\s+(?:on|via|using|ref|dated|avl|avail|available|bal|balance|card|from|completed|successful|successfully|has|have|is|was|a\\/c|account|instrument|channel|destination)\\b|(?:^|\\s)(?:عبر|بطاقة|في|بتاريخ|رصيد)(?:\\s|$)|[.,;](?:\\s|$)|\\s*$)';
+  '(?=\\s+(?:on|via|using|ref|dated|avl|avail|available|bal|balance|card|from|completed|successful|successfully|has|have|is|was|against|a\\/c|account|instrument|channel|destination)\\b|(?:^|\\s)(?:عبر|بطاقة|في|بتاريخ|رصيد)(?:\\s|$)|[.,;](?:\\s|$)|\\s*$)';
 
 const rx = (source: string) =>
   new RegExp(
@@ -115,6 +115,9 @@ export const rules: BankRule[] = [
       rx('{CUR}\\s*{AMT}.*?\\bmerchant\\s+details\\s+(?<merchant>.+?){END}'),
       rx('\\b(?:sent|paid)\\s+{CUR}\\s*{AMT}.*?\\bdestination\\s+acc\\.?\\s+title\\s+(?<merchant>.+?){END}'),
       rx(`{CUR}\\s*{AMT}\\s+(?:(?:has|have)\\s+been\\s+)?(?:paid|sent|transferred)\\s+to\\s+${NOT_OWN}(?<merchant>.+?){END}`),
+      // "Rs. 18,600 paid via 1Bill to SNGPL"
+      rx(`{CUR}\\s*{AMT}\\s+(?:paid|sent)\\s+via\\s+\\S+\\s+to\\s+${NOT_OWN}(?<merchant>.+?){END}`),
+      rx('{CUR}\\s*{AMT}.*?\\bpos\\s+purchase\\s+(?<merchant>.+?){END}'),
       rx(`(?:sent|paid|transfer|payment)\\s+of\\s+{CUR}\\s*{AMT}\\s+to\\s+${NOT_OWN}(?<merchant>.+?){END}`),
       rx(`{CUR}\\s*{AMT}\\s+to\\s+${NOT_OWN}(?<merchant>.+?){END}`),
       rx(`{CUR}\\s*{AMT}.*?\\bfrom\\s+${NOT_OWN}(?<merchant>.+?){END}`),

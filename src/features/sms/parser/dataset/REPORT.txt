@@ -1,0 +1,122 @@
+ALL: 400 samples (373 transactions, 27 negatives), missed 0
+  core (type+amount+currency) 373/373 (100%) | type 373/373 (100%) | amount 373/373 (100%) | currency 373/373 (100%)
+  merchant 86/86 (100%) | date 297/297 (100%) | negatives ignored 27/27 (100%)
+
+## By source
+email: 17 samples (16 transactions, 1 negatives), missed 0
+  core (type+amount+currency) 16/16 (100%) | type 16/16 (100%) | amount 16/16 (100%) | currency 16/16 (100%)
+  merchant 16/16 (100%) | date 14/14 (100%) | negatives ignored 1/1 (100%)
+synthetic: 77 samples (51 transactions, 26 negatives), missed 0
+  core (type+amount+currency) 51/51 (100%) | type 51/51 (100%) | amount 51/51 (100%) | currency 51/51 (100%)
+  merchant 45/45 (100%) | date n/a | negatives ignored 26/26 (100%)
+synthetic_variation: 306 samples (306 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 306/306 (100%) | type 306/306 (100%) | amount 306/306 (100%) | currency 306/306 (100%)
+  merchant 25/25 (100%) | date 283/283 (100%) | negatives ignored n/a
+
+## By split
+dev: 352 samples (325 transactions, 27 negatives), missed 0
+  core (type+amount+currency) 325/325 (100%) | type 325/325 (100%) | amount 325/325 (100%) | currency 325/325 (100%)
+  merchant 83/83 (100%) | date 254/254 (100%) | negatives ignored 27/27 (100%)
+holdout: 48 samples (48 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 48/48 (100%) | type 48/48 (100%) | amount 48/48 (100%) | currency 48/48 (100%)
+  merchant 3/3 (100%) | date 43/43 (100%) | negatives ignored n/a
+
+## By bank
+ADCB: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Al Rajhi: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Alfalah: 3 samples (3 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 3/3 (100%) | type 3/3 (100%) | amount 3/3 (100%) | currency 3/3 (100%)
+  merchant 3/3 (100%) | date 1/1 (100%) | negatives ignored n/a
+Allied: 3 samples (3 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 3/3 (100%) | type 3/3 (100%) | amount 3/3 (100%) | currency 3/3 (100%)
+  merchant 3/3 (100%) | date 3/3 (100%) | negatives ignored n/a
+Allied Bank: 68 samples (68 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 68/68 (100%) | type 68/68 (100%) | amount 68/68 (100%) | currency 68/68 (100%)
+  merchant 15/15 (100%) | date 68/68 (100%) | negatives ignored n/a
+Askari: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Bank Alfalah: 34 samples (34 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 34/34 (100%) | type 34/34 (100%) | amount 34/34 (100%) | currency 34/34 (100%)
+  merchant n/a | date 34/34 (100%) | negatives ignored n/a
+Careem Pay: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Easypaisa: 2 samples (2 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 2/2 (100%) | type 2/2 (100%) | amount 2/2 (100%) | currency 2/2 (100%)
+  merchant 2/2 (100%) | date n/a | negatives ignored n/a
+Emirates NBD: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+FAB: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Faysal: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Filter negatives: 13 samples (0 transactions, 13 negatives), missed 0
+  core (type+amount+currency) n/a | type n/a | amount n/a | currency n/a
+  merchant n/a | date n/a | negatives ignored 13/13 (100%)
+Filter positives: 6 samples (6 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 6/6 (100%) | type 6/6 (100%) | amount 6/6 (100%) | currency 6/6 (100%)
+  merchant n/a | date n/a | negatives ignored n/a
+Generic: 27 samples (21 transactions, 6 negatives), missed 0
+  core (type+amount+currency) 21/21 (100%) | type 21/21 (100%) | amount 21/21 (100%) | currency 21/21 (100%)
+  merchant 21/21 (100%) | date n/a | negatives ignored 6/6 (100%)
+HBL: 72 samples (72 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 72/72 (100%) | type 72/72 (100%) | amount 72/72 (100%) | currency 72/72 (100%)
+  merchant 4/4 (100%) | date 71/71 (100%) | negatives ignored n/a
+JazzCash: 36 samples (36 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 36/36 (100%) | type 36/36 (100%) | amount 36/36 (100%) | currency 36/36 (100%)
+  merchant 2/2 (100%) | date 36/36 (100%) | negatives ignored n/a
+JS Bank: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+mada: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Mashreq: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+MCB: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Meezan: 3 samples (3 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 3/3 (100%) | type 3/3 (100%) | amount 3/3 (100%) | currency 3/3 (100%)
+  merchant 3/3 (100%) | date 2/2 (100%) | negatives ignored n/a
+Meezan Bank: 34 samples (34 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 34/34 (100%) | type 34/34 (100%) | amount 34/34 (100%) | currency 34/34 (100%)
+  merchant n/a | date 34/34 (100%) | negatives ignored n/a
+NayaPay: 38 samples (38 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 38/38 (100%) | type 38/38 (100%) | amount 38/38 (100%) | currency 38/38 (100%)
+  merchant 14/14 (100%) | date 12/12 (100%) | negatives ignored n/a
+Negatives: 7 samples (0 transactions, 7 negatives), missed 0
+  core (type+amount+currency) n/a | type n/a | amount n/a | currency n/a
+  merchant n/a | date n/a | negatives ignored 7/7 (100%)
+Other (NGN): 1 samples (0 transactions, 1 negatives), missed 0
+  core (type+amount+currency) n/a | type n/a | amount n/a | currency n/a
+  merchant n/a | date n/a | negatives ignored 1/1 (100%)
+RAKBANK: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+SadaPay: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+SNB: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+Standard Chartered: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+STC Pay: 1 samples (1 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 1/1 (100%) | type 1/1 (100%) | amount 1/1 (100%) | currency 1/1 (100%)
+  merchant 1/1 (100%) | date n/a | negatives ignored n/a
+UBL: 37 samples (37 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 37/37 (100%) | type 37/37 (100%) | amount 37/37 (100%) | currency 37/37 (100%)
+  merchant 3/3 (100%) | date 36/36 (100%) | negatives ignored n/a
+
+## Failures (all samples)
