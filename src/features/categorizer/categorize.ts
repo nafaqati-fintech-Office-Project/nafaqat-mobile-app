@@ -17,7 +17,7 @@ const UNCATEGORIZED = 'Uncategorized';
 const INCOME = 'Income';
 const TRANSFERS = 'Transfers';
 const TRANSFER_RE = /\b(?:raast|ibft|iban)\b/i;
-const RETAIL_RE = /\bretail\s+transaction\b/i;
+const RETAIL_RE = /\bretail\s+(?:transaction|payment)\b/i;
 
 export async function categorize(txn: ParsedTxn): Promise<Categorized> {
   if (txn.type === 'CREDIT') {

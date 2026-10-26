@@ -102,6 +102,12 @@ describe('categorize', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it('does not treat a NayaPay "Retail Payment" paid over Raast as a transfer', async () => {
+    const raw = 'Retail Payment Paid to SAWAD RESTAURANT Raast Service Fee Rs. 0 -Rs. 320';
+    const result = await categorize(txn({ merchant: 'SAWAD RESTAURANT', raw }));
+    expect(result.category).not.toBe('Transfers');
+  });
+
   it('never sends credits to the model', async () => {
     expect(await categorize(txn({ type: 'CREDIT' }))).toEqual({ category: 'Income', source: 'fallback' });
     expect(fetchMock).not.toHaveBeenCalled();

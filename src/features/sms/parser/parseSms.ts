@@ -111,6 +111,8 @@ function normalizeMerchant(raw: string | undefined, body: string): string | null
     .replace(/[.,;:\s]+$/, '')
     // Card networks append the city and country: "TEA JUNCTION in ABU DHABI", "SHOP DUBAI AE".
     .replace(/\s+in\s+[A-Z][A-Z\s]*$/, '')
+    // Card processors append a reference: "COURSERA*675959731 +16509639884".
+    .replace(/\*\d{4,}/g, '')
     .replace(/\s+\+?\d{7,}\b/g, '')
     .replace(/\s+(?:AE|UAE|PK|SA|KSA|GB|UK|US)$/, '')
     .trim();

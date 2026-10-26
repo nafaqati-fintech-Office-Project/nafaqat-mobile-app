@@ -1,11 +1,11 @@
-ALL: 409 samples (382 transactions, 27 negatives), missed 0
-  core (type+amount+currency) 382/382 (100%) | type 382/382 (100%) | amount 382/382 (100%) | currency 382/382 (100%)
-  merchant 95/95 (100%) | date 306/306 (100%) | negatives ignored 27/27 (100%)
+ALL: 414 samples (387 transactions, 27 negatives), missed 0
+  core (type+amount+currency) 387/387 (100%) | type 387/387 (100%) | amount 387/387 (100%) | currency 387/387 (100%)
+  merchant 100/100 (100%) | date 311/311 (100%) | negatives ignored 27/27 (100%)
 
 ## By source
-email: 26 samples (25 transactions, 1 negatives), missed 0
-  core (type+amount+currency) 25/25 (100%) | type 25/25 (100%) | amount 25/25 (100%) | currency 25/25 (100%)
-  merchant 25/25 (100%) | date 23/23 (100%) | negatives ignored 1/1 (100%)
+email: 31 samples (30 transactions, 1 negatives), missed 0
+  core (type+amount+currency) 30/30 (100%) | type 30/30 (100%) | amount 30/30 (100%) | currency 30/30 (100%)
+  merchant 30/30 (100%) | date 28/28 (100%) | negatives ignored 1/1 (100%)
 synthetic: 77 samples (51 transactions, 26 negatives), missed 0
   core (type+amount+currency) 51/51 (100%) | type 51/51 (100%) | amount 51/51 (100%) | currency 51/51 (100%)
   merchant 45/45 (100%) | date n/a | negatives ignored 26/26 (100%)
@@ -14,9 +14,9 @@ synthetic_variation: 306 samples (306 transactions, 0 negatives), missed 0
   merchant 25/25 (100%) | date 283/283 (100%) | negatives ignored n/a
 
 ## By split
-dev: 361 samples (334 transactions, 27 negatives), missed 0
-  core (type+amount+currency) 334/334 (100%) | type 334/334 (100%) | amount 334/334 (100%) | currency 334/334 (100%)
-  merchant 92/92 (100%) | date 263/263 (100%) | negatives ignored 27/27 (100%)
+dev: 366 samples (339 transactions, 27 negatives), missed 0
+  core (type+amount+currency) 339/339 (100%) | type 339/339 (100%) | amount 339/339 (100%) | currency 339/339 (100%)
+  merchant 97/97 (100%) | date 268/268 (100%) | negatives ignored 27/27 (100%)
 holdout: 48 samples (48 transactions, 0 negatives), missed 0
   core (type+amount+currency) 48/48 (100%) | type 48/48 (100%) | amount 48/48 (100%) | currency 48/48 (100%)
   merchant 3/3 (100%) | date 43/43 (100%) | negatives ignored n/a
@@ -94,9 +94,9 @@ Meezan Bank: 34 samples (34 transactions, 0 negatives), missed 0
 NayaPay: 38 samples (38 transactions, 0 negatives), missed 0
   core (type+amount+currency) 38/38 (100%) | type 38/38 (100%) | amount 38/38 (100%) | currency 38/38 (100%)
   merchant 14/14 (100%) | date 12/12 (100%) | negatives ignored n/a
-NayaPay (statement): 9 samples (9 transactions, 0 negatives), missed 0
-  core (type+amount+currency) 9/9 (100%) | type 9/9 (100%) | amount 9/9 (100%) | currency 9/9 (100%)
-  merchant 9/9 (100%) | date 9/9 (100%) | negatives ignored n/a
+NayaPay (statement): 14 samples (14 transactions, 0 negatives), missed 0
+  core (type+amount+currency) 14/14 (100%) | type 14/14 (100%) | amount 14/14 (100%) | currency 14/14 (100%)
+  merchant 14/14 (100%) | date 14/14 (100%) | negatives ignored n/a
 Negatives: 7 samples (0 transactions, 7 negatives), missed 0
   core (type+amount+currency) n/a | type n/a | amount n/a | currency n/a
   merchant n/a | date n/a | negatives ignored 7/7 (100%)

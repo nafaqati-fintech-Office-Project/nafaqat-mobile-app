@@ -7,6 +7,7 @@ import { parseSms } from '../src/features/sms/parser/parseSms';
 // lines (TRY_SMS_FILE). A statement row is not an SMS, but it is real alert-like text with ground truth:
 // the sign gives the type and the balance column checks balance extraction. Keep the input file out of the repo.
 const file = process.env.TRY_SMS_FILE;
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 describe.skipIf(!file)('statement rows', () => {
   it('parses each row', () => {
@@ -18,7 +19,7 @@ describe.skipIf(!file)('statement rows', () => {
       const at = new Date(`${date}T${time}:00`);
       const amount = Math.abs(Number(signed));
       const sign = Number(signed) < 0 ? '-' : '+';
-      const body = `${kind} ${desc} ${at.getDate()} Aug ${at.getFullYear()} ${time} ${sign}Rs. ${amount.toLocaleString('en-US')} Balance Rs. ${Number(balance).toLocaleString('en-US')}`;
+      const body = `${kind} ${desc} ${at.getDate()} ${MONTHS[at.getMonth()]} ${at.getFullYear()} ${time} ${sign}Rs. ${amount.toLocaleString('en-US')} Balance Rs. ${Number(balance).toLocaleString('en-US')}`;
       const got = parseSms({ id: String(i), address: 'NayaPay', body, date: at.getTime() + 60_000 });
       if (!got) {
         missed++;

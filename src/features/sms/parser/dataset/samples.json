@@ -6354,5 +6354,85 @@
    "merchant": "SUPER CARE PHARMACY",
    "txnDate": "2026-08-22T14:55"
   }
+ },
+ {
+  "id": "email-0410",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Online Paid to COURSERA*675959731 +16509639884 US Visa xxxx3493, USD 3.10 Fees and Government Taxes Rs. 130.18 9 Jun 2026 17:56 -Rs. 993.61 Balance Rs. 262.57",
+  "received": "2026-06-09T17:57",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "993.61",
+   "currency": "PKR",
+   "merchant": "COURSERA",
+   "txnDate": "2026-06-09T17:56"
+  }
+ },
+ {
+  "id": "email-0411",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "IBFT In Incoming fund transfer from A PERSON Allied Bank-0000 Transaction ID 060566 Service Charges Rs. 0 17 Jun 2026 22:52 +Rs. 1,500 Balance Rs. 1,686.57",
+  "received": "2026-06-17T22:53",
+  "expected": {
+   "type": "CREDIT",
+   "amount": "1500",
+   "currency": "PKR",
+   "merchant": null,
+   "txnDate": "2026-06-17T22:52"
+  }
+ },
+ {
+  "id": "email-0412",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Retail Payment Paid to SAMPLE RESTAURANT Raast Service Fee Rs. 0 17 Jun 2026 22:52 -Rs. 320 Balance Rs. 1,366.57",
+  "received": "2026-06-17T22:53",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "320",
+   "currency": "PKR",
+   "merchant": "SAMPLE RESTAURANT",
+   "txnDate": "2026-06-17T22:52"
+  }
+ },
+ {
+  "id": "email-0413",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Mobile Top-Up Mobile top-up purchased Jazz 03000000000 Nickname: Me Service Charges Rs. 0 18 Jun 2026 05:09 -Rs. 100 Balance Rs. 646.57",
+  "received": "2026-06-18T05:10",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "100",
+   "currency": "PKR",
+   "merchant": null,
+   "txnDate": "2026-06-18T05:09"
+  }
+ },
+ {
+  "id": "email-0414",
+  "source": "email",
+  "split": "dev",
+  "bank": "NayaPay (statement)",
+  "address": "NayaPay",
+  "body": "Raast Out Outgoing fund transfer to A PERSON (Shop Ac) Meezan-0000 Transaction ID 6a33af1d13938b20231a2089 Service Charges Rs. 0 18 Jun 2026 13:41 -Rs. 520 Balance Rs. 126.57",
+  "received": "2026-06-18T13:42",
+  "expected": {
+   "type": "DEBIT",
+   "amount": "520",
+   "currency": "PKR",
+   "merchant": null,
+   "txnDate": "2026-06-18T13:41"
+  }
  }
 ]

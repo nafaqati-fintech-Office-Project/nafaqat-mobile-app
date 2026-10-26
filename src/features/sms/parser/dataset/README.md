@@ -2,11 +2,11 @@
 
 `samples.json` is the single test set for the parser. `evaluate.ts` scores it; `accuracy.test.ts` guards it.
 
-## What is in it (409 samples, 27 of them negatives)
+## What is in it (414 samples, 27 of them negatives)
 
 | source | count | what it is | how far to trust it |
 |---|---|---|---|
-| `email` | 26 | Real alert text from bank emails, app receipts and a NayaPay statement (9 rows); names and account numbers replaced. | Real wording, but email layout, not SMS. |
+| `email` | 31 | Real alert text from bank emails, app receipts and a NayaPay statements (14 rows from two months); names and account numbers replaced. | Real wording, but email layout, not SMS. |
 | `synthetic` | 77 | Written by hand: generic styles for PK/SA/AE, a batch of 31 from other banks (`fresh-1`), and negatives (OTPs, ads, declined, future charges). | Our guess at real formats. |
 | `synthetic_variation` | 306 | A stratified sample of the 2,000-row Pakistani CSV, which is a variation of the 17 email templates. | Measures robustness to template variation only. Not independent. |
 | `real` | 0 | Real SMS from real phones. | None yet: add them first. |
@@ -30,6 +30,7 @@
 | date | batch | result on first run (before any fix) |
 |---|---|---|
 | 2026-10-26 | `fresh-1` (31 hand-written messages from 22 other banks and wallets, never run against the parser) | core 21/24 (88%), merchant 17/24 (71%), negatives ignored 6/7. 3 missed, 1 false positive. |
+| 2026-10-26 | NayaPay June 2026 statement (67 rows, run after the August-driven fixes, never tuned on) | core 67/67 (100%), balance 67/67, date 67/67, merchant correct on all shop and wallet rows. Two cosmetic issues found and fixed afterwards (`COURSERA*675959731` reference number, "Retail Payment" over Raast treated as a transfer). Statement rows are not SMS. |
 
 The 7 failures were fixed the same day (`against` as a merchant terminator, "paid via X to", "POS PURCHASE <merchant>", "used for/at", "transaction of ... made", ATM location is not a merchant, "I sent you" is chat). The batch was then moved to `dev`. Its earlier number is the honest one; the current number is flattering.
 
