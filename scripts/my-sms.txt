@@ -1,0 +1,6 @@
+# One SMS per line. Optional sender first:  SENDER|message text
+# Replace these examples with your own (blank out account numbers and names).
+HBL|Your HBL A/C 0000 ***** 12345 has been debited with PKR 208.8 on 04/11/2024 15:51:19.
+ABL|A Debit transaction of PKR 1,050.00 was made in your Account No: 0000****123456 in FARID GATE, BAHAWALPUR branch on Friday, 23 Oct 2026 at  6:40PM. Transaction description : PURCHASE PSO SS 95 RIYASAT LAHORE PK
+Rs. 1,250.00 spent at KFC LAHORE on card ending 1234. Avl Bal Rs 20,000.00
+Your OTP is 556677. Do not share it.

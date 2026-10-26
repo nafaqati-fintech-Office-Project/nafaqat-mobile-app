@@ -19,11 +19,23 @@ CREATE TABLE IF NOT EXISTS transactions (
 CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions (date DESC);
 `;
 
+// Applied in order on top of SCHEMA; PRAGMA user_version records how many have run, so existing
+// installs get the new columns and fresh installs run all of them once.
+const MIGRATIONS = [
+  'ALTER TABLE transactions ADD COLUMN balance TEXT',
+  'ALTER TABLE transactions ADD COLUMN txn_date INTEGER',
+];
+
 let database: Promise<SQLiteDatabase> | null = null;
 
 export function getDb(): Promise<SQLiteDatabase> {
   database ??= openDatabaseAsync('nafaqati.db').then(async (db) => {
     await db.execAsync(SCHEMA);
+    const row = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
+    for (let i = row?.user_version ?? 0; i < MIGRATIONS.length; i++) {
+      await db.execAsync(MIGRATIONS[i]);
+      await db.execAsync(`PRAGMA user_version = ${i + 1}`);
+    }
     return db;
   });
   return database;

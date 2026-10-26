@@ -13,6 +13,6 @@ export type ProcessedSms = {
 export async function processSms(sms: SmsMessage): Promise<ProcessedSms | null> {
   const txn = parseSms(sms);
   if (!txn) return null;
-  const { category, source, confidence } = await categorize(txn);
-  return { txn, category, source, confidence };
+  const { category, source, confidence, merchant } = await categorize(txn);
+  return { txn: merchant ? { ...txn, merchant } : txn, category, source, confidence };
 }

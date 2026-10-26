@@ -10,7 +10,9 @@ export type StoredTransaction = {
   bank: string;
   merchant: string | null;
   cardLast4: string | null;
+  balance: string | null;
   date: number;
+  txnDate: number | null;
   category: string;
   source: string;
   confidence: number | null;
@@ -24,7 +26,9 @@ type Row = {
   bank: string;
   merchant: string | null;
   card_last4: string | null;
+  balance: string | null;
   date: number;
+  txn_date: number | null;
   category: string;
   source: string;
   confidence: number | null;
@@ -38,8 +42,8 @@ export async function saveTransaction(processed: ProcessedSms): Promise<boolean>
   const db = await getDb();
   const result = await db.runAsync(
     `INSERT OR IGNORE INTO transactions
-      (dedupe_key, sms_id, bank, type, amount, currency, merchant, card_last4, date, category, source, confidence)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (dedupe_key, sms_id, bank, type, amount, currency, merchant, card_last4, balance, date, txn_date, category, source, confidence)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       transactionKey(txn),
       txn.smsId,
@@ -49,7 +53,9 @@ export async function saveTransaction(processed: ProcessedSms): Promise<boolean>
       txn.currency,
       txn.merchant,
       txn.cardLast4,
+      txn.balance ?? null,
       txn.date,
+      txn.txnDate ?? null,
       category,
       source,
       confidence ?? null,
@@ -64,5 +70,9 @@ export async function listTransactions(limit = 200): Promise<StoredTransaction[]
     'SELECT * FROM transactions ORDER BY date DESC LIMIT ?',
     [limit],
   );
-  return rows.map(({ card_last4, ...row }) => ({ ...row, cardLast4: card_last4 }));
+  return rows.map(({ card_last4, txn_date, ...row }) => ({
+    ...row,
+    cardLast4: card_last4,
+    txnDate: txn_date,
+  }));
 }

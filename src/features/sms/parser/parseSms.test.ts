@@ -183,6 +183,24 @@ const fixtures: Fixture[] = [
     body: 'POS txn Rs 450.00 at FOODCO card ending 2211',
     expected: { bank: 'XBANK', type: 'DEBIT', amount: '450.00', currency: 'PKR', merchant: 'FOODCO', cardLast4: '2211' },
   },
+  {
+    name: 'time after "at" is not a merchant',
+    address: 'BANKT',
+    body: 'Rs 500 debited at 12:26:33 from your account ending 1234',
+    expected: { bank: 'BANKT', type: 'DEBIT', amount: '500', currency: 'PKR', merchant: null, cardLast4: '1234' },
+  },
+  {
+    name: 'merchant after a time',
+    address: 'BANKT',
+    body: 'Rs 500 spent at 12:26:33 at STORE X on 01-05-26',
+    expected: { bank: 'BANKT', type: 'DEBIT', amount: '500', currency: 'PKR', merchant: 'STORE X', cardLast4: null },
+  },
+  {
+    name: 'RAAST transfer to a person',
+    address: '8558',
+    body: 'Dear AHMED ALI, an amount of Rs. 1,500 has been successfully sent to SARA KHAN of IBAN No: ****1234 on 2026-05-12 at 12:26:33. TID:123456789012 via RAAST',
+    expected: { bank: '8558', type: 'DEBIT', amount: '1500', currency: 'PKR', merchant: 'SARA KHAN', cardLast4: '1234' },
+  },
   { name: 'balance only', address: 'BANKY', body: 'Your available balance is Rs. 5,000.00', expected: null },
   {
     name: 'promo',
