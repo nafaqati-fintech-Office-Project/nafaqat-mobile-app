@@ -111,7 +111,7 @@ export const rules: BankRule[] = [
       rx('{AMT}\\s*{CUR}.*?\\bat\\s+(?!\\s*\\d{1,2}[:.]\\d{2})(?<merchant>.+?){END}'),
       // Allied: "Transaction description : PURCHASE <merchant>"; NayaPay receipts: "Merchant Details <merchant>"
       // and "Destination Acc. Title <name>".
-      rx('{CUR}\\s*{AMT}.*?\\bdescription\\s*:\\s*purchase\\s+(?<merchant>.+?){END}'),
+      rx('{CUR}\\s*{AMT}.*?\\bdescription\\s*:\\s*(?:purchase|pos)\\s+(?<merchant>.+?){END}'),
       rx('{CUR}\\s*{AMT}.*?\\bmerchant\\s+details\\s+(?<merchant>.+?){END}'),
       rx('\\b(?:sent|paid)\\s+{CUR}\\s*{AMT}.*?\\bdestination\\s+acc\\.?\\s+title\\s+(?<merchant>.+?){END}'),
       rx(`{CUR}\\s*{AMT}\\s+(?:(?:has|have)\\s+been\\s+)?(?:paid|sent|transferred)\\s+to\\s+${NOT_OWN}(?<merchant>.+?){END}`),

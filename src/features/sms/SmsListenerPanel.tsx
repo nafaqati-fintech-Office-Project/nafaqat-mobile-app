@@ -44,7 +44,7 @@ export function SmsListenerPanel() {
       <PrimaryButton label={t('sms.debug.import')} onPress={runImport} loading={importing} />
       {imported && (
         <AppText style={styles.entry}>
-          {`${t('sms.debug.imported')} ${imported.scanned} / ${imported.saved} / ${imported.skipped}`}
+          {`${t('sms.debug.imported')} ${imported.scanned} / ${imported.saved} / ${imported.skipped} / ${imported.unparsed}`}
         </AppText>
       )}
       {log.length > 0 && (

@@ -1,4 +1,4 @@
-import { CREDIT_RE, DEBIT_RE, isTransactional, WEAK_DEBIT_RE } from './filter';
+import { CREDIT_RE, DEBIT_RE, isTransactional, REVERSAL_RE, WEAK_DEBIT_RE } from './filter';
 import { AMOUNT_SRC, CURRENCY_SRC, GENERIC_BANK, rules } from './rules';
 import type { ParsedTxn } from './types';
 
@@ -16,8 +16,17 @@ const CURRENCIES: Record<string, string> = {
 };
 
 const ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩';
+// The digits must follow the marker directly (optionally after "ending", "no", ":" and mask characters),
+// so "card bal is 14241.55" is never read as a card. When a mask splits the number
+// ("1258 ***** 69499") the part after the mask is the tail.
 const CARD_RE =
-  /(?:\b(?:card|a\/c|acct?|account|ending)|\*{2,}|x{2,})\D{0,12}\d*?(\d{4})(?!\d)/i;
+  /(?:\b(?:card|a\/c|acct?|account)(?:\s+(?:no\.?|number))?(?:\s+(?:ending|ends)(?:\s+with)?)?|\bending(?:\s+with)?|\*{2,}|x{2,})\s*[:#-]?\s*(?:[*xX•●]+\s*)*(\d+)(?:\s*[*xX•●]+\s*(\d+))?(?!\d|[.,]\d)/i;
+
+function extractCardLast4(body: string): string | null {
+  const match = CARD_RE.exec(body);
+  const digits = match?.[2] ?? match?.[1];
+  return digits && digits.length >= 3 ? digits.slice(-4) : null;
+}
 
 const BALANCE_RE = new RegExp(
   `(?:\\bbal(?:ance)?|رصيد|الرصيد)\\s*(?:is|:|=|-|المتاح)?\\s*(?:(?<![A-Za-z])(?:${CURRENCY_SRC}))?\\s*(?<amount>${AMOUNT_SRC})`,
@@ -46,7 +55,8 @@ function buildDate(y: number, m: number, d: number, body: string): Date | null {
   return date;
 }
 
-// Day comes before month in the supported markets (PK, SA, AE), so 05/11/2026 is 5 Nov.
+// Day-first is the default (05/11/2026 is 5 Nov); a second number above 12 can only be a day,
+// so 7/29/2020 (some UAE banks) is read as month-first.
 function extractTxnDate(body: string, receivedAt: number): number | null {
   let date: Date | null = null;
   const named = DATE_NAMED_RE.exec(body);
@@ -58,7 +68,11 @@ function extractTxnDate(body: string, receivedAt: number): number | null {
   }
   if (!date) {
     const numeric = DATE_NUMERIC_RE.exec(body);
-    if (numeric) date = buildDate(Number(numeric[3]), Number(numeric[2]), Number(numeric[1]), body);
+    if (numeric) {
+      const [first, second] = [Number(numeric[1]), Number(numeric[2])];
+      const monthFirst = second > 12 && first <= 12;
+      date = buildDate(Number(numeric[3]), monthFirst ? first : second, monthFirst ? second : first, body);
+    }
   }
   if (!date) return null;
   const ts = date.getTime();
@@ -84,12 +98,19 @@ const normalizeCurrency = (raw: string): string | null =>
   CURRENCIES[raw.toLowerCase().replace(/[.\s]/g, '')] ?? null;
 
 function normalizeMerchant(raw: string | undefined): string | null {
-  const merchant = raw?.replace(/\s+/g, ' ').replace(/[.,;:\s]+$/, '').trim();
+  const merchant = raw
+    ?.replace(/\s+/g, ' ')
+    .replace(/[.,;:\s]+$/, '')
+    // Card networks append the city and country: "TEA JUNCTION in ABU DHABI", "SHOP DUBAI AE".
+    .replace(/\s+in\s+[A-Z][A-Z\s]*$/, '')
+    .replace(/\s+(?:AE|UAE|PK|SA|KSA)$/, '')
+    .trim();
   // Digits-only values and ATM locations (cash withdrawals) are not merchants.
   return merchant && !/^[\d\s:./-]+$/.test(merchant) && !/^ATM\b/i.test(merchant) ? merchant : null;
 }
 
 function detectType(body: string): ParsedTxn['type'] | null {
+  if (REVERSAL_RE.test(body)) return 'CREDIT';
   const debit = body.search(DEBIT_RE);
   const credit = body.search(CREDIT_RE);
   if (debit >= 0 && (credit < 0 || debit < credit)) return 'DEBIT';
@@ -110,8 +131,10 @@ function matchRules(sms: SmsInput) {
   return null;
 }
 
-export function parseSms(sms: SmsInput): ParsedTxn | null {
+export function parseSms(input: SmsInput): ParsedTxn | null {
   try {
+    // Alerts arrive wrapped across lines (emails, long SMS); every pattern assumes one line of text.
+    const sms = { ...input, body: input.body.replace(/\s+/g, ' ').trim() };
     if (!isTransactional(sms.body)) return null;
     const matched = matchRules(sms);
     const type = detectType(sms.body);
@@ -128,11 +151,11 @@ export function parseSms(sms: SmsInput): ParsedTxn | null {
       amount,
       currency,
       merchant: normalizeMerchant(matched.groups.merchant),
-      cardLast4: CARD_RE.exec(sms.body)?.[1] ?? null,
+      cardLast4: extractCardLast4(sms.body),
       balance: extractBalance(sms.body),
       txnDate: extractTxnDate(sms.body, sms.date),
       date: sms.date,
-      raw: sms.body,
+      raw: input.body,
     };
   } catch {
     return null;

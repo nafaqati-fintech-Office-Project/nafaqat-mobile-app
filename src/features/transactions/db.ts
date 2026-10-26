@@ -24,6 +24,16 @@ CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions (date DESC);
 const MIGRATIONS = [
   'ALTER TABLE transactions ADD COLUMN balance TEXT',
   'ALTER TABLE transactions ADD COLUMN txn_date INTEGER',
+  // Messages that look like a money movement but could not be parsed. They stay on the device.
+  `CREATE TABLE IF NOT EXISTS unparsed_sms (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sms_id TEXT NOT NULL UNIQUE,
+    address TEXT NOT NULL,
+    body TEXT NOT NULL,
+    date INTEGER NOT NULL,
+    reason TEXT NOT NULL,
+    resolved INTEGER NOT NULL DEFAULT 0
+  )`,
 ];
 
 let database: Promise<SQLiteDatabase> | null = null;

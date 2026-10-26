@@ -7,6 +7,7 @@ import { checkSmsPermission } from './smsPermission';
 import type { SmsMessage } from './smsReader';
 import { ensureNotificationPermission, notifyTransaction } from '@/features/notifications/notify';
 import { saveTransaction } from '@/features/transactions/transactionsRepo';
+import { saveIfMissed } from '@/features/transactions/unparsedRepo';
 
 const LOG_LIMIT = 20;
 
@@ -15,6 +16,7 @@ export type LogItem = {
   time: number;
   parsed: boolean;
   duplicate: boolean;
+  unparsed?: boolean;
   category?: string;
   source?: string;
 };
@@ -27,11 +29,13 @@ export function useSmsPipeline() {
     const result = await processSms(sms);
     const isNew = result ? await saveTransaction(result).catch(() => true) : false;
     if (result && isNew) await notifyTransaction(result);
+    const unparsed = result ? false : await saveIfMissed(sms).catch(() => false);
     const item: LogItem = {
       id: sms.id,
       time: Date.now(),
       parsed: result !== null,
       duplicate: result !== null && !isNew,
+      unparsed,
       category: result?.category,
       source: result?.source,
     };

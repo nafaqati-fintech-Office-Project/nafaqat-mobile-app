@@ -92,7 +92,7 @@ export const ar: Record<TranslationKey, string> = {
   'sms.debug.listen': 'الاستماع للرسائل الجديدة',
   'sms.debug.parsedFlag': 'تم التحليل',
   'sms.debug.import': 'استيراد سجل الرسائل',
-  'sms.debug.imported': 'تم فحصها / حفظها / تخطيها:',
+  'sms.debug.imported': 'تم فحصها / حفظها / تخطيها / غير محللة:',
   'transactions.empty': 'لا توجد معاملات بعد',
   'sms.debug.parse': 'تحليل وتصنيف الرسائل',
   'sms.debug.parsed': 'تم تحليلها:',

@@ -91,7 +91,7 @@ export const en = {
   'sms.debug.listen': 'Listen for new SMS',
   'sms.debug.parsedFlag': 'Parsed',
   'sms.debug.import': 'Import inbox history',
-  'sms.debug.imported': 'Scanned / saved / skipped:',
+  'sms.debug.imported': 'Scanned / saved / skipped / unparsed:',
   'transactions.empty': 'No transactions yet',
   'sms.debug.parse': 'Parse and categorize messages',
   'sms.debug.parsed': 'Parsed:',

@@ -26,7 +26,7 @@ const samples: Sample[] = [
     bank: 'Allied',
     address: 'ABL',
     body: 'A Debit transaction of PKR 1,050.00 was made in your Account No: 0000****123456 (ALI KHAN) in FARID GATE, BAHAWALPUR branch on Friday, 23 Oct 2026 at  6:40PM. Transaction description : PURCHASE PSO SS 95 RIYASAT 1208LAHORE PK Instrument / Cheque# : Hide By Me',
-    expected: { type: 'DEBIT', amount: '1050.00', currency: 'PKR', merchant: 'PSO SS 95 RIYASAT 1208LAHORE PK', txnDate: [2026, 10, 23, 18, 40] },
+    expected: { type: 'DEBIT', amount: '1050.00', currency: 'PKR', merchant: 'PSO SS 95 RIYASAT 1208LAHORE', txnDate: [2026, 10, 23, 18, 40] },
   },
   {
     bank: 'Allied',
