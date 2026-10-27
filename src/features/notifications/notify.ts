@@ -1,10 +1,13 @@
-import * as Notifications from 'expo-notifications';
-
 import type { ParsedTxn } from '@/features/sms/parser/types';
 
 const CHANNEL_ID = 'transactions';
 
+// Loaded on first use: importing expo-notifications touches native modules at once, which would
+// crash the whole app at startup in a build or in Expo Go that does not contain them.
+const loadNotifications = () => import('expo-notifications');
+
 export async function ensureNotificationPermission(): Promise<boolean> {
+  const Notifications = await loadNotifications();
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowBanner: true,
@@ -39,6 +42,7 @@ export async function notifyTransaction({
   category: string;
 }): Promise<void> {
   try {
+    const Notifications = await loadNotifications();
     await Notifications.scheduleNotificationAsync({
       content: buildNotificationContent(txn, category),
       trigger: { channelId: CHANNEL_ID },

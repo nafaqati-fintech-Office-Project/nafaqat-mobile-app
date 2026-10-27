@@ -1,5 +1,5 @@
 import { useState, type Ref } from 'react';
-import { Pressable, StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View, type TextInputInstance, type TextInputProps } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { AppText } from '@/components/AppText';
@@ -10,7 +10,7 @@ type Props = TextInputProps & {
   label: string;
   error?: string;
   secure?: boolean;
-  ref?: Ref<TextInput>;
+  ref?: Ref<TextInputInstance>;
 };
 
 export function AuthInput({ label, error, secure = false, style, ref, ...rest }: Props) {
