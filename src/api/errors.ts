@@ -18,6 +18,17 @@ function readFieldErrors(data: unknown): Record<string, string> {
 
 const general = (message: string): ApiErrorInfo => ({ message, fieldErrors: {} });
 
+function conflictInfo(data: unknown): ApiErrorInfo {
+  const message =
+    typeof data === 'object' && data !== null && 'message' in data && typeof data.message === 'string'
+      ? data.message.toLowerCase()
+      : '';
+  const text = t('errors.userExists');
+  if (message.includes('username')) return { message: null, fieldErrors: { username: text } };
+  if (message.includes('email')) return { message: null, fieldErrors: { email: text } };
+  return general(text);
+}
+
 export function toApiErrorInfo(error: unknown): ApiErrorInfo {
   if (!isAxiosError(error)) return general(t('errors.unknown'));
 
@@ -33,6 +44,9 @@ export function toApiErrorInfo(error: unknown): ApiErrorInfo {
     }
     case 401:
       return general(t('errors.invalidCredentials'));
+    case 409:
+      // "Username already exists" / "Email already exists": point at the field that clashed.
+      return conflictInfo(error.response?.data);
     case 429:
       return general(t('errors.tooManyAttempts'));
     case 502:
