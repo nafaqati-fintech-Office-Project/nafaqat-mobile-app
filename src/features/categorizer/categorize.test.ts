@@ -73,6 +73,15 @@ describe('categorize', () => {
     expect(await categorize(txn())).toEqual({ category: 'Housing', source: 'llm', confidence: 0.13 });
   });
 
+  it('shows a person\'s name as the Person category', async () => {
+    fetchMock.mockReturnValue(modelResponse('Person', 0.8, 'person'));
+    expect(await categorize(txn({ merchant: 'ALI RAZA' }))).toEqual({
+      category: 'Person',
+      source: 'llm',
+      confidence: 0.8,
+    });
+  });
+
   it('maps a verified-merchant answer to lookup', async () => {
     fetchMock.mockReturnValue(modelResponse('Fuel', 0.2, 'historical_lookup'));
     expect(await categorize(txn())).toMatchObject({ category: 'Fuel', source: 'lookup' });

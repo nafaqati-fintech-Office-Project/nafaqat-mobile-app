@@ -65,7 +65,8 @@ export async function categorize(txn: ParsedTxn): Promise<Categorized> {
     devLog(`[categorize] server could not classify ${merchant} -> Uncategorized`);
     return withMerchant({ category: UNCATEGORIZED, source: 'fallback' });
   }
-  if (predictionSource === 'llm') return withMerchant({ category, source: 'llm', confidence });
+  // A person's name is not a shop: the server labels it "Person" (a Gemini decision).
+  if (predictionSource === 'llm' || predictionSource === 'person') return withMerchant({ category, source: 'llm', confidence });
   if (predictionSource === 'historical_lookup') return withMerchant({ category, source: 'lookup', confidence });
   return withMerchant({ category, source: 'model', confidence });
 }
