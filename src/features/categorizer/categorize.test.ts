@@ -78,6 +78,11 @@ describe('categorize', () => {
     expect(await categorize(txn())).toMatchObject({ category: 'Fuel', source: 'lookup' });
   });
 
+  it('treats a server "unknown" answer as Uncategorized', async () => {
+    fetchMock.mockReturnValue(modelResponse('Unknown', 0, 'unknown'));
+    expect(await categorize(txn())).toEqual({ category: 'Uncategorized', source: 'fallback' });
+  });
+
   it('falls back when the request times out', async () => {
     vi.useFakeTimers();
     fetchMock.mockImplementation(

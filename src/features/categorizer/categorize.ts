@@ -60,6 +60,11 @@ export async function categorize(txn: ParsedTxn): Promise<Categorized> {
   }
 
   const { category, confidence, predictionSource } = prediction;
+  // The server answers "Unknown" when the model was unsure and nothing else could help.
+  if (predictionSource === 'unknown') {
+    devLog(`[categorize] server could not classify ${merchant} -> Uncategorized`);
+    return withMerchant({ category: UNCATEGORIZED, source: 'fallback' });
+  }
   if (predictionSource === 'llm') return withMerchant({ category, source: 'llm', confidence });
   if (predictionSource === 'historical_lookup') return withMerchant({ category, source: 'lookup', confidence });
   return withMerchant({ category, source: 'model', confidence });
