@@ -1,5 +1,6 @@
 import type { ColorValue } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { svgA11y } from './svgA11y';
 
 const PATHS = {
   home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
@@ -25,7 +26,7 @@ type Props = { name: IconName; color: ColorValue; size: number; strokeWidth?: nu
 
 export function Icon({ name, color, size, strokeWidth = 2 }: Props) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" accessible={false}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" {...svgA11y()}>
       <Path
         d={PATHS[name]}
         stroke={color}

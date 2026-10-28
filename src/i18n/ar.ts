@@ -110,6 +110,8 @@ export const ar: Record<TranslationKey, string> = {
   'dashboard.active': 'نشط',
   'dashboard.loadError': 'تعذّر تحميل لوحة المعلومات',
   'dashboard.retry': 'إعادة المحاولة',
+  'dashboard.comingSoon': 'قريبًا',
+  'dashboard.noSpendingWeek': 'لا إنفاق هذا الأسبوع',
   'dashboard.notifications': 'الإشعارات',
   'dashboard.changeDown': 'انخفاض الإنفاق',
   'dashboard.changeUp': 'ارتفاع الإنفاق',

@@ -16,6 +16,8 @@ export const mockDashboard: DashboardData = {
   ],
   transactionCount: 128,
   budgetUsedPercent: 65,
+  budgetState: 'ready',
   activeSubscriptions: 6,
+  subscriptionsState: 'ready',
   savings: '1200',
 };

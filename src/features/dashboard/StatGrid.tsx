@@ -9,7 +9,17 @@ import { formatMoney } from '@/utils/money';
 
 export function StatGrid({ data }: { data: DashboardData }) {
   const { t, language } = useLanguage();
-  const budget = data.budgetUsedPercent === null ? '-' : `${data.budgetUsedPercent}%`;
+  const comingSoon = t('dashboard.comingSoon');
+  const budget =
+    data.budgetState === 'unavailable'
+      ? comingSoon
+      : data.budgetUsedPercent === null
+        ? '-'
+        : `${data.budgetUsedPercent}%`;
+  const subscriptions =
+    data.subscriptionsState === 'unavailable'
+      ? comingSoon
+      : `${data.activeSubscriptions} ${t('dashboard.active')}`;
 
   return (
     <View style={styles.grid}>
@@ -33,7 +43,7 @@ export function StatGrid({ data }: { data: DashboardData }) {
         tint={colors.orange}
         tintSoft={colors.orangeSoft}
         label={t('dashboard.subscriptions')}
-        value={`${data.activeSubscriptions} ${t('dashboard.active')}`}
+        value={subscriptions}
       />
       <StatCard
         icon="savings"

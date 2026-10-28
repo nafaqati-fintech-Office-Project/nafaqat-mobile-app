@@ -12,6 +12,7 @@ import { useExitOnBack } from '@/hooks/useExitOnBack';
 import { useOnboarding } from '@/features/onboarding/useOnboarding';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, gradients, lineHeights, sizes, spacing } from '@/theme';
+import { layoutDirection } from '@/utils/layoutDirection';
 
 export default function OnboardingRoute() {
   const { t, chosen, isRTL } = useLanguage();
@@ -49,7 +50,7 @@ export default function OnboardingRoute() {
           onMomentumScrollEnd={onScrollEnd}
           getItemLayout={(_, i) => ({ length: width, offset: width * i, index: i })}
           renderItem={({ item }) => (
-            <View style={[styles.slide, { width, direction: isRTL ? 'rtl' : 'ltr' }]}>
+            <View style={[styles.slide, { width, ...layoutDirection(isRTL ? 'rtl' : 'ltr') }]}>
               <AppText weight="bold" style={styles.title}>
                 {t(item.titleKey)}
               </AppText>
@@ -90,7 +91,7 @@ export default function OnboardingRoute() {
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   // Paging offsets stay left-to-right in both languages; slide content follows the language.
-  pager: { direction: 'ltr' },
+  pager: { ...layoutDirection('ltr') },
   header: {
     minHeight: sizes.touchMin,
     flexDirection: 'row',

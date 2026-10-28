@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 
 import { colors, gradients } from '@/theme';
+import { svgA11y } from './svgA11y';
 
 // Simplified Riyadh skyline (Kingdom Centre + Al Faisaliah); no raster asset exists yet.
 const FAR =
@@ -19,7 +20,7 @@ export function Skyline() {
       style={styles.svg}
       viewBox="0 0 360 160"
       preserveAspectRatio="xMidYMax slice"
-      accessible={false}>
+      {...svgA11y()}>
       <Defs>
         <LinearGradient id="skyGlow" x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0" stopColor={glowTop} />

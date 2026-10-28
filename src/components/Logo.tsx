@@ -2,6 +2,7 @@ import { useId } from 'react';
 import Svg, { Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 
 import { colors, gradients } from '@/theme';
+import { svgA11y } from './svgA11y';
 
 type Props = {
   size: number;
@@ -17,8 +18,7 @@ export function Logo({ size, accessibilityLabel }: Props) {
       width={size}
       height={size}
       viewBox="0 0 100 100"
-      accessible={Boolean(accessibilityLabel)}
-      accessibilityLabel={accessibilityLabel}>
+      {...svgA11y(accessibilityLabel)}>
       <Defs>
         <LinearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor={start} />

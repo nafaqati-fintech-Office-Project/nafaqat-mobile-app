@@ -2,6 +2,7 @@ import Svg, { ClipPath, Circle, Defs, G, Path, Rect } from 'react-native-svg';
 
 import type { Language } from '@/i18n';
 import { colors, sizes } from '@/theme';
+import { svgA11y } from '@/components/svgA11y';
 
 const WHITE = colors.white;
 
@@ -43,7 +44,7 @@ function SaudiFlag() {
 
 export function Flag({ language }: { language: Language }) {
   return (
-    <Svg width={sizes.flag} height={sizes.flag} viewBox="0 0 60 60" accessible={false}>
+    <Svg width={sizes.flag} height={sizes.flag} viewBox="0 0 60 60" {...svgA11y()}>
       {language === 'en' ? <UkFlag /> : <SaudiFlag />}
     </Svg>
   );

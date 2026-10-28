@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { colors, radius, sizes, spacing } from '@/theme';
+import { layoutDirection } from '@/utils/layoutDirection';
 
 type Props = {
   count: number;
@@ -24,7 +25,7 @@ export function PaginationDots({ count, activeIndex }: Props) {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    direction: 'ltr',
+    ...layoutDirection('ltr'),
     justifyContent: 'center',
     alignItems: 'center',
     gap: spacing.sm,

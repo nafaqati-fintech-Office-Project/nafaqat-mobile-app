@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { DevSettings, I18nManager } from 'react-native';
+import { DevSettings, I18nManager, Platform } from 'react-native';
 
 import { setCurrentLanguage, t, type Language } from './index';
 import { getStoredLanguage, storeLanguage } from '@/storage/language';
@@ -30,6 +30,11 @@ function reloadApp() {
 
 // Returns true when the native direction changed and a reload was triggered.
 function applyDirection(rtl: boolean): boolean {
+  if (Platform.OS === 'web') {
+    // No native layout direction and no reload on web: the page's dir attribute flips the layout.
+    if (typeof document !== 'undefined') document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    return false;
+  }
   I18nManager.allowRTL(true);
   if (I18nManager.isRTL === rtl) return false;
   I18nManager.forceRTL(rtl);

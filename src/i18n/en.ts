@@ -109,6 +109,8 @@ export const en = {
   'dashboard.active': 'Active',
   'dashboard.loadError': 'Could not load your dashboard',
   'dashboard.retry': 'Retry',
+  'dashboard.comingSoon': 'Coming soon',
+  'dashboard.noSpendingWeek': 'No spending this week',
   'dashboard.notifications': 'Notifications',
   'dashboard.changeDown': 'Spending down',
   'dashboard.changeUp': 'Spending up',
