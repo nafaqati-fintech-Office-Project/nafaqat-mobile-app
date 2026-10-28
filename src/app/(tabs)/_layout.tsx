@@ -2,6 +2,7 @@ import { Redirect, Tabs } from 'expo-router';
 
 import { useAuth } from '@/auth/AuthProvider';
 import { Icon, type IconName } from '@/components/Icon';
+import { useRetryPendingPredictions } from '@/features/categorizer/useRetryPendingPredictions';
 import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontFamily, fontSizes, shadows, sizes } from '@/theme';
@@ -17,6 +18,7 @@ const TABS: { name: string; icon: IconName; label: TranslationKey }[] = [
 export default function TabsLayout() {
   const { status } = useAuth();
   const { t } = useLanguage();
+  useRetryPendingPredictions(status === 'authenticated');
 
   if (status !== 'authenticated') return <Redirect href="/login" />;
 

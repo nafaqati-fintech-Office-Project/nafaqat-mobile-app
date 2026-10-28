@@ -34,6 +34,18 @@ const MIGRATIONS = [
     reason TEXT NOT NULL,
     resolved INTEGER NOT NULL DEFAULT 0
   )`,
+  // Set when the model could not be reached; retryPendingPredictions asks again later.
+  'ALTER TABLE transactions ADD COLUMN needs_prediction INTEGER NOT NULL DEFAULT 0',
+  // Counts only answers that refused the input, not offline attempts.
+  'ALTER TABLE transactions ADD COLUMN prediction_attempts INTEGER NOT NULL DEFAULT 0',
+  // The redacted SMS body (no digits), kept only while merchant extraction is still to be retried.
+  'ALTER TABLE transactions ADD COLUMN retry_text TEXT',
+  // Rows saved before the flag existed cannot tell "model unreachable" from "model said unknown",
+  // so an uncategorized debit with a merchant is asked once more.
+  `UPDATE transactions SET needs_prediction = 1
+    WHERE type = 'DEBIT' AND category = 'Uncategorized' AND source = 'fallback'
+      AND merchant IS NOT NULL AND TRIM(merchant) <> ''`,
+  'CREATE INDEX IF NOT EXISTS idx_transactions_needs_prediction ON transactions (needs_prediction) WHERE needs_prediction = 1',
 ];
 
 let database: Promise<SQLiteDatabase> | null = null;

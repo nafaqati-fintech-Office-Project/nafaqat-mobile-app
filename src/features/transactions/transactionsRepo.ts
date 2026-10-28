@@ -1,5 +1,6 @@
 import { getDb } from './db';
 import type { ParsedTxn } from '@/features/sms/parser/types';
+import type { Categorized } from '@/features/categorizer/categorize';
 import type { ProcessedSms } from '@/features/sms/processSms';
 
 export type StoredTransaction = {
@@ -34,16 +35,35 @@ type Row = {
   confidence: number | null;
 };
 
+export type PendingPrediction = { id: number; merchant: string | null; retryText: string | null };
+
+type Listener = () => void;
+
+const listeners = new Set<Listener>();
+
+// Fires after rows change outside a screen's own load (a background re-categorization).
+export function onTransactionsChanged(listener: Listener): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+export function emitTransactionsChanged(): void {
+  listeners.forEach((listener) => listener());
+}
+
 export const transactionKey = (txn: ParsedTxn): string =>
   [txn.date, txn.type, txn.amount, txn.currency, txn.cardLast4 ?? ''].join('|');
 
 export async function saveTransaction(processed: ProcessedSms): Promise<boolean> {
-  const { txn, category, source, confidence } = processed;
+  const { txn, category, source, confidence, retry, retryText } = processed;
   const db = await getDb();
   const result = await db.runAsync(
     `INSERT OR IGNORE INTO transactions
-      (dedupe_key, sms_id, bank, type, amount, currency, merchant, card_last4, balance, date, txn_date, category, source, confidence)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (dedupe_key, sms_id, bank, type, amount, currency, merchant, card_last4, balance, date, txn_date, category, source, confidence,
+       needs_prediction, prediction_attempts, retry_text)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       transactionKey(txn),
       txn.smsId,
@@ -59,15 +79,52 @@ export async function saveTransaction(processed: ProcessedSms): Promise<boolean>
       category,
       source,
       confidence ?? null,
+      retry ? 1 : 0,
+      retry === 'rejected' ? 1 : 0,
+      retry ? (retryText ?? null) : null,
     ],
   );
   return result.changes > 0;
 }
 
+// Rows still waiting for the model, newest first, skipping those the server refused maxAttempts times.
+export async function listPendingPredictions(maxAttempts: number, limit: number): Promise<PendingPrediction[]> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<{ id: number; merchant: string | null; retry_text: string | null }>(
+    `SELECT id, merchant, retry_text FROM transactions
+     WHERE needs_prediction = 1 AND prediction_attempts < ?
+     ORDER BY date DESC LIMIT ?`,
+    [maxAttempts, limit],
+  );
+  return rows.map(({ retry_text, ...row }) => ({ ...row, retryText: retry_text }));
+}
+
+// Stores the outcome of a retry. A new failure keeps the row pending; only a refusal counts as an attempt.
+export async function saveRetryResult(id: number, result: Categorized): Promise<void> {
+  const db = await getDb();
+  if (result.retry) {
+    await db.runAsync(
+      `UPDATE transactions
+       SET merchant = COALESCE(?, merchant), retry_text = ?, prediction_attempts = prediction_attempts + ?
+       WHERE id = ?`,
+      [result.merchant ?? null, result.retryText ?? null, result.retry === 'rejected' ? 1 : 0, id],
+    );
+    return;
+  }
+  await db.runAsync(
+    `UPDATE transactions
+     SET category = ?, source = ?, confidence = ?, merchant = COALESCE(?, merchant),
+         needs_prediction = 0, retry_text = NULL
+     WHERE id = ?`,
+    [result.category, result.source, result.confidence ?? null, result.merchant ?? null, id],
+  );
+}
+
 export async function listTransactions(limit = 200): Promise<StoredTransaction[]> {
   const db = await getDb();
   const rows = await db.getAllAsync<Row>(
-    'SELECT * FROM transactions ORDER BY date DESC LIMIT ?',
+    `SELECT id, type, amount, currency, bank, merchant, card_last4, balance, date, txn_date, category, source, confidence
+     FROM transactions ORDER BY date DESC LIMIT ?`,
     [limit],
   );
   return rows.map(({ card_last4, txn_date, ...row }) => ({

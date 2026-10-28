@@ -14,6 +14,8 @@ vi.mock('expo-notifications', () => ({
   AndroidImportance: { DEFAULT: 3 },
 }));
 vi.mock('./smsReader', () => ({ readInbox: vi.fn() }));
+// The real api client loads Expo modules; these tests never reach the model, so it is offline.
+vi.mock('@/api/client', () => ({ api: { post: vi.fn().mockRejectedValue(new Error('offline')) } }));
 vi.mock('@react-native-async-storage/async-storage', () => ({
   default: { getItem: vi.fn().mockResolvedValue(null), setItem: vi.fn().mockResolvedValue(undefined) },
 }));

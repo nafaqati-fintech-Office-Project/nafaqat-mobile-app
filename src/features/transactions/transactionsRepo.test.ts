@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { listTransactions, saveTransaction, transactionKey } from './transactionsRepo';
+import {
+  listPendingPredictions,
+  listTransactions,
+  saveRetryResult,
+  saveTransaction,
+  transactionKey,
+} from './transactionsRepo';
 import type { ParsedTxn } from '@/features/sms/parser/types';
 
 const db = { execAsync: vi.fn(), runAsync: vi.fn(), getAllAsync: vi.fn(), getFirstAsync: vi.fn() };
@@ -24,7 +30,7 @@ const processed = { txn, category: 'Food & Beverage', source: 'lookup' as const 
 
 beforeEach(() => {
   vi.clearAllMocks();
-  db.getFirstAsync.mockResolvedValue({ user_version: 2 });
+  db.getFirstAsync.mockResolvedValue({ user_version: 8 });
 });
 
 describe('getDb migrations', () => {
@@ -37,6 +43,20 @@ describe('getDb migrations', () => {
     expect(statements).toContain('ALTER TABLE transactions ADD COLUMN balance TEXT');
     expect(statements).toContain('ALTER TABLE transactions ADD COLUMN txn_date INTEGER');
     expect(statements).toContain('PRAGMA user_version = 2');
+  });
+
+  it('adds the retry columns and flags old uncategorized debits once', async () => {
+    vi.resetModules();
+    db.getFirstAsync.mockResolvedValue({ user_version: 3 });
+    const { getDb } = await import('./db');
+    await getDb();
+    const statements = db.execAsync.mock.calls.map(([sql]) => String(sql));
+    expect(statements).toContain('ALTER TABLE transactions ADD COLUMN needs_prediction INTEGER NOT NULL DEFAULT 0');
+    expect(statements).toContain('ALTER TABLE transactions ADD COLUMN retry_text TEXT');
+    const backfill = statements.find((sql) => sql.startsWith('UPDATE transactions SET needs_prediction = 1'));
+    expect(backfill).toMatch(/type = 'DEBIT'.*category = 'Uncategorized'.*merchant IS NOT NULL/s);
+    expect(statements).not.toContain('ALTER TABLE transactions ADD COLUMN balance TEXT');
+    expect(statements).toContain('PRAGMA user_version = 8');
   });
 
   it('runs no migration when the database is already current', async () => {
@@ -81,6 +101,61 @@ describe('saveTransaction', () => {
     await saveTransaction({ ...processed, txn: bare });
     const params = db.runAsync.mock.calls[0][1] as unknown[];
     expect(params.filter((p) => p === null).length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('saving a transaction the model could not categorize', () => {
+  // the last three values: needs_prediction, prediction_attempts, retry_text
+  const flags = () => (db.runAsync.mock.calls[0][1] as unknown[]).slice(-3);
+
+  it('saves an answered row as not pending', async () => {
+    db.runAsync.mockResolvedValue({ changes: 1 });
+    await saveTransaction(processed);
+    expect(flags()).toEqual([0, 0, null]);
+  });
+
+  it('flags an unreachable model without counting an attempt', async () => {
+    db.runAsync.mockResolvedValue({ changes: 1 });
+    await saveTransaction({ ...processed, category: 'Uncategorized', source: 'fallback', retry: 'unavailable' });
+    expect(flags()).toEqual([1, 0, null]);
+  });
+
+  it('counts a refusal and keeps the redacted text for extraction', async () => {
+    db.runAsync.mockResolvedValue({ changes: 1 });
+    await saveTransaction({
+      ...processed,
+      category: 'Uncategorized',
+      source: 'fallback',
+      retry: 'rejected',
+      retryText: 'paid at shop',
+    });
+    expect(flags()).toEqual([1, 1, 'paid at shop']);
+  });
+});
+
+describe('pending predictions', () => {
+  it('lists pending rows under the attempt limit', async () => {
+    db.getAllAsync.mockResolvedValue([{ id: 4, merchant: null, retry_text: 'paid at shop' }]);
+    expect(await listPendingPredictions(5, 100)).toEqual([{ id: 4, merchant: null, retryText: 'paid at shop' }]);
+    const [sql, params] = db.getAllAsync.mock.calls[0];
+    expect(sql).toMatch(/needs_prediction = 1 AND prediction_attempts < \?/);
+    expect(params).toEqual([5, 100]);
+  });
+
+  it('stores an answer and clears the flag and the redacted text', async () => {
+    await saveRetryResult(4, { category: 'Health', source: 'model', confidence: 0.8, merchant: 'ZZQX SHOP' });
+    const [sql, params] = db.runAsync.mock.calls[0];
+    expect(sql).toMatch(/needs_prediction = 0, retry_text = NULL/);
+    expect(params).toEqual(['Health', 'model', 0.8, 'ZZQX SHOP', 4]);
+  });
+
+  it('keeps a failed retry pending and counts only a refusal', async () => {
+    await saveRetryResult(4, { category: 'Uncategorized', source: 'fallback', retry: 'unavailable', retryText: 't' });
+    await saveRetryResult(4, { category: 'Uncategorized', source: 'fallback', retry: 'rejected', merchant: 'ZZQX SHOP' });
+    expect(String(db.runAsync.mock.calls[0][0])).not.toMatch(/needs_prediction/);
+    expect(db.runAsync.mock.calls[0][1]).toEqual([null, 't', 0, 4]);
+    // the merchant was extracted, so only the prediction is left: the redacted text is dropped
+    expect(db.runAsync.mock.calls[1][1]).toEqual(['ZZQX SHOP', null, 1, 4]);
   });
 });
 

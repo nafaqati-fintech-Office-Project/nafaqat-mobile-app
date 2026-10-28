@@ -1,5 +1,5 @@
 import { lookupCategory } from './lookup';
-import { extractMerchant, predictCategory } from './modelClient';
+import { extractMerchant, predictCategory, type ModelFailure } from './modelClient';
 import { redactForModel } from './redact';
 import { MERCHANT_FALLBACK_ENABLED } from '@/config/env';
 import { devLog } from '@/utils/devLog';
@@ -11,9 +11,13 @@ export type Categorized = {
   confidence?: number;
   // Set only when the server named a merchant the parser could not find.
   merchant?: string;
+  // Set when a model call failed, so the transaction is saved for a later retry.
+  retry?: ModelFailure;
+  // The redacted SMS body, kept only while merchant extraction is still to be retried.
+  retryText?: string;
 };
 
-const UNCATEGORIZED = 'Uncategorized';
+export const UNCATEGORIZED = 'Uncategorized';
 const INCOME = 'Income';
 const TRANSFERS = 'Transfers';
 const TRANSFER_RE = /\b(?:raast|ibft|iban)\b/i;
@@ -31,42 +35,51 @@ export async function categorize(txn: ParsedTxn): Promise<Categorized> {
     return { category: TRANSFERS, source: 'lookup' };
   }
 
-  let merchant = txn.merchant?.trim();
-  let extracted = false;
-  if (!merchant && MERCHANT_FALLBACK_ENABLED) {
+  const merchant = txn.merchant?.trim();
+  if (merchant) return categorizeMerchant(merchant);
+  if (MERCHANT_FALLBACK_ENABLED) {
     // Only the redacted text leaves the device (no digits, amounts, IBANs, URLs or emails).
-    merchant = (await extractMerchant(redactForModel(txn.raw))) ?? undefined;
-    extracted = merchant !== undefined;
-    devLog(`[categorize] server merchant fallback -> ${merchant ?? 'none'}`);
+    const result = await categorizeRedacted(redactForModel(txn.raw));
+    if (result.merchant || result.retry) return result;
   }
-  if (!merchant) {
-    devLog('[categorize] no merchant parsed -> Uncategorized (no model call)');
-    devLog(`[categorize] masked sms (${txn.bank}): ${txn.raw.replace(/\d/g, '#')}`);
-    return { category: UNCATEGORIZED, source: 'fallback' };
-  }
-  const withMerchant = (result: Categorized): Categorized =>
-    extracted ? { ...result, merchant } : result;
+  devLog('[categorize] no merchant parsed -> Uncategorized (no model call)');
+  devLog(`[categorize] masked sms (${txn.bank}): ${txn.raw.replace(/\d/g, '#')}`);
+  return { category: UNCATEGORIZED, source: 'fallback' };
+}
 
+// Asks the server to name the merchant in a redacted SMS body, then categorizes that merchant.
+export async function categorizeRedacted(redacted: string): Promise<Categorized> {
+  const extracted = await extractMerchant(redacted);
+  if (typeof extracted === 'string') {
+    devLog(`[categorize] server merchant fallback ${extracted} -> Uncategorized for now`);
+    return { category: UNCATEGORIZED, source: 'fallback', retry: extracted, retryText: redacted };
+  }
+  devLog(`[categorize] server merchant fallback -> ${extracted.merchant ?? 'none'}`);
+  if (!extracted.merchant) return { category: UNCATEGORIZED, source: 'fallback' };
+  return { ...(await categorizeMerchant(extracted.merchant)), merchant: extracted.merchant };
+}
+
+export async function categorizeMerchant(merchant: string): Promise<Categorized> {
   const hit = lookupCategory(merchant);
   if (hit) {
     devLog(`[categorize] lookup hit: ${merchant} -> ${hit}`);
-    return withMerchant({ category: hit, source: 'lookup' });
+    return { category: hit, source: 'lookup' };
   }
 
   const prediction = await predictCategory(merchant);
-  if (!prediction) {
-    devLog(`[categorize] no model answer for ${merchant} -> Uncategorized`);
-    return withMerchant({ category: UNCATEGORIZED, source: 'fallback' });
+  if (typeof prediction === 'string') {
+    devLog(`[categorize] no model answer for ${merchant} (${prediction}) -> Uncategorized for now`);
+    return { category: UNCATEGORIZED, source: 'fallback', retry: prediction };
   }
 
   const { category, confidence, predictionSource } = prediction;
   // The server answers "Unknown" when the model was unsure and nothing else could help.
   if (predictionSource === 'unknown') {
     devLog(`[categorize] server could not classify ${merchant} -> Uncategorized`);
-    return withMerchant({ category: UNCATEGORIZED, source: 'fallback' });
+    return { category: UNCATEGORIZED, source: 'fallback' };
   }
   // A person's name is not a shop: the server labels it "Person" (a Gemini decision).
-  if (predictionSource === 'llm' || predictionSource === 'person') return withMerchant({ category, source: 'llm', confidence });
-  if (predictionSource === 'historical_lookup') return withMerchant({ category, source: 'lookup', confidence });
-  return withMerchant({ category, source: 'model', confidence });
+  if (predictionSource === 'llm' || predictionSource === 'person') return { category, source: 'llm', confidence };
+  if (predictionSource === 'historical_lookup') return { category, source: 'lookup', confidence };
+  return { category, source: 'model', confidence };
 }

@@ -1,7 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { categorize } from './categorize';
 import { lookupCategory } from './lookup';
+import { resetModelClient } from './modelClient';
 import data from './merchantLookup.json';
 import type { ParsedTxn } from '@/features/sms/parser/types';
 
@@ -18,22 +19,16 @@ const txn = (overrides: Partial<ParsedTxn> = {}): ParsedTxn => ({
   ...overrides,
 });
 
-const modelResponse = (category: string, confidence: number, prediction_source = 'ml') =>
-  Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve({ category, confidence, prediction_source }),
-  });
+const post = vi.hoisted(() => vi.fn());
+vi.mock('@/api/client', () => ({ api: { post } }));
+vi.mock('@/config/flags', () => ({ AUTH_BYPASS: false }));
 
-const fetchMock = vi.fn();
+const modelResponse = (category: string, confidence: number, prediction_source = 'ml') =>
+  Promise.resolve({ data: { category, confidence, prediction_source } });
 
 beforeEach(() => {
-  fetchMock.mockReset();
-  vi.stubGlobal('fetch', fetchMock);
-});
-
-afterEach(() => {
-  vi.useRealTimers();
-  vi.unstubAllGlobals();
+  post.mockReset();
+  resetModelClient();
 });
 
 describe('lookupCategory', () => {
@@ -55,26 +50,26 @@ describe('categorize', () => {
   it('uses the lookup and skips the model', async () => {
     const result = await categorize(txn({ merchant: 'KFC LAHORE' }));
     expect(result).toEqual({ category: 'Food & Beverage', source: 'lookup' });
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(post).not.toHaveBeenCalled();
   });
 
   it('uses the model category', async () => {
-    fetchMock.mockReturnValue(modelResponse('Health', 0.8));
+    post.mockReturnValue(modelResponse('Health', 0.8));
     expect(await categorize(txn())).toEqual({ category: 'Health', source: 'model', confidence: 0.8 });
   });
 
   it('still shows a low-confidence model category', async () => {
-    fetchMock.mockReturnValue(modelResponse('Health', 0.3));
+    post.mockReturnValue(modelResponse('Health', 0.3));
     expect(await categorize(txn())).toEqual({ category: 'Health', source: 'model', confidence: 0.3 });
   });
 
   it('marks a Gemini answer as llm even when the model confidence is low', async () => {
-    fetchMock.mockReturnValue(modelResponse('Housing', 0.13, 'llm'));
+    post.mockReturnValue(modelResponse('Housing', 0.13, 'llm'));
     expect(await categorize(txn())).toEqual({ category: 'Housing', source: 'llm', confidence: 0.13 });
   });
 
   it('shows a person\'s name as the Person category', async () => {
-    fetchMock.mockReturnValue(modelResponse('Person', 0.8, 'person'));
+    post.mockReturnValue(modelResponse('Person', 0.8, 'person'));
     expect(await categorize(txn({ merchant: 'ALI RAZA' }))).toEqual({
       category: 'Person',
       source: 'llm',
@@ -83,37 +78,32 @@ describe('categorize', () => {
   });
 
   it('maps a verified-merchant answer to lookup', async () => {
-    fetchMock.mockReturnValue(modelResponse('Fuel', 0.2, 'historical_lookup'));
+    post.mockReturnValue(modelResponse('Fuel', 0.2, 'historical_lookup'));
     expect(await categorize(txn())).toMatchObject({ category: 'Fuel', source: 'lookup' });
   });
 
   it('treats a server "unknown" answer as Uncategorized', async () => {
-    fetchMock.mockReturnValue(modelResponse('Unknown', 0, 'unknown'));
+    post.mockReturnValue(modelResponse('Unknown', 0, 'unknown'));
     expect(await categorize(txn())).toEqual({ category: 'Uncategorized', source: 'fallback' });
   });
 
   it('falls back when the request times out', async () => {
-    vi.useFakeTimers();
-    fetchMock.mockImplementation(
-      (_url: string, init: { signal: AbortSignal }) =>
-        new Promise((_resolve, reject) => {
-          init.signal.addEventListener('abort', () => reject(new Error('aborted')));
-        }),
-    );
-    const pending = categorize(txn());
-    await vi.advanceTimersByTimeAsync(15000);
-    expect(await pending).toEqual({ category: 'Uncategorized', source: 'fallback' });
+    post.mockRejectedValue(Object.assign(new Error('timeout'), { isAxiosError: true, code: 'ECONNABORTED' }));
+    expect(await categorize(txn())).toEqual({ category: 'Uncategorized', source: 'fallback', retry: 'unavailable' });
   });
 
-  it('falls back when the server errors', async () => {
-    fetchMock.mockReturnValue(Promise.resolve({ ok: false }));
-    expect(await categorize(txn())).toMatchObject({ category: 'Uncategorized', source: 'fallback' });
+  it('falls back and marks the row for a retry when the server errors', async () => {
+    post.mockRejectedValue(Object.assign(new Error('HTTP 503'), { isAxiosError: true, response: { status: 503 } }));
+    expect(await categorize(txn())).toEqual({ category: 'Uncategorized', source: 'fallback', retry: 'unavailable' });
+    resetModelClient(); // the 503 started the cooldown
+    post.mockRejectedValue(Object.assign(new Error('HTTP 400'), { isAxiosError: true, response: { status: 400 } }));
+    expect(await categorize(txn())).toEqual({ category: 'Uncategorized', source: 'fallback', retry: 'rejected' });
   });
 
   it('labels RAAST/IBFT transfers as Transfers without calling the model', async () => {
     const result = await categorize(txn({ merchant: 'SARA KHAN', raw: 'sent to SARA KHAN of IBAN No via RAAST' }));
     expect(result).toEqual({ category: 'Transfers', source: 'lookup' });
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(post).not.toHaveBeenCalled();
   });
 
   it('does not treat a NayaPay "Retail Payment" paid over Raast as a transfer', async () => {
@@ -124,12 +114,12 @@ describe('categorize', () => {
 
   it('never sends credits to the model', async () => {
     expect(await categorize(txn({ type: 'CREDIT' }))).toEqual({ category: 'Income', source: 'fallback' });
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(post).not.toHaveBeenCalled();
   });
 
   it('skips the model for an empty merchant', async () => {
     expect(await categorize(txn({ merchant: '  ' }))).toEqual({ category: 'Uncategorized', source: 'fallback' });
     expect(await categorize(txn({ merchant: null }))).toEqual({ category: 'Uncategorized', source: 'fallback' });
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(post).not.toHaveBeenCalled();
   });
 });

@@ -1,12 +1,16 @@
 import { useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { TransactionRow } from '@/features/transactions/TransactionRow';
-import { listTransactions, type StoredTransaction } from '@/features/transactions/transactionsRepo';
+import {
+  listTransactions,
+  onTransactionsChanged,
+  type StoredTransaction,
+} from '@/features/transactions/transactionsRepo';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, spacing } from '@/theme';
 
@@ -15,13 +19,15 @@ export default function TransactionsRoute() {
   const [rows, setRows] = useState<StoredTransaction[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      listTransactions()
-        .then(setRows)
-        .catch(() => setRows([]));
-    }, []),
-  );
+  const load = useCallback(() => {
+    listTransactions()
+      .then(setRows)
+      .catch(() => setRows([]));
+  }, []);
+
+  useFocusEffect(load);
+  // A background retry can re-categorize rows while this screen is open.
+  useEffect(() => onTransactionsChanged(load), [load]);
 
   const onRefresh = async () => {
     setRefreshing(true);
