@@ -46,6 +46,29 @@ const MIGRATIONS = [
     WHERE type = 'DEBIT' AND category = 'Uncategorized' AND source = 'fallback'
       AND merchant IS NOT NULL AND TRIM(merchant) <> ''`,
   'CREATE INDEX IF NOT EXISTS idx_transactions_needs_prediction ON transactions (needs_prediction) WHERE needs_prediction = 1',
+  // A user's own category for a merchant. Personal: never shared, and only used while that user is signed in.
+  // type keeps "money sent to Ali" and "money from Ali" apart.
+  `CREATE TABLE IF NOT EXISTS category_rules (
+    user_id TEXT NOT NULL,
+    merchant_key TEXT NOT NULL,
+    type TEXT NOT NULL,
+    category TEXT NOT NULL,
+    updated_at INTEGER NOT NULL,
+    PRIMARY KEY (user_id, merchant_key, type)
+  )`,
+  // Every category the user changed, kept for a later, reviewed upload (synced = 0 until then).
+  `CREATE TABLE IF NOT EXISTS category_feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT,
+    transaction_id INTEGER NOT NULL,
+    merchant TEXT,
+    type TEXT NOT NULL,
+    from_category TEXT NOT NULL,
+    from_source TEXT NOT NULL,
+    to_category TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    synced INTEGER NOT NULL DEFAULT 0
+  )`,
 ];
 
 let database: Promise<SQLiteDatabase> | null = null;

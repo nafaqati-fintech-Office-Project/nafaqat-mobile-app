@@ -53,6 +53,16 @@ export function emitTransactionsChanged(): void {
   listeners.forEach((listener) => listener());
 }
 
+// Never the hidden retry columns: those stay on the device.
+const COLUMNS =
+  'id, type, amount, currency, bank, merchant, card_last4, balance, date, txn_date, category, source, confidence';
+
+const toStored = ({ card_last4, txn_date, ...row }: Row): StoredTransaction => ({
+  ...row,
+  cardLast4: card_last4,
+  txnDate: txn_date,
+});
+
 export const transactionKey = (txn: ParsedTxn): string =>
   [txn.date, txn.type, txn.amount, txn.currency, txn.cardLast4 ?? ''].join('|');
 
@@ -100,13 +110,14 @@ export async function listPendingPredictions(maxAttempts: number, limit: number)
 }
 
 // Stores the outcome of a retry. A new failure keeps the row pending; only a refusal counts as an attempt.
+// Only a row still pending is touched, so a category the user picked meanwhile is never overwritten.
 export async function saveRetryResult(id: number, result: Categorized): Promise<void> {
   const db = await getDb();
   if (result.retry) {
     await db.runAsync(
       `UPDATE transactions
        SET merchant = COALESCE(?, merchant), retry_text = ?, prediction_attempts = prediction_attempts + ?
-       WHERE id = ?`,
+       WHERE id = ? AND needs_prediction = 1`,
       [result.merchant ?? null, result.retryText ?? null, result.retry === 'rejected' ? 1 : 0, id],
     );
     return;
@@ -115,21 +126,19 @@ export async function saveRetryResult(id: number, result: Categorized): Promise<
     `UPDATE transactions
      SET category = ?, source = ?, confidence = ?, merchant = COALESCE(?, merchant),
          needs_prediction = 0, retry_text = NULL
-     WHERE id = ?`,
+     WHERE id = ? AND needs_prediction = 1`,
     [result.category, result.source, result.confidence ?? null, result.merchant ?? null, id],
   );
 }
 
 export async function listTransactions(limit = 200): Promise<StoredTransaction[]> {
   const db = await getDb();
-  const rows = await db.getAllAsync<Row>(
-    `SELECT id, type, amount, currency, bank, merchant, card_last4, balance, date, txn_date, category, source, confidence
-     FROM transactions ORDER BY date DESC LIMIT ?`,
-    [limit],
-  );
-  return rows.map(({ card_last4, txn_date, ...row }) => ({
-    ...row,
-    cardLast4: card_last4,
-    txnDate: txn_date,
-  }));
+  const rows = await db.getAllAsync<Row>(`SELECT ${COLUMNS} FROM transactions ORDER BY date DESC LIMIT ?`, [limit]);
+  return rows.map(toStored);
+}
+
+export async function getTransaction(id: number): Promise<StoredTransaction | null> {
+  const db = await getDb();
+  const row = await db.getFirstAsync<Row>(`SELECT ${COLUMNS} FROM transactions WHERE id = ?`, [id]);
+  return row ? toStored(row) : null;
 }

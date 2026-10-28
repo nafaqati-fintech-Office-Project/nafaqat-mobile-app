@@ -1,4 +1,4 @@
-import { categorizeMerchant, categorizeRedacted, type Categorized } from './categorize';
+import { categorizeMerchant, categorizeRedacted, userCategory, type Categorized } from './categorize';
 import { devLog } from '@/utils/devLog';
 import {
   emitTransactionsChanged,
@@ -36,8 +36,11 @@ function groupKey(row: PendingPrediction): string | null {
   return merchant ? `merchant:${merchant}` : null;
 }
 
-function ask(row: PendingPrediction): Promise<Categorized> {
-  return row.retryText ? categorizeRedacted(row.retryText) : categorizeMerchant(row.merchant!.trim());
+async function ask(row: PendingPrediction): Promise<Categorized> {
+  if (row.retryText) return categorizeRedacted(row.retryText);
+  const merchant = row.merchant!.trim();
+  // Retried rows are debits: credits never go to the model.
+  return (await userCategory(merchant, 'DEBIT')) ?? categorizeMerchant(merchant);
 }
 
 async function run(): Promise<number> {

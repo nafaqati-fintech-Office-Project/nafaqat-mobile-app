@@ -4,6 +4,7 @@ import { certaintyOf, LOW_CONFIDENCE } from './certainty';
 
 // certainty.ts only needs the Uncategorized label; keep the model client and its api client out.
 vi.mock('./modelClient', () => ({}));
+vi.mock('@/features/transactions/categoryRules', () => ({}));
 
 describe('certaintyOf', () => {
   it('asks the user to pick when nothing named a category', () => {

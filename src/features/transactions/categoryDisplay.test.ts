@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { categoryLabelKey, categoryTone } from './categoryDisplay';
+import { categoryLabelKey, categoryTone, pickableCategories } from './categoryDisplay';
 import lookup from '@/features/categorizer/merchantLookup.json';
 import { ar } from '@/i18n/ar';
 import { en } from '@/i18n/en';
@@ -10,7 +10,7 @@ const SERVER = [
   'Charity', 'Clothing & Shopping', 'Education', 'Entertainment', 'Food & Beverage', 'Fuel', 'Groceries',
   'Health', 'Housing', 'Investments', 'Loans/EMI', 'Subscriptions', 'Transportation', 'Travel', 'Utilities',
 ];
-const APP = ['Income', 'Transfers', 'Person', 'Uncategorized'];
+const APP = ['Income', 'Transfers', 'Person', 'Uncategorized', 'Salary', 'Other Income'];
 
 describe('categoryLabelKey', () => {
   it('has an English and an Arabic name for every category the app can store', () => {
@@ -36,5 +36,18 @@ describe('categoryTone', () => {
     expect(categoryTone('Uncategorized')).toBe('none');
     expect(categoryTone('Fuel')).toBe('spending');
     expect(categoryTone('Pets')).toBe('spending');
+  });
+});
+
+describe('pickableCategories', () => {
+  it('offers the 15 spending categories for money out and the income ones for money in', () => {
+    expect([...pickableCategories('DEBIT')].sort()).toEqual([...SERVER].sort());
+    expect(pickableCategories('CREDIT')).toEqual(['Salary', 'Other Income']);
+    expect(categoryTone('Salary')).toBe('income');
+  });
+
+  it('never offers the categories only the app sets', () => {
+    const all = [...pickableCategories('DEBIT'), ...pickableCategories('CREDIT')];
+    for (const appOnly of ['Income', 'Transfers', 'Person', 'Uncategorized']) expect(all).not.toContain(appOnly);
   });
 });

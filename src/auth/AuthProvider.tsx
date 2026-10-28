@@ -10,6 +10,7 @@ import {
 } from 'react';
 
 import * as authApi from './authApi';
+import { setCurrentUserId } from './currentUser';
 import { onSessionExpired } from './events';
 import { MOCK_USER } from './mockUser';
 import { endSession, refreshSession, startSession } from './session';
@@ -43,6 +44,8 @@ const toUser = ({ id, username, email, role }: authApi.AuthResponse): AuthUser =
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [status, setStatus] = useState<Status>('loading');
+
+  useEffect(() => setCurrentUserId(user?.id ?? null), [user]);
 
   useEffect(
     () =>

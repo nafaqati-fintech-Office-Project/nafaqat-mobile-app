@@ -19,6 +19,8 @@ const txn = (overrides: Partial<ParsedTxn> = {}): ParsedTxn => ({
   ...overrides,
 });
 
+const findUserCategory = vi.hoisted(() => vi.fn());
+vi.mock('@/features/transactions/categoryRules', () => ({ findUserCategory }));
 const post = vi.hoisted(() => vi.fn());
 vi.mock('@/api/client', () => ({ api: { post } }));
 vi.mock('@/config/flags', () => ({ AUTH_BYPASS: false }));
@@ -28,6 +30,7 @@ const modelResponse = (category: string, confidence: number, prediction_source =
 
 beforeEach(() => {
   post.mockReset();
+  findUserCategory.mockReset().mockResolvedValue(null);
   resetModelClient();
 });
 
@@ -43,6 +46,29 @@ describe('lookupCategory', () => {
   it('rejects short patterns such as "J."', () => {
     expect(lookupCategory('J. SMITH')).toBeNull();
     expect(data.every((entry) => entry.pattern.length >= 3)).toBe(true);
+  });
+});
+
+describe("the user's own rule", () => {
+  it('wins over the lookup, the transfer rule, income and the model', async () => {
+    findUserCategory.mockResolvedValue('Housing');
+    expect(await categorize(txn({ merchant: 'KFC LAHORE' }))).toEqual({ category: 'Housing', source: 'rule' });
+    expect(await categorize(txn({ merchant: 'ALI RAZA', raw: 'sent to ALI RAZA via RAAST' }))).toEqual({
+      category: 'Housing',
+      source: 'rule',
+    });
+    expect(await categorize(txn({ type: 'CREDIT', merchant: 'ALI RAZA' }))).toEqual({ category: 'Housing', source: 'rule' });
+    expect(post).not.toHaveBeenCalled();
+  });
+
+  it('is looked up by merchant and by money in or out', async () => {
+    await categorize(txn({ type: 'CREDIT', merchant: '  ALI RAZA ' }));
+    expect(findUserCategory).toHaveBeenCalledWith('ALI RAZA', 'CREDIT');
+  });
+
+  it('is not looked up without a merchant', async () => {
+    await categorize(txn({ merchant: null }));
+    expect(findUserCategory).not.toHaveBeenCalled();
   });
 });
 

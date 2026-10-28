@@ -1,4 +1,5 @@
-import { StyleSheet, View } from 'react-native';
+import { router } from 'expo-router';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { CategoryChip } from './CategoryChip';
 import type { StoredTransaction } from './transactionsRepo';
@@ -9,7 +10,7 @@ import { intlLocale } from '@/utils/intl';
 import { formatMoney } from '@/utils/money';
 
 export function TransactionRow({ item }: { item: StoredTransaction }) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const debit = item.type === 'DEBIT';
   const amount = formatMoney(item.amount, item.currency, language);
   const date = new Intl.DateTimeFormat(intlLocale(language), { dateStyle: 'medium' }).format(
@@ -17,7 +18,11 @@ export function TransactionRow({ item }: { item: StoredTransaction }) {
   );
 
   return (
-    <View style={styles.row}>
+    <Pressable
+      onPress={() => router.push({ pathname: '/change-category', params: { id: String(item.id) } })}
+      accessibilityRole="button"
+      accessibilityHint={t('category.change')}
+      style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       <View style={styles.texts}>
         <AppText weight="semibold" style={styles.title} numberOfLines={1}>
           {item.merchant ?? item.bank}
@@ -32,7 +37,7 @@ export function TransactionRow({ item }: { item: StoredTransaction }) {
       <AppText weight="bold" style={[styles.amount, { color: debit ? colors.danger : colors.success }]}>
         {`${debit ? '-' : '+'}${amount}`}
       </AppText>
-    </View>
+    </Pressable>
   );
 }
 
@@ -51,4 +56,5 @@ const styles = StyleSheet.create({
   title: { fontSize: fontSizes.md, color: colors.textPrimary },
   meta: { fontSize: fontSizes.xs, color: colors.textSecondary },
   amount: { fontSize: fontSizes.sm },
+  pressed: { opacity: 0.7 },
 });

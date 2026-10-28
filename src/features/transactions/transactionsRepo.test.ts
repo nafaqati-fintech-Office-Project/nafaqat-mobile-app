@@ -30,7 +30,7 @@ const processed = { txn, category: 'Food & Beverage', source: 'lookup' as const 
 
 beforeEach(() => {
   vi.clearAllMocks();
-  db.getFirstAsync.mockResolvedValue({ user_version: 8 });
+  db.getFirstAsync.mockResolvedValue({ user_version: 10 });
 });
 
 describe('getDb migrations', () => {
@@ -56,7 +56,7 @@ describe('getDb migrations', () => {
     const backfill = statements.find((sql) => sql.startsWith('UPDATE transactions SET needs_prediction = 1'));
     expect(backfill).toMatch(/type = 'DEBIT'.*category = 'Uncategorized'.*merchant IS NOT NULL/s);
     expect(statements).not.toContain('ALTER TABLE transactions ADD COLUMN balance TEXT');
-    expect(statements).toContain('PRAGMA user_version = 8');
+    expect(statements).toContain('PRAGMA user_version = 10');
   });
 
   it('runs no migration when the database is already current', async () => {
@@ -146,13 +146,16 @@ describe('pending predictions', () => {
     await saveRetryResult(4, { category: 'Health', source: 'model', confidence: 0.8, merchant: 'ZZQX SHOP' });
     const [sql, params] = db.runAsync.mock.calls[0];
     expect(sql).toMatch(/needs_prediction = 0, retry_text = NULL/);
+    // a category the user picked meanwhile (no longer pending) is left alone
+    expect(sql).toMatch(/WHERE id = \? AND needs_prediction = 1/);
     expect(params).toEqual(['Health', 'model', 0.8, 'ZZQX SHOP', 4]);
   });
 
   it('keeps a failed retry pending and counts only a refusal', async () => {
     await saveRetryResult(4, { category: 'Uncategorized', source: 'fallback', retry: 'unavailable', retryText: 't' });
     await saveRetryResult(4, { category: 'Uncategorized', source: 'fallback', retry: 'rejected', merchant: 'ZZQX SHOP' });
-    expect(String(db.runAsync.mock.calls[0][0])).not.toMatch(/needs_prediction/);
+    expect(String(db.runAsync.mock.calls[0][0])).toMatch(/WHERE id = \? AND needs_prediction = 1/);
+    expect(String(db.runAsync.mock.calls[0][0])).not.toMatch(/needs_prediction = 0/);
     expect(db.runAsync.mock.calls[0][1]).toEqual([null, 't', 0, 4]);
     // the merchant was extracted, so only the prediction is left: the redacted text is dropped
     expect(db.runAsync.mock.calls[1][1]).toEqual(['ZZQX SHOP', null, 1, 4]);

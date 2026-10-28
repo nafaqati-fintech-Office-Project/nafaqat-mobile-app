@@ -4,6 +4,8 @@ import { categorize } from './categorize';
 import { resetModelClient } from './modelClient';
 import type { ParsedTxn } from '@/features/sms/parser/types';
 
+const findUserCategory = vi.hoisted(() => vi.fn());
+vi.mock('@/features/transactions/categoryRules', () => ({ findUserCategory }));
 const post = vi.hoisted(() => vi.fn());
 vi.mock('@/api/client', () => ({ api: { post } }));
 vi.mock('@/config/flags', () => ({ AUTH_BYPASS: false }));
@@ -29,6 +31,7 @@ const httpError = (status: number) =>
 
 beforeEach(() => {
   post.mockReset();
+  findUserCategory.mockReset().mockResolvedValue(null);
   resetModelClient();
 });
 
@@ -72,6 +75,13 @@ describe('server merchant fallback (enabled)', () => {
 
     post.mockRejectedValueOnce(new Error('offline'));
     expect(await categorize(txn())).toMatchObject({ retry: 'unavailable', retryText: rejected.retryText });
+  });
+
+  it("applies the user's rule to the merchant the server found", async () => {
+    post.mockReturnValueOnce(json({ merchant: 'ALI RAZA' }));
+    findUserCategory.mockImplementation(async (merchant: string) => (merchant === 'ALI RAZA' ? 'Housing' : null));
+    expect(await categorize(txn())).toEqual({ category: 'Housing', source: 'rule', merchant: 'ALI RAZA' });
+    expect(post).toHaveBeenCalledTimes(1);
   });
 
   it('keeps the extracted merchant when only the prediction fails', async () => {

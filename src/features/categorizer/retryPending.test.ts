@@ -3,16 +3,17 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MAX_ATTEMPTS, retryPendingPredictions } from './retryPending';
 import type { Categorized } from './categorize';
 
-const { categorizeMerchant, categorizeRedacted, repo } = vi.hoisted(() => ({
+const { categorizeMerchant, categorizeRedacted, userCategory, repo } = vi.hoisted(() => ({
   categorizeMerchant: vi.fn(),
   categorizeRedacted: vi.fn(),
+  userCategory: vi.fn(),
   repo: {
     listPendingPredictions: vi.fn(),
     saveRetryResult: vi.fn(),
     emitTransactionsChanged: vi.fn(),
   },
 }));
-vi.mock('./categorize', () => ({ categorizeMerchant, categorizeRedacted }));
+vi.mock('./categorize', () => ({ categorizeMerchant, categorizeRedacted, userCategory }));
 vi.mock('@/features/transactions/transactionsRepo', () => repo);
 
 const row = (id: number, merchant: string | null, retryText: string | null = null) => ({ id, merchant, retryText });
@@ -23,6 +24,7 @@ const saved = () => repo.saveRetryResult.mock.calls.map(([id, result]) => [id, r
 beforeEach(() => {
   vi.clearAllMocks();
   repo.saveRetryResult.mockResolvedValue(undefined);
+  userCategory.mockResolvedValue(null);
 });
 
 describe('retryPendingPredictions', () => {
@@ -39,6 +41,15 @@ describe('retryPendingPredictions', () => {
       [2, 'Groceries', undefined],
     ]);
     expect(repo.emitTransactionsChanged).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses the user's rule for the merchant instead of asking the model", async () => {
+    repo.listPendingPredictions.mockResolvedValue([row(1, 'ALI RAZA')]);
+    userCategory.mockResolvedValue({ category: 'Housing', source: 'rule' });
+    expect(await retryPendingPredictions()).toBe(1);
+    expect(userCategory).toHaveBeenCalledWith('ALI RAZA', 'DEBIT');
+    expect(categorizeMerchant).not.toHaveBeenCalled();
+    expect(saved()).toEqual([[1, 'Housing', undefined]]);
   });
 
   it('redoes merchant extraction for rows that kept the redacted text', async () => {

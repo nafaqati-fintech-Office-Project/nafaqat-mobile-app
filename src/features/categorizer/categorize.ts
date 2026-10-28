@@ -2,12 +2,15 @@ import { lookupCategory } from './lookup';
 import { extractMerchant, predictCategory, type ModelFailure } from './modelClient';
 import { redactForModel } from './redact';
 import { MERCHANT_FALLBACK_ENABLED } from '@/config/env';
+import { findUserCategory } from '@/features/transactions/categoryRules';
 import { devLog } from '@/utils/devLog';
 import type { ParsedTxn } from '@/features/sms/parser/types';
 
 export type Categorized = {
   category: string;
-  source: 'lookup' | 'model' | 'llm' | 'fallback';
+  // "rule": the signed-in user's own rule for this merchant. "user" (picked by hand on one
+  // transaction) is set only by changeCategory, never here.
+  source: 'lookup' | 'model' | 'llm' | 'fallback' | 'rule' | 'user';
   confidence?: number;
   // Set only when the server named a merchant the parser could not find.
   merchant?: string;
@@ -23,7 +26,21 @@ const TRANSFERS = 'Transfers';
 const TRANSFER_RE = /\b(?:raast|ibft|iban)\b/i;
 const RETAIL_RE = /\bretail\s+(?:transaction|payment)\b/i;
 
+// The user's own category for this merchant, if they set one. It wins over every rule and the model.
+export async function userCategory(merchant: string, type: ParsedTxn['type']): Promise<Categorized | null> {
+  const category = await findUserCategory(merchant, type);
+  if (!category) return null;
+  devLog(`[categorize] user rule: ${merchant} -> ${category}`);
+  return { category, source: 'rule' };
+}
+
 export async function categorize(txn: ParsedTxn): Promise<Categorized> {
+  const merchant = txn.merchant?.trim();
+  if (merchant) {
+    const own = await userCategory(merchant, txn.type);
+    if (own) return own;
+  }
+
   if (txn.type === 'CREDIT') {
     devLog('[categorize] credit -> Income (no model call)');
     return { category: INCOME, source: 'fallback' };
@@ -35,7 +52,6 @@ export async function categorize(txn: ParsedTxn): Promise<Categorized> {
     return { category: TRANSFERS, source: 'lookup' };
   }
 
-  const merchant = txn.merchant?.trim();
   if (merchant) return categorizeMerchant(merchant);
   if (MERCHANT_FALLBACK_ENABLED) {
     // Only the redacted text leaves the device (no digits, amounts, IBANs, URLs or emails).
@@ -56,7 +72,9 @@ export async function categorizeRedacted(redacted: string): Promise<Categorized>
   }
   devLog(`[categorize] server merchant fallback -> ${extracted.merchant ?? 'none'}`);
   if (!extracted.merchant) return { category: UNCATEGORIZED, source: 'fallback' };
-  return { ...(await categorizeMerchant(extracted.merchant)), merchant: extracted.merchant };
+  // Only debits reach the server, so the user's debit rule is the one that applies.
+  const result = (await userCategory(extracted.merchant, 'DEBIT')) ?? (await categorizeMerchant(extracted.merchant));
+  return { ...result, merchant: extracted.merchant };
 }
 
 export async function categorizeMerchant(merchant: string): Promise<Categorized> {

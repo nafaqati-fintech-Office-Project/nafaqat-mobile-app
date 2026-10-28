@@ -82,7 +82,7 @@ transactions will ask the user.
 ## 4. Known gaps
 - Transactions still stay on the phone. Sending them to the backend is task #9.
 - The category and its "trusted / unsure" label are not shown on screen yet. That is task #7.
-- The user cannot fix a wrong category yet. That is task #8. It should call `resetModelClient()` after a fix, so the app does not reuse an old answer.
+- The user cannot fix a wrong category yet. That is task #8 (Phase 10). Personal rules there are checked before the model, so `resetModelClient()` is not needed after a fix.
 - If one Gemini call is slow and times out, the next 30 seconds of calls are also marked "ask again later". The retry fixes them.
 
 ## 5. Flow

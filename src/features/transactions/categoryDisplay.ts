@@ -1,3 +1,4 @@
+import type { ParsedTxn } from '@/features/sms/parser/types';
 import type { TranslationKey } from '@/i18n';
 
 // The user sees only the final category, in their language; how it was found stays hidden.
@@ -19,10 +20,24 @@ const LABELS: Record<string, TranslationKey> = {
   Travel: 'category.travel',
   Utilities: 'category.utilities',
   Income: 'category.income',
+  Salary: 'category.salary',
+  'Other Income': 'category.otherIncome',
   Transfers: 'category.transfers',
   Person: 'category.person',
   Uncategorized: 'category.uncategorized',
 };
+
+// What the user can pick, in the transaction service's order (GET /api/transactions/categories), so a
+// picked category always syncs. Income, Transfers and Person are set by the app only.
+const SPENDING = [
+  'Food & Beverage', 'Groceries', 'Clothing & Shopping', 'Transportation', 'Fuel', 'Entertainment', 'Subscriptions',
+  'Health', 'Education', 'Travel', 'Utilities', 'Investments', 'Housing', 'Charity', 'Loans/EMI',
+];
+const INCOME = ['Salary', 'Other Income'];
+
+export function pickableCategories(type: ParsedTxn['type']): string[] {
+  return type === 'CREDIT' ? INCOME : SPENDING;
+}
 
 export type CategoryTone = 'spending' | 'income' | 'transfer' | 'none';
 
@@ -32,7 +47,7 @@ export function categoryLabelKey(category: string): TranslationKey | null {
 }
 
 export function categoryTone(category: string): CategoryTone {
-  if (category === 'Income') return 'income';
+  if (category === 'Income' || INCOME.includes(category)) return 'income';
   if (category === 'Transfers' || category === 'Person') return 'transfer';
   if (category === 'Uncategorized') return 'none';
   return 'spending';

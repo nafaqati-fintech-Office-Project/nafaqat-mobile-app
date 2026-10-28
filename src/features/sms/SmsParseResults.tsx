@@ -9,9 +9,9 @@ import { formatMoney } from '@/utils/money';
 export type ParseResults = { items: ProcessedSms[]; skipped: number };
 
 function sourceCounts(items: ProcessedSms[]): string {
-  const counts = { lookup: 0, model: 0, llm: 0, fallback: 0 };
+  const counts = { lookup: 0, model: 0, llm: 0, fallback: 0, rule: 0, user: 0 };
   items.forEach(({ source }) => (counts[source] += 1));
-  return `lookup ${counts.lookup} · model ${counts.model} · gemini ${counts.llm} · fallback ${counts.fallback}`;
+  return `lookup ${counts.lookup} · model ${counts.model} · gemini ${counts.llm} · fallback ${counts.fallback} · own rule ${counts.rule + counts.user}`;
 }
 
 const categoryLine = ({ category, source, confidence }: ProcessedSms) =>

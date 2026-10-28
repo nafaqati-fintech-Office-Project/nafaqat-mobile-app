@@ -42,7 +42,13 @@ function Shell() {
 
   return (
     <AuthProvider>
-      <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
+      <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
+        {/* Form sheets show no native header: the title is inside the screen. */}
+        <Stack.Screen
+          name="change-category"
+          options={{ presentation: 'formSheet', sheetAllowedDetents: [0.85], sheetCornerRadius: 24 }}
+        />
+      </Stack>
       <ToastHost />
     </AuthProvider>
   );
