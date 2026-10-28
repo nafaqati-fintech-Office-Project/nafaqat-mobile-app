@@ -38,6 +38,9 @@ const RETRYABLE_STATUS = new Set([401, 408, 429, 502, 503, 504]);
 let inFlight = 0;
 const queue: (() => void)[] = [];
 let unavailableUntil = 0;
+// True after a call found the model unreachable, until a call gets an answer again.
+let wasUnavailable = false;
+const availableListeners = new Set<() => void>();
 // Keyed by path and text; holds the pending call too, so a repeat waits for it instead of asking again.
 const answers = new Map<string, { at: number; result: Promise<unknown> }>();
 
@@ -45,6 +48,16 @@ const answers = new Map<string, { at: number; result: Promise<unknown> }>();
 export function resetModelClient(): void {
   answers.clear();
   unavailableUntil = 0;
+  wasUnavailable = false;
+}
+
+// Fires when the model answers again after being unreachable, so the transactions saved in the
+// meantime can be retried without waiting for the app to be reopened.
+export function onModelAvailable(listener: () => void): () => void {
+  availableListeners.add(listener);
+  return () => {
+    availableListeners.delete(listener);
+  };
 }
 
 async function acquire(): Promise<void> {
@@ -95,10 +108,19 @@ async function send<T>(path: string, text: string, parse: (data: unknown) => T |
   try {
     // The model may have gone down while this call waited for a slot.
     if (Date.now() < unavailableUntil) return 'unavailable';
-    return parse(await post(path, { text }));
+    const result = parse(await post(path, { text }));
+    if (wasUnavailable) {
+      wasUnavailable = false;
+      devLog('[model] reachable again');
+      availableListeners.forEach((listener) => listener());
+    }
+    return result;
   } catch (error) {
     const kind = failure(error, path);
-    if (kind === 'unavailable') unavailableUntil = Date.now() + COOLDOWN_MS;
+    if (kind === 'unavailable') {
+      unavailableUntil = Date.now() + COOLDOWN_MS;
+      wasUnavailable = true;
+    }
     return kind;
   } finally {
     release();

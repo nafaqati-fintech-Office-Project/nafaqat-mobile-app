@@ -7,9 +7,9 @@ reach the model, it remembers the SMS and asks again later. Nothing is lost.
 | Path | What it does |
 |---|---|
 | `src/features/categorizer/retryPending.ts` | Asks the model again for transactions it could not categorize before |
-| `src/features/categorizer/useRetryPendingPredictions.ts` | Runs that retry when the user is signed in and every time the app comes back to the screen |
+| `src/features/categorizer/useRetryPendingPredictions.ts` | Runs that retry while the user is signed in: at start, when the app comes back to the screen, and when the model works again |
 | `src/features/categorizer/certainty.ts` | One rule that says if a category is trusted, unsure, or missing (used by task #7 and #8) |
-| `src/features/categorizer/modelClient.test.ts` | 12 tests |
+| `src/features/categorizer/modelClient.test.ts` | 14 tests |
 | `src/features/categorizer/retryPending.test.ts` | 7 tests |
 | `src/features/categorizer/certainty.test.ts` | 4 tests |
 | `docs/phase-08-model-prediction.md` | This document |
@@ -47,7 +47,11 @@ Backend, in the `api-gateway` repo:
 
 ### When the model cannot be reached
 - The SMS is saved as **Uncategorized** and marked "ask again later".
-- The app asks again when the user is signed in, and each time the app is opened again.
+- The app asks again while the user is signed in (also when they stay signed in with "remember me"):
+  - when the app starts,
+  - each time the app comes back to the screen,
+  - as soon as the model answers again after being down (for example, when a new SMS gets a real answer).
+- Nothing is retried while the app is closed.
 - It asks **once per shop**, even if the shop appears in many SMS.
 - If the server says no to the same SMS 5 times, the app stops asking. Being offline or the server being down does **not** count toward the 5.
 - Old Uncategorized transactions (saved before this phase) are asked again once.

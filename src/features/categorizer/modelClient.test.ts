@@ -137,6 +137,42 @@ describe('shared limits', () => {
     }
   });
 
+  it('tells listeners once when the model answers again after being unreachable', async () => {
+    vi.useFakeTimers();
+    try {
+      const { onModelAvailable, predictCategory } = await import('./modelClient');
+      const listener = vi.fn();
+      const unsubscribe = onModelAvailable(listener);
+
+      post.mockResolvedValueOnce(ok('Health'));
+      await predictCategory('SHOP A');
+      expect(listener).not.toHaveBeenCalled(); // it was never down
+
+      post.mockRejectedValueOnce(httpError(503));
+      await predictCategory('SHOP B');
+      vi.advanceTimersByTime(30_000);
+      post.mockResolvedValue(ok('Health'));
+      await predictCategory('SHOP B');
+      await predictCategory('SHOP C');
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unsubscribe();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('does not count a refusal as being unreachable', async () => {
+    const { onModelAvailable, predictCategory } = await import('./modelClient');
+    const listener = vi.fn();
+    const unsubscribe = onModelAvailable(listener);
+    post.mockRejectedValueOnce(httpError(400)).mockResolvedValueOnce(ok('Health'));
+    await predictCategory('SHOP A');
+    await predictCategory('SHOP B');
+    expect(listener).not.toHaveBeenCalled();
+    unsubscribe();
+  });
+
   it('a refusal does not start the cooldown', async () => {
     const { predictCategory } = await import('./modelClient');
     post.mockRejectedValueOnce(httpError(400)).mockResolvedValueOnce(ok('Health'));
