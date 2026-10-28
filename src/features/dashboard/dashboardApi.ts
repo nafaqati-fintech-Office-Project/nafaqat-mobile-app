@@ -1,6 +1,7 @@
 import { isAxiosError } from 'axios';
 
 import { api } from '@/api/client';
+import { arr, num, obj, str } from '@/api/parse';
 
 export type DateRange = { startDate: string; endDate: string };
 
@@ -9,30 +10,6 @@ export type SpendingEntry = { currency: string; totalSpent: number; transactionC
 export type DailyEntry = { currency: string; days: { date: string; total: number }[] };
 export type BudgetInfo = { currency: string; percentageUsed: number };
 export type Preferences = { currency: string; timezone: string };
-
-// The gateway sends decimals as JSON numbers; accept numeric strings too.
-function num(value: unknown): number {
-  const parsed = typeof value === 'string' ? Number(value) : value;
-  if (typeof parsed !== 'number' || !Number.isFinite(parsed)) throw new Error('Invalid number in response');
-  return parsed;
-}
-
-function str(value: unknown): string {
-  if (typeof value !== 'string') throw new Error('Invalid text in response');
-  return value;
-}
-
-function obj(value: unknown): Record<string, unknown> {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-    throw new Error('Invalid object in response');
-  }
-  return value as Record<string, unknown>;
-}
-
-function arr(value: unknown): unknown[] {
-  if (!Array.isArray(value)) throw new Error('Invalid list in response');
-  return value;
-}
 
 const currencies = (body: unknown) => arr(obj(body).currencies).map(obj);
 

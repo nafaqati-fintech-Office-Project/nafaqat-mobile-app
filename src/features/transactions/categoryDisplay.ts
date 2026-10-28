@@ -27,6 +27,33 @@ const LABELS: Record<string, TranslationKey> = {
   Uncategorized: 'category.uncategorized',
 };
 
+// The services' category codes (their Category enum names) to the app's names.
+const BY_CODE: Record<string, string> = {
+  FOOD_AND_BEVERAGE: 'Food & Beverage',
+  GROCERIES: 'Groceries',
+  CLOTHING_AND_SHOPPING: 'Clothing & Shopping',
+  TRANSPORTATION: 'Transportation',
+  FUEL: 'Fuel',
+  ENTERTAINMENT: 'Entertainment',
+  SUBSCRIPTIONS: 'Subscriptions',
+  HEALTH: 'Health',
+  EDUCATION: 'Education',
+  TRAVEL: 'Travel',
+  UTILITIES: 'Utilities',
+  INVESTMENTS: 'Investments',
+  HOUSING: 'Housing',
+  CHARITY: 'Charity',
+  LOANS_EMI: 'Loans/EMI',
+  SALARY: 'Salary',
+  OTHER_INCOME: 'Other Income',
+  UNCATEGORIZED: 'Uncategorized',
+};
+
+// Returns null for a code the app does not know yet.
+export function categoryFromCode(code: unknown): string | null {
+  return typeof code === 'string' ? (BY_CODE[code] ?? null) : null;
+}
+
 // What the user can pick, in the transaction service's order (GET /api/transactions/categories), so a
 // picked category always syncs. Income, Transfers and Person are set by the app only.
 const SPENDING = [
