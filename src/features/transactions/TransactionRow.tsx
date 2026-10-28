@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
+import { CategoryChip } from './CategoryChip';
 import type { StoredTransaction } from './transactionsRepo';
 import { AppText } from '@/components/AppText';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -21,9 +22,12 @@ export function TransactionRow({ item }: { item: StoredTransaction }) {
         <AppText weight="semibold" style={styles.title} numberOfLines={1}>
           {item.merchant ?? item.bank}
         </AppText>
-        <AppText style={styles.meta} numberOfLines={1}>
-          {`${item.category} · ${date}`}
-        </AppText>
+        <View style={styles.metaRow}>
+          <CategoryChip category={item.category} />
+          <AppText style={styles.meta} numberOfLines={1}>
+            {date}
+          </AppText>
+        </View>
       </View>
       <AppText weight="bold" style={[styles.amount, { color: debit ? colors.danger : colors.success }]}>
         {`${debit ? '-' : '+'}${amount}`}
@@ -42,7 +46,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     ...shadows.card,
   },
-  texts: { flex: 1, gap: spacing.xxs },
+  texts: { flex: 1, gap: spacing.xs },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   title: { fontSize: fontSizes.md, color: colors.textPrimary },
   meta: { fontSize: fontSizes.xs, color: colors.textSecondary },
   amount: { fontSize: fontSizes.sm },
