@@ -11,7 +11,7 @@ type Props = {
   tintSoft: string;
   label: string;
   value: string;
-  changePercent: number;
+  changePercent: number | null;
   goodWhen: 'up' | 'down';
 };
 

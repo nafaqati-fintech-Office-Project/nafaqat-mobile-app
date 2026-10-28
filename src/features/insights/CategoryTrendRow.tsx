@@ -25,7 +25,7 @@ export function CategoryTrendRow({ item, currency }: { item: CategoryTrend; curr
           {labelKey ? t(labelKey) : item.category}
         </AppText>
         <AppText style={styles.meta} numberOfLines={1}>
-          {t('insights.vsLastMonth')}
+          {t(item.changePercent === null ? 'insights.newThisMonth' : 'insights.vsLastMonth')}
         </AppText>
       </View>
       <View style={styles.end}>

@@ -1,6 +1,6 @@
 import type { Insights, MonthAmount } from './types';
 
-// Hardcoded insights for the design pass, until the screen is wired to the reports service.
+// The insights shown in auth bypass, where there is no token to call the reports service with.
 // Months end with the current one so the chart always reads as recent.
 const MONTHLY_SPEND = ['3650', '4100', '3820', '4480', '3900', '3200', '3600', '3450', '3900', '3300', '3750', '4250'];
 
@@ -35,4 +35,6 @@ export const mockInsights: Insights = {
     { merchant: 'SEC', category: 'Utilities', count: 1, amount: '340' },
     { merchant: 'Spotify', category: 'Subscriptions', count: 1, amount: '24.99' },
   ],
+  merchantsState: 'ready',
+  merchantsTruncated: false,
 };

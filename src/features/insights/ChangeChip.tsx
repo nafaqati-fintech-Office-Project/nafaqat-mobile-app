@@ -6,13 +6,15 @@ import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 
 type Props = {
-  percent: number;
+  // null: nothing to compare against, so no chip.
+  percent: number | null;
   // Which direction is good news: savings going up, spending going down.
   goodWhen: 'up' | 'down';
 };
 
 export function ChangeChip({ percent, goodWhen }: Props) {
   const { t } = useLanguage();
+  if (percent === null) return null;
   const label = `${Math.abs(percent)}%`;
 
   if (percent === 0) {
