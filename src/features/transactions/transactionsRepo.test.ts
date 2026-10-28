@@ -30,7 +30,7 @@ const processed = { txn, category: 'Food & Beverage', source: 'lookup' as const 
 
 beforeEach(() => {
   vi.clearAllMocks();
-  db.getFirstAsync.mockResolvedValue({ user_version: 10 });
+  db.getFirstAsync.mockResolvedValue({ user_version: 13 });
 });
 
 describe('getDb migrations', () => {
@@ -56,7 +56,8 @@ describe('getDb migrations', () => {
     const backfill = statements.find((sql) => sql.startsWith('UPDATE transactions SET needs_prediction = 1'));
     expect(backfill).toMatch(/type = 'DEBIT'.*category = 'Uncategorized'.*merchant IS NOT NULL/s);
     expect(statements).not.toContain('ALTER TABLE transactions ADD COLUMN balance TEXT');
-    expect(statements).toContain('PRAGMA user_version = 10');
+    expect(statements).toContain('PRAGMA user_version = 13');
+    expect(statements).toContain('ALTER TABLE transactions ADD COLUMN server_id TEXT');
   });
 
   it('runs no migration when the database is already current', async () => {

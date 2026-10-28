@@ -2,7 +2,9 @@ import { Redirect, Tabs } from 'expo-router';
 
 import { useAuth } from '@/auth/AuthProvider';
 import { Icon, type IconName } from '@/components/Icon';
+import { AUTH_BYPASS } from '@/config/flags';
 import { useRetryPendingPredictions } from '@/features/categorizer/useRetryPendingPredictions';
+import { useTransactionSync } from '@/features/transactions/sync/useTransactionSync';
 import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontFamily, fontSizes, shadows, sizes } from '@/theme';
@@ -19,6 +21,8 @@ export default function TabsLayout() {
   const { status } = useAuth();
   const { t } = useLanguage();
   useRetryPendingPredictions(status === 'authenticated');
+  // Bypass mode has a mock user and no token, so there is no account to sync to.
+  useTransactionSync(status === 'authenticated' && !AUTH_BYPASS);
 
   if (status !== 'authenticated') return <Redirect href="/login" />;
 

@@ -1,6 +1,6 @@
 import { processSms } from './processSms';
 import { readInbox } from './smsReader';
-import { saveTransaction } from '@/features/transactions/transactionsRepo';
+import { emitTransactionsChanged, saveTransaction } from '@/features/transactions/transactionsRepo';
 import { saveIfMissed } from '@/features/transactions/unparsedRepo';
 
 const BATCH_SIZE = 10;
@@ -21,5 +21,7 @@ export async function importHistory(limit: number): Promise<ImportResult> {
       } else if (await saveTransaction(item)) result.saved += 1;
     }
   }
+  // Once for the whole import, not per row.
+  if (result.saved > 0) emitTransactionsChanged();
   return result;
 }

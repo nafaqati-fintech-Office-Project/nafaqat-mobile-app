@@ -69,6 +69,11 @@ const MIGRATIONS = [
     created_at INTEGER NOT NULL,
     synced INTEGER NOT NULL DEFAULT 0
   )`,
+  // Sync to the transaction service. server_id: its id once created. synced_category: the category it
+  // last accepted; a different current category means a PATCH is due. sync_attempts: refusals (4xx) only.
+  'ALTER TABLE transactions ADD COLUMN server_id TEXT',
+  'ALTER TABLE transactions ADD COLUMN synced_category TEXT',
+  'ALTER TABLE transactions ADD COLUMN sync_attempts INTEGER NOT NULL DEFAULT 0',
 ];
 
 let database: Promise<SQLiteDatabase> | null = null;

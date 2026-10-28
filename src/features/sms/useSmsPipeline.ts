@@ -6,7 +6,7 @@ import { processSms } from './processSms';
 import { checkSmsPermission } from './smsPermission';
 import type { SmsMessage } from './smsReader';
 import { ensureNotificationPermission, notifyTransaction } from '@/features/notifications/notify';
-import { saveTransaction } from '@/features/transactions/transactionsRepo';
+import { emitTransactionsChanged, saveTransaction } from '@/features/transactions/transactionsRepo';
 import { saveIfMissed } from '@/features/transactions/unparsedRepo';
 
 const LOG_LIMIT = 20;
@@ -28,7 +28,10 @@ export function useSmsPipeline() {
   const handleSms = useCallback(async (sms: SmsMessage) => {
     const result = await processSms(sms);
     const isNew = result ? await saveTransaction(result).catch(() => true) : false;
-    if (result && isNew) await notifyTransaction(result);
+    if (result && isNew) {
+      emitTransactionsChanged();
+      await notifyTransaction(result);
+    }
     const unparsed = result ? false : await saveIfMissed(sms).catch(() => false);
     const item: LogItem = {
       id: sms.id,
