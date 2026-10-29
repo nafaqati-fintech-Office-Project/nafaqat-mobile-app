@@ -1,42 +1,51 @@
 import { StyleSheet, View } from 'react-native';
 
-import type { SubscriptionSummary } from './subscriptionMath';
+import { priceWentUp, type SubscriptionView } from './subscriptionMath';
 import { AppText } from '@/components/AppText';
 import { Icon, type IconName } from '@/components/Icon';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, shadows, sizes, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
 
-type Insight = { icon: IconName; tint: string; soft: string; text: string };
+type Insight = { key: string; icon: IconName; tint: string; soft: string; text: string };
 
-// Only insights the list itself supports; nothing about other users or usage the app cannot see.
-export function SubscriptionInsights({ summary }: { summary: SubscriptionSummary }) {
+// Only what the subscription service knows: price changes, charges that did not come, and the costliest one.
+export function SubscriptionInsights({ view }: { view: SubscriptionView }) {
   const { language, t } = useLanguage();
-  const money = (amount: string) => formatMoney(amount, summary.currency, language);
+  const money = (amount: string, currency: string) => formatMoney(amount, currency, language);
   const insights: Insight[] = [];
 
-  if (summary.unused.length > 0) {
+  for (const s of view.active.filter(priceWentUp)) {
     insights.push({
-      icon: 'alert',
+      key: `up-${s.id}`,
+      icon: 'arrowUp',
       tint: colors.orange,
       soft: colors.orangeSoft,
-      text: t('subscriptions.insight.unused', { count: String(summary.unused.length) }),
-    });
-    insights.push({
-      icon: 'savings',
-      tint: colors.success,
-      soft: colors.successSoft,
-      text: t('subscriptions.insight.save', { amount: money(summary.unusedPerMonth) }),
+      text: t('subscriptions.insight.priceUp', {
+        name: s.name,
+        from: money(s.previousAmount ?? s.amount, s.currency),
+        to: money(s.amount, s.currency),
+      }),
     });
   }
-  if (summary.biggest) {
+  for (const s of view.active.filter((x) => x.overdue)) {
     insights.push({
+      key: `late-${s.id}`,
+      icon: 'alert',
+      tint: colors.danger,
+      soft: colors.dangerSoft,
+      text: t('subscriptions.insight.overdue', { name: s.name }),
+    });
+  }
+  if (view.biggest) {
+    insights.push({
+      key: 'biggest',
       icon: 'info',
       tint: colors.primary,
       soft: colors.primarySoft,
       text: t('subscriptions.insight.biggest', {
-        name: summary.biggest.name,
-        amount: formatMoney(summary.biggest.amount, summary.biggest.currency, language),
+        name: view.biggest.name,
+        amount: money(view.biggest.monthlyCost, view.biggest.currency),
       }),
     });
   }
@@ -48,7 +57,7 @@ export function SubscriptionInsights({ summary }: { summary: SubscriptionSummary
         {t('subscriptions.insights')}
       </AppText>
       {insights.map((insight) => (
-        <View key={insight.text} style={styles.row}>
+        <View key={insight.key} style={styles.row}>
           <View style={[styles.tile, { backgroundColor: insight.soft }]}>
             <Icon name={insight.icon} color={insight.tint} size={sizes.icon} />
           </View>

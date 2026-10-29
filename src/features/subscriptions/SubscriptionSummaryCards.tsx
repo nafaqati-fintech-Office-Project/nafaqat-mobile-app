@@ -1,18 +1,18 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import type { SubscriptionSummary } from './subscriptionMath';
+import type { SubscriptionView } from './subscriptionMath';
 import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, shadows, sizes, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
 
-type Props = { summary: SubscriptionSummary; showingUnused: boolean; onFindUnused: () => void };
+type Props = { view: SubscriptionView; showingAttention: boolean; onToggleAttention: () => void };
 
-// "You're paying ... / month" and "Potential annual saving", as in the design reference.
-export function SubscriptionSummaryCards({ summary, showingUnused, onFindUnused }: Props) {
+// "You're paying ... / month" and what is due in the next 30 days, as the subscription service reports them.
+export function SubscriptionSummaryCards({ view, showingAttention, onToggleAttention }: Props) {
   const { language, t } = useLanguage();
-  const money = (amount: string) => formatMoney(amount, summary.currency, language);
+  const money = (amount: string) => formatMoney(amount, view.currency, language);
 
   return (
     <View style={styles.cards}>
@@ -23,38 +23,43 @@ export function SubscriptionSummaryCards({ summary, showingUnused, onFindUnused 
         <View style={styles.texts}>
           <AppText style={styles.payingLabel}>{t('subscriptions.youArePaying')}</AppText>
           <AppText weight="bold" style={styles.payingAmount} numberOfLines={1} adjustsFontSizeToFit>
-            {`${money(summary.perMonth)}${t('subscriptions.perMonth')}`}
+            {`${money(view.perMonth)}${t('subscriptions.perMonth')}`}
           </AppText>
           <AppText style={styles.payingLabel}>
-            {t('subscriptions.activeCount', { count: String(summary.active.length) })}
+            {t('subscriptions.activeCount', { count: String(view.active.length) })}
           </AppText>
         </View>
       </View>
 
-      {summary.unused.length > 0 && (
-        <View style={[styles.card, styles.saving]}>
-          <View style={styles.savingTop}>
-            <View style={styles.savingTile}>
-              <Icon name="savings" color={colors.orange} size={sizes.iconLg} />
-            </View>
-            <View style={styles.texts}>
-              <AppText style={styles.savingLabel}>{t('subscriptions.potentialSaving')}</AppText>
-              <AppText weight="bold" style={styles.savingAmount}>
-                {money(summary.potentialYearly)}
-              </AppText>
-            </View>
+      <View style={[styles.card, styles.due]}>
+        <View style={styles.dueTop}>
+          <View style={styles.dueTile}>
+            <Icon name="budget" color={colors.orange} size={sizes.iconLg} />
           </View>
+          <View style={styles.texts}>
+            <AppText style={styles.dueLabel}>{t('subscriptions.dueSoon')}</AppText>
+            <AppText weight="bold" style={styles.dueAmount}>
+              {money(view.dueSoon.total)}
+            </AppText>
+            <AppText style={styles.dueLabel}>
+              {t('subscriptions.dueCount', { count: String(view.dueSoon.count) })}
+            </AppText>
+          </View>
+        </View>
+        {view.attention.length > 0 && (
           <Pressable
-            onPress={onFindUnused}
+            onPress={onToggleAttention}
             accessibilityRole="button"
-            accessibilityState={{ selected: showingUnused }}
-            style={[styles.findButton, showingUnused && styles.findButtonOn]}>
-            <AppText weight="semibold" style={[styles.findText, showingUnused && styles.findTextOn]}>
-              {t(showingUnused ? 'subscriptions.showAll' : 'subscriptions.findUnused')}
+            accessibilityState={{ selected: showingAttention }}
+            style={[styles.button, showingAttention && styles.buttonOn]}>
+            <AppText weight="semibold" style={[styles.buttonText, showingAttention && styles.buttonTextOn]}>
+              {showingAttention
+                ? t('subscriptions.showAll')
+                : t('subscriptions.showAttention', { count: String(view.attention.length) })}
             </AppText>
           </Pressable>
-        </View>
-      )}
+        )}
+      </View>
     </View>
   );
 }
@@ -74,9 +79,9 @@ const styles = StyleSheet.create({
   texts: { flex: 1, gap: spacing.xxs },
   payingLabel: { fontSize: fontSizes.xs, color: colors.white, opacity: 0.85 },
   payingAmount: { fontSize: fontSizes.xl, color: colors.white },
-  saving: { gap: spacing.md, backgroundColor: colors.white },
-  savingTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  savingTile: {
+  due: { gap: spacing.md, backgroundColor: colors.white },
+  dueTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  dueTile: {
     width: sizes.iconTile,
     height: sizes.iconTile,
     borderRadius: radius.md,
@@ -84,9 +89,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.orangeSoft,
   },
-  savingLabel: { fontSize: fontSizes.xs, color: colors.textSecondary },
-  savingAmount: { fontSize: fontSizes.lg, color: colors.danger },
-  findButton: {
+  dueLabel: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  dueAmount: { fontSize: fontSizes.lg, color: colors.textPrimary },
+  button: {
     minHeight: sizes.touchMin,
     alignItems: 'center',
     justifyContent: 'center',
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.primary,
   },
-  findButtonOn: { backgroundColor: colors.primary },
-  findText: { fontSize: fontSizes.sm, color: colors.primary },
-  findTextOn: { color: colors.white },
+  buttonOn: { backgroundColor: colors.primary },
+  buttonText: { fontSize: fontSizes.sm, color: colors.primary },
+  buttonTextOn: { color: colors.white },
 });

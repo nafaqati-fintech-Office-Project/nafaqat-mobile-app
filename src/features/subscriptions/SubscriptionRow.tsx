@@ -1,37 +1,63 @@
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
-import type { Subscription, SubscriptionTone } from './types';
+import { priceWentUp } from './subscriptionMath';
+import type { BillingCycle, Subscription } from './types';
 import { AppText } from '@/components/AppText';
-import { categoryLabelKey } from '@/features/transactions/categoryDisplay';
 import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, lineHeights, radius, sizes, spacing } from '@/theme';
 import { intlLocale } from '@/utils/intl';
 import { formatMoney } from '@/utils/money';
 
-export const TONES: Record<SubscriptionTone, { tint: string; soft: string }> = {
-  red: { tint: colors.danger, soft: colors.dangerSoft },
-  green: { tint: colors.success, soft: colors.successSoft },
-  blue: { tint: colors.primary, soft: colors.primarySoft },
-  violet: { tint: colors.violet, soft: colors.violetSoft },
-  orange: { tint: colors.orange, soft: colors.orangeSoft },
+// Letter tiles instead of brand logos; the colour follows the name so it stays the same between visits.
+const TONES = [
+  { tint: colors.danger, soft: colors.dangerSoft },
+  { tint: colors.success, soft: colors.successSoft },
+  { tint: colors.primary, soft: colors.primarySoft },
+  { tint: colors.violet, soft: colors.violetSoft },
+  { tint: colors.orange, soft: colors.orangeSoft },
+];
+const toneOf = (name: string) => TONES[[...name].reduce((sum, c) => sum + c.charCodeAt(0), 0) % TONES.length];
+
+export const CYCLE_LABEL: Record<BillingCycle, TranslationKey> = {
+  WEEKLY: 'subscriptions.cycle.weekly',
+  MONTHLY: 'subscriptions.cycle.monthly',
+  QUARTERLY: 'subscriptions.cycle.quarterly',
+  YEARLY: 'subscriptions.cycle.yearly',
 };
 
-const CYCLE: Record<Subscription['cycle'], TranslationKey> = {
+const PER: Record<BillingCycle, TranslationKey> = {
   WEEKLY: 'subscriptions.perWeek',
   MONTHLY: 'subscriptions.perMonth',
+  QUARTERLY: 'subscriptions.perQuarter',
   YEARLY: 'subscriptions.perYear',
 };
 
-export function SubscriptionRow({ item }: { item: Subscription }) {
+type Props = { item: Subscription; onPress?: () => void; busy?: boolean };
+
+export function SubscriptionRow({ item, onPress, busy = false }: Props) {
   const { language, t } = useLanguage();
-  const tone = TONES[item.tone];
-  const labelKey = categoryLabelKey(item.category);
-  const day = new Intl.DateTimeFormat(intlLocale(language), { day: 'numeric', month: 'short' }).format(item.date);
-  const when = t(item.status === 'active' ? 'subscriptions.next' : 'subscriptions.endedOn', { date: day });
+  const tone = toneOf(item.name);
+  const day = (date: Date) => new Intl.DateTimeFormat(intlLocale(language), { day: 'numeric', month: 'short' }).format(date);
+  const money = (amount: string) => formatMoney(amount, item.currency, language);
+  const raised = priceWentUp(item);
+
+  const when =
+    item.status === 'ENDED'
+      ? item.lastChargeDate && t('subscriptions.lastCharge', { date: day(item.lastChargeDate) })
+      : item.nextDate &&
+        t(item.overdue ? 'subscriptions.expected' : 'subscriptions.next', { date: day(item.nextDate) });
+  const meta = [t(CYCLE_LABEL[item.cycle]), item.source === 'MANUAL' ? t('subscriptions.addedByYou') : null]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
-    <View style={styles.row}>
+    <Pressable
+      onPress={onPress}
+      disabled={!onPress || busy}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityHint={onPress ? t('subscriptions.rowHint') : undefined}
+      style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       <View style={[styles.tile, { backgroundColor: tone.soft }]}>
         <AppText weight="bold" style={[styles.letter, { color: tone.tint }]}>
           {item.name.charAt(0).toUpperCase()}
@@ -41,46 +67,55 @@ export function SubscriptionRow({ item }: { item: Subscription }) {
         <AppText weight="semibold" style={styles.name} numberOfLines={1}>
           {item.name}
         </AppText>
-        <View style={styles.metaRow}>
-          <AppText style={styles.meta} numberOfLines={1}>
-            {labelKey ? t(labelKey) : item.category}
-          </AppText>
-          {item.unused && item.status === 'active' && (
-            <View style={styles.unused}>
-              <AppText weight="semibold" style={styles.unusedText}>
-                {t('subscriptions.unusedTag')}
-              </AppText>
-            </View>
-          )}
-        </View>
+        <AppText style={styles.meta} numberOfLines={1}>
+          {meta}
+        </AppText>
+        {(item.overdue || raised) && item.status === 'CONFIRMED' && (
+          <View style={styles.tags}>
+            {item.overdue && (
+              <View style={[styles.tag, { backgroundColor: colors.dangerSoft }]}>
+                <AppText weight="semibold" style={[styles.tagText, { color: colors.danger }]}>
+                  {t('subscriptions.overdueTag')}
+                </AppText>
+              </View>
+            )}
+            {raised && item.previousAmount && (
+              <View style={[styles.tag, { backgroundColor: colors.orangeSoft }]}>
+                <AppText weight="semibold" style={[styles.tagText, { color: colors.orange }]}>
+                  {t('subscriptions.priceUpTag', { amount: money(item.previousAmount) })}
+                </AppText>
+              </View>
+            )}
+          </View>
+        )}
       </View>
       <View style={styles.end}>
-        <AppText weight="bold" style={[styles.amount, item.status === 'cancelled' && styles.cancelled]}>
-          {`${formatMoney(item.amount, item.currency, language)}${t(CYCLE[item.cycle])}`}
-        </AppText>
-        <AppText style={styles.meta}>{when}</AppText>
+        {busy ? (
+          <ActivityIndicator color={colors.primary} />
+        ) : (
+          <AppText weight="bold" style={[styles.amount, item.status === 'ENDED' && styles.ended]}>
+            {`${money(item.amount)}${t(PER[item.cycle])}`}
+          </AppText>
+        )}
+        {when ? <AppText style={[styles.meta, item.overdue && styles.overdue]}>{when}</AppText> : null}
       </View>
-    </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.md },
-  tile: {
-    width: sizes.iconTile,
-    height: sizes.iconTile,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  pressed: { opacity: 0.6 },
+  tile: { width: sizes.iconTile, height: sizes.iconTile, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   letter: { fontSize: fontSizes.md },
   texts: { flex: 1, gap: spacing.xxs },
   name: { fontSize: fontSizes.sm, color: colors.textPrimary },
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   meta: { fontSize: fontSizes.xs, color: colors.textSecondary },
-  unused: { paddingHorizontal: spacing.sm, borderRadius: radius.pill, backgroundColor: colors.orangeSoft },
-  unusedText: { fontSize: fontSizes.xxs, lineHeight: lineHeights.xs, color: colors.orange },
+  overdue: { color: colors.danger },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginTop: spacing.xxs },
+  tag: { paddingHorizontal: spacing.sm, borderRadius: radius.pill },
+  tagText: { fontSize: fontSizes.xxs, lineHeight: lineHeights.xs },
   end: { alignItems: 'flex-end', gap: spacing.xxs },
   amount: { fontSize: fontSizes.sm, color: colors.textPrimary },
-  cancelled: { color: colors.textSecondary, textDecorationLine: 'line-through' },
+  ended: { color: colors.textSecondary, textDecorationLine: 'line-through' },
 });

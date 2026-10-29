@@ -1,7 +1,8 @@
-import type { Subscription } from './types';
+import { monthlyCostOf } from './subscriptionMath';
+import type { BillingCycle, Subscription } from './types';
 
-// Sample subscriptions for the screen until it is connected to the subscription service (#26).
-// Dates are relative to today so the "Next" dates always lie ahead.
+// Shown in auth bypass, where there is no token to call the subscription service with.
+// Dates are relative to today so "next" dates lie ahead and one charge is overdue.
 const inDays = (days: number) => {
   const date = new Date();
   date.setHours(0, 0, 0, 0);
@@ -9,52 +10,28 @@ const inDays = (days: number) => {
   return date;
 };
 
-const base = { currency: 'SAR', cycle: 'MONTHLY' as const, status: 'active' as const, unused: false };
+type Sample = Pick<Subscription, 'id' | 'name' | 'amount' | 'status'> &
+  Partial<Pick<Subscription, 'source' | 'previousAmount' | 'overdue'>> & { cycle?: BillingCycle; next: number | null; last: number };
 
-export const mockSubscriptions: Subscription[] = [
-  { ...base, id: 's1', name: 'Netflix', category: 'Entertainment', amount: '55.00', date: inDays(3), tone: 'red' },
-  { ...base, id: 's2', name: 'Spotify', category: 'Subscriptions', amount: '24.99', date: inDays(6), tone: 'green' },
-  { ...base, id: 's3', name: 'Microsoft 365', category: 'Subscriptions', amount: '21.00', date: inDays(9), tone: 'blue' },
-  {
-    ...base,
-    id: 's4',
-    name: 'YouTube Premium',
-    category: 'Entertainment',
-    amount: '39.00',
-    date: inDays(11),
-    unused: true,
-    tone: 'red',
-  },
-  { ...base, id: 's5', name: 'iCloud', category: 'Subscriptions', amount: '12.99', date: inDays(14), tone: 'blue' },
-  {
-    ...base,
-    id: 's6',
-    name: 'Gym Membership',
-    category: 'Health',
-    amount: '99.00',
-    date: inDays(20),
-    unused: true,
-    tone: 'violet',
-  },
-  {
-    ...base,
-    id: 's7',
-    name: 'Shahid VIP',
-    category: 'Entertainment',
-    amount: '29.99',
-    status: 'cancelled',
-    date: inDays(-18),
-    tone: 'orange',
-  },
-  {
-    ...base,
-    id: 's8',
-    name: 'Anghami Plus',
-    category: 'Subscriptions',
-    amount: '199.00',
-    cycle: 'YEARLY',
-    status: 'cancelled',
-    date: inDays(-45),
-    tone: 'violet',
-  },
+const sample = ({ next, last, cycle = 'MONTHLY', ...rest }: Sample): Subscription => ({
+  currency: 'SAR',
+  cycle,
+  source: 'DETECTED',
+  previousAmount: null,
+  overdue: false,
+  ...rest,
+  lastChargeDate: inDays(last),
+  nextDate: next === null ? null : inDays(next),
+  monthlyCost: monthlyCostOf(rest.amount, cycle, 'SAR'),
+});
+
+export const mockSubscriptions = (): Subscription[] => [
+  sample({ id: 's0', name: 'Shahid VIP', amount: '29.99', status: 'DETECTED', next: 5, last: -25 }),
+  sample({ id: 's1', name: 'Netflix', amount: '55.00', status: 'CONFIRMED', next: 3, last: -27 }),
+  sample({ id: 's2', name: 'Spotify', amount: '24.99', previousAmount: '21.99', status: 'CONFIRMED', next: 6, last: -24 }),
+  sample({ id: 's3', name: 'Microsoft 365', amount: '21.00', status: 'CONFIRMED', next: 9, last: -21 }),
+  sample({ id: 's4', name: 'YouTube Premium', amount: '39.00', overdue: true, status: 'CONFIRMED', next: -4, last: -34 }),
+  sample({ id: 's5', name: 'iCloud', amount: '12.99', status: 'CONFIRMED', next: 14, last: -16 }),
+  sample({ id: 's6', name: 'Gym Membership', amount: '99.00', source: 'MANUAL', status: 'CONFIRMED', next: 20, last: -10 }),
+  sample({ id: 's7', name: 'Anghami Plus', amount: '199.00', cycle: 'YEARLY', status: 'ENDED', next: null, last: -45 }),
 ];
