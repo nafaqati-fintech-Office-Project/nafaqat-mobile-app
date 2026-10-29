@@ -69,7 +69,17 @@ export default function BudgetRoute() {
         <AppText weight="bold" style={styles.title}>
           {t('budget.title')}
         </AppText>
-        <View style={styles.back} />
+        {budget ? (
+          <Pressable
+            onPress={() => router.push('/budget-edit')}
+            accessibilityRole="button"
+            accessibilityLabel={t('budget.edit')}
+            style={styles.back}>
+            <Icon name="pencil" color={colors.textPrimary} size={sizes.iconLg} />
+          </Pressable>
+        ) : (
+          <View style={styles.back} />
+        )}
       </View>
       <ScrollView
         ref={scrollRef}
@@ -94,6 +104,9 @@ export default function BudgetRoute() {
               {t('budget.empty.title')}
             </AppText>
             <AppText style={styles.messageBody}>{t('budget.empty.body')}</AppText>
+            <View style={styles.createButton}>
+              <PrimaryButton label={t('budget.create')} onPress={() => router.push('/budget-edit')} />
+            </View>
           </View>
         ) : (
           <>
@@ -154,4 +167,5 @@ const styles = StyleSheet.create({
   messageTitle: { fontSize: fontSizes.md, color: colors.textPrimary, textAlign: 'center' },
   messageBody: { fontSize: fontSizes.sm, color: colors.textSecondary, textAlign: 'center' },
   section: { fontSize: fontSizes.md, color: colors.textPrimary, marginBottom: spacing.xs },
+  createButton: { alignSelf: 'stretch', marginTop: spacing.sm },
 });

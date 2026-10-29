@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { fetchCurrentBudget, parseBudget } from './budgetApi';
+import { archiveBudget, createBudget, fetchCurrentBudget, parseBudget, updateBudget } from './budgetApi';
+import { saveProblem } from './budgetService';
 
-const get = vi.hoisted(() => vi.fn());
-vi.mock('@/api/client', () => ({ api: { get } }));
+const { get, post, put, patch } = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), put: vi.fn(), patch: vi.fn() }));
+vi.mock('@/api/client', () => ({ api: { get, post, put, patch } }));
+vi.mock('@/config/flags', () => ({ AUTH_BYPASS: false }));
 
 const status = (code: number) =>
   Object.assign(new Error(`HTTP ${code}`), { isAxiosError: true, response: { status: code } });
@@ -108,5 +110,46 @@ describe('fetchCurrentBudget', () => {
   it('lets other failures through', async () => {
     get.mockRejectedValue(status(500));
     await expect(fetchCurrentBudget()).rejects.toThrow('HTTP 500');
+  });
+});
+
+describe('saving a budget', () => {
+  const limits = { totalLimit: 5000, categoryLimits: [{ category: 'GROCERIES', limitAmount: 1500 }] };
+
+  it('creates the month with the user, period, currency and time zone', async () => {
+    post.mockResolvedValue({ data: body() });
+    const newBudget = {
+      ...limits,
+      userId: 'u1',
+      periodStart: '2026-10-01',
+      periodEnd: '2026-10-31',
+      currency: 'SAR',
+      timeZone: 'Asia/Riyadh',
+    };
+    expect((await createBudget(newBudget)).id).toBe('b7c1');
+    expect(post).toHaveBeenCalledWith('/api/budgets', newBudget);
+  });
+
+  it('replaces the limits of a budget, and archives one', async () => {
+    put.mockResolvedValue({ data: body() });
+    patch.mockResolvedValue({ data: null });
+    await updateBudget('b/1', limits);
+    await archiveBudget('b7c1');
+    expect(put).toHaveBeenCalledWith('/api/budgets/b%2F1', limits);
+    expect(patch).toHaveBeenCalledWith('/api/budgets/b7c1/archive');
+  });
+});
+
+describe('saveProblem', () => {
+  const refused = (code: number, message: string) =>
+    Object.assign(new Error(`HTTP ${code}`), { isAxiosError: true, response: { status: code, data: { message } } });
+
+  it('tells the budget service refusals apart', () => {
+    expect(saveProblem(refused(409, 'An active budget already exists for this month'))).toBe('exists');
+    expect(saveProblem(refused(409, 'Archived budgets cannot be modified'))).toBe('archived');
+    expect(saveProblem(refused(409, 'The budget was modified concurrently; please retry'))).toBe('unknown');
+    expect(saveProblem(refused(400, 'Sum of category limits exceeds the total budget limit'))).toBe('overTotal');
+    expect(saveProblem(Object.assign(new Error('Network Error'), { isAxiosError: true }))).toBe('network');
+    expect(saveProblem(new Error('boom'))).toBe('unknown');
   });
 });

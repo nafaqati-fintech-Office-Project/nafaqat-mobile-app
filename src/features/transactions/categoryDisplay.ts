@@ -54,6 +54,11 @@ export function categoryFromCode(code: unknown): string | null {
   return typeof code === 'string' ? (BY_CODE[code] ?? null) : null;
 }
 
+// The service's code for one of the app's category names; null for the app's own (Transfers, Person, Income).
+export function codeForCategory(category: string): string | null {
+  return Object.entries(BY_CODE).find(([, name]) => name === category)?.[0] ?? null;
+}
+
 // What the user can pick, in the transaction service's order (GET /api/transactions/categories), so a
 // picked category always syncs. Income, Transfers and Person are set by the app only.
 const SPENDING = [

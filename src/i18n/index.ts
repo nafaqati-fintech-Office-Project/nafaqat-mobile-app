@@ -13,4 +13,8 @@ export const setCurrentLanguage = (language: Language) => {
   current = language;
 };
 
-export const t = (key: TranslationKey): string => dictionaries[current][key];
+// params fill {name} placeholders in the text; a placeholder without a value is left as written.
+export const t = (key: TranslationKey, params?: Record<string, string>): string => {
+  const text = dictionaries[current][key];
+  return params ? text.replace(/\{(\w+)\}/g, (match, name: string) => params[name] ?? match) : text;
+};
