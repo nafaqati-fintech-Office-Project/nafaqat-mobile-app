@@ -45,6 +45,7 @@ export function StatGrid({ data }: { data: DashboardData }) {
         tintSoft={colors.orangeSoft}
         label={t('dashboard.subscriptions')}
         value={subscriptions}
+        onPress={() => router.push('/subscriptions')}
       />
       <StatCard
         icon="savings"

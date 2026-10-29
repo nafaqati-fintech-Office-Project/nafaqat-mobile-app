@@ -5,7 +5,8 @@ import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, spacing } from '@/theme';
 
-export type SegmentedOption<T extends string> = { value: T; label: TranslationKey };
+// count, when given, shows after the label: "Active (6)".
+export type SegmentedOption<T extends string> = { value: T; label: TranslationKey; count?: number };
 
 type Props<T extends string> = {
   options: SegmentedOption<T>[];
@@ -29,7 +30,7 @@ export function SegmentedTabs<T extends string>({ options, value, onChange }: Pr
             accessibilityState={{ selected: active }}
             style={[styles.tab, active && styles.tabActive]}>
             <AppText weight="medium" style={[styles.label, active && styles.labelActive]}>
-              {t(option.label)}
+              {option.count === undefined ? t(option.label) : `${t(option.label)} (${option.count})`}
             </AppText>
           </Pressable>
         );
