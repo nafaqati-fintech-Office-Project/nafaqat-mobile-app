@@ -1,13 +1,17 @@
+import { useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useCallback, useRef } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
+import { CategoryBreakdownCard } from '@/features/dashboard/CategoryBreakdownCard';
 import { DashboardHeader } from '@/features/dashboard/DashboardHeader';
 import { DashboardSkeleton } from '@/features/dashboard/DashboardSkeleton';
 import { Greeting } from '@/features/dashboard/Greeting';
+import { RecentTransactionsCard } from '@/features/dashboard/RecentTransactionsCard';
 import { SpendingCard } from '@/features/dashboard/SpendingCard';
 import { StatGrid } from '@/features/dashboard/StatGrid';
 import { SmsDevEntry } from '@/features/sms/SmsDevEntry';
@@ -19,9 +23,18 @@ import { colors, fontSizes, spacing } from '@/theme';
 export default function DashboardRoute() {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const { data, loading, error, refresh } = useDashboard();
+  const { data, loading, error, refresh, reloadSilently } = useDashboard();
 
   useExitOnBack();
+
+  // Coming back to the tab picks up transactions synced meanwhile; the first focus is the initial load.
+  const focused = useRef(false);
+  useFocusEffect(
+    useCallback(() => {
+      if (focused.current) void reloadSilently();
+      focused.current = true;
+    }, [reloadSilently]),
+  );
 
   return (
     <SafeAreaView edges={['top']} style={styles.screen}>
@@ -37,6 +50,8 @@ export default function DashboardRoute() {
           <>
             <SpendingCard data={data} />
             <StatGrid data={data} />
+            <CategoryBreakdownCard data={data} />
+            <RecentTransactionsCard data={data} />
           </>
         ) : error ? (
           <View style={styles.error}>

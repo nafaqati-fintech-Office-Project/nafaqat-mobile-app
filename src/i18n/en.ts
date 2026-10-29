@@ -116,6 +116,12 @@ export const en = {
   'dashboard.changeUp': 'Spending up',
   'dashboard.avatar': 'Profile',
   'dashboard.smsDev': 'SMS reader (dev only)',
+  'dashboard.byCategory': 'Spending by category',
+  'dashboard.recent': 'Recent transactions',
+  'dashboard.seeAll': 'See all',
+  'dashboard.noSpendingMonth': 'No spending yet this month',
+  'dashboard.noTransactions': 'No transactions yet',
+  'dashboard.sectionUnavailable': 'Could not load this right now',
   'sms.title': 'Read your bank SMS',
   'sms.body':
     'Nafaqati reads bank messages on this device to track your spending automatically. In this version messages stay on your phone and are not uploaded.',

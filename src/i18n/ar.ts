@@ -117,6 +117,12 @@ export const ar: Record<TranslationKey, string> = {
   'dashboard.changeUp': 'ارتفاع الإنفاق',
   'dashboard.avatar': 'الملف الشخصي',
   'dashboard.smsDev': 'قارئ الرسائل (للتطوير فقط)',
+  'dashboard.byCategory': 'الإنفاق حسب الفئة',
+  'dashboard.recent': 'أحدث المعاملات',
+  'dashboard.seeAll': 'عرض الكل',
+  'dashboard.noSpendingMonth': 'لا يوجد إنفاق هذا الشهر بعد',
+  'dashboard.noTransactions': 'لا توجد معاملات بعد',
+  'dashboard.sectionUnavailable': 'تعذّر التحميل الآن',
   'sms.title': 'قراءة رسائل البنك',
   'sms.body':
     'يقرأ نفقاتي رسائل البنك على هذا الجهاز لتتبع إنفاقك تلقائيًا. في هذا الإصدار تبقى الرسائل على هاتفك ولا يتم رفعها.',

@@ -12,12 +12,15 @@ import {
   deviceTimeZone,
   monthRange,
   previousMonth,
+  RECENT_COUNT,
   todayIn,
   weekDates,
 } from './dashboardBuilder';
 import { mockDashboard } from './mock';
 import type { DashboardData, SectionState } from './types';
 import { AUTH_BYPASS, DASHBOARD_MOCK_FAIL } from '@/config/flags';
+import { getMonthlyComparison } from '@/features/insights/insightsApi';
+import { fetchTransactionPage } from '@/features/transactions/transactionsApi';
 
 const MOCK_DELAY_MS = 500;
 
@@ -50,10 +53,13 @@ export async function getDashboard(): Promise<DashboardData> {
     getDailySpending({ startDate: week[0], endDate: week[6] }, timeZone),
   ]);
 
-  // Optional tiles: each one falls back to "Coming soon" on its own.
-  const [budgetResult, subscriptionsResult] = await Promise.allSettled([
+  // Optional sections: each one falls back on its own ("Coming soon" tiles, a note in the card).
+  const month = `${period.year}-${String(period.month).padStart(2, '0')}`;
+  const [budgetResult, subscriptionsResult, comparisonResult, recentResult] = await Promise.allSettled([
     getCurrentBudget(),
     getActiveSubscriptionCount(),
+    getMonthlyComparison(month, timeZone),
+    fetchTransactionPage({ filter: 'all', search: '', page: 0, size: RECENT_COUNT }),
   ]);
   const state = (result: PromiseSettledResult<unknown>): SectionState =>
     result.status === 'fulfilled' ? 'ready' : 'unavailable';
@@ -73,6 +79,14 @@ export async function getDashboard(): Promise<DashboardData> {
     subscriptions: {
       state: state(subscriptionsResult),
       count: subscriptionsResult.status === 'fulfilled' ? subscriptionsResult.value : 0,
+    },
+    comparison: {
+      state: state(comparisonResult),
+      rows: comparisonResult.status === 'fulfilled' ? comparisonResult.value : [],
+    },
+    recent: {
+      state: state(recentResult),
+      items: recentResult.status === 'fulfilled' ? recentResult.value.items : [],
     },
   });
 }

@@ -1,6 +1,13 @@
 import type { DailyEntry, DateRange, IncomeExpenses, SpendingEntry } from './dashboardApi';
-import type { DashboardData, SectionState, WeeklyAmount } from './types';
+import type { CategoryShare, DashboardData, SectionState, WeeklyAmount } from './types';
+import type { CurrencyComparison } from '@/features/insights/insightsApi';
+import { categoryFromCode } from '@/features/transactions/categoryDisplay';
+import type { TransactionItem } from '@/features/transactions/transactionsApi';
 import { currencyDecimals } from '@/utils/money';
+
+// Categories the dashboard lists; the rest are on the Insights tab.
+export const TOP_CATEGORIES = 5;
+export const RECENT_COUNT = 5;
 
 export type DateParts = { year: number; month: number; day: number }; // month is 1-12
 
@@ -84,7 +91,25 @@ export type BuildInput = {
   week: string[];
   budget: { state: SectionState; percent: number | null };
   subscriptions: { state: SectionState; count: number };
+  comparison: { state: SectionState; rows: CurrencyComparison[] };
+  recent: { state: SectionState; items: TransactionItem[] };
 };
+
+// This month's spending per category in the currency (the report sends them largest first).
+export function categoryShares(comparison: CurrencyComparison[], currency: string): CategoryShare[] {
+  const categories = (comparison.find((c) => c.currency === currency)?.current.categories ?? []).filter(
+    (c) => c.total > 0,
+  );
+  const total = categories.reduce((sum, c) => sum + c.total, 0);
+  return [...categories]
+    .sort((a, b) => b.total - a.total)
+    .slice(0, TOP_CATEGORIES)
+    .map((c) => ({
+      category: categoryFromCode(c.code) ?? c.label,
+      amount: amount(c.total, currency),
+      percent: Math.round((c.total / total) * 100),
+    }));
+}
 
 export function buildDashboard(input: BuildInput): DashboardData {
   const currency = pickCurrency(input.preferredCurrency, input.current, input.previous);
@@ -113,5 +138,9 @@ export function buildDashboard(input: BuildInput): DashboardData {
     activeSubscriptions: input.subscriptions.count,
     subscriptionsState: input.subscriptions.state,
     savings: amount(current?.net ?? 0, currency),
+    categories: categoryShares(input.comparison.rows, currency),
+    categoriesState: input.comparison.state,
+    recent: input.recent.items.slice(0, RECENT_COUNT),
+    recentState: input.recent.state,
   };
 }

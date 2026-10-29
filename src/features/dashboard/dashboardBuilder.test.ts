@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   buildDashboard,
+  categoryShares,
   changePercent,
   monthRange,
   pickCurrency,
@@ -36,7 +37,34 @@ const base: BuildInput = {
   week: weekDates({ year: 2026, month: 10, day: 27 }),
   budget: { state: 'ready', percent: 64.6 },
   subscriptions: { state: 'ready', count: 3 },
+  comparison: { state: 'ready', rows: [] },
+  recent: { state: 'ready', items: [] },
 };
+
+const totals = (categories: { code: string | null; label: string; total: number }[]) => ({
+  income: 0,
+  expenses: categories.reduce((sum, c) => sum + c.total, 0),
+  net: 0,
+  categories,
+});
+
+const comparison = (currency: string, categories: { code: string | null; label: string; total: number }[]) => ({
+  currency,
+  current: totals(categories),
+  previous: totals([]),
+  netChangePercent: null,
+  categoryChanges: [],
+});
+
+const txn = (id: number) => ({
+  id: String(id),
+  merchant: `Shop ${id}`,
+  category: 'Groceries',
+  type: 'DEBIT' as const,
+  amount: '10.00',
+  currency: 'PKR',
+  date: new Date(2026, 9, 28),
+});
 
 describe('dates', () => {
   it('gives the Monday-to-Sunday week that contains today', () => {
@@ -161,5 +189,63 @@ describe('buildDashboard', () => {
     });
     expect(data.totalSpending).toBe('4250.00');
     expect(data.transactionCount).toBe(12);
+  });
+});
+
+describe('categoryShares', () => {
+  it('lists the largest categories with their share of the month, in app names', () => {
+    const rows = [
+      comparison('PKR', [
+        { code: 'HOUSING', label: 'Housing', total: 500 },
+        { code: 'GROCERIES', label: 'Groceries', total: 300 },
+        { code: 'UNCATEGORIZED', label: 'Uncategorized', total: 200 },
+      ]),
+    ];
+    expect(categoryShares(rows, 'PKR')).toEqual([
+      { category: 'Housing', amount: '500.00', percent: 50 },
+      { category: 'Groceries', amount: '300.00', percent: 30 },
+      { category: 'Uncategorized', amount: '200.00', percent: 20 },
+    ]);
+  });
+
+  it('keeps the top five, largest first, sharing out of the whole month', () => {
+    const many = [10, 60, 20, 5, 40, 15, 50].map((total, i) => ({ code: null, label: `Cat ${i}`, total }));
+    const shares = categoryShares([comparison('PKR', many)], 'PKR');
+    expect(shares.map((s) => s.category)).toEqual(['Cat 1', 'Cat 6', 'Cat 4', 'Cat 2', 'Cat 5']);
+    expect(shares[0].percent).toBe(30); // 60 of 200
+  });
+
+  it('only uses the dashboard currency and skips empty categories', () => {
+    const rows = [
+      comparison('SAR', [{ code: 'FUEL', label: 'Fuel', total: 999 }]),
+      comparison('PKR', [
+        { code: 'FUEL', label: 'Fuel', total: 100 },
+        { code: 'TRAVEL', label: 'Travel', total: 0 },
+      ]),
+    ];
+    expect(categoryShares(rows, 'PKR')).toEqual([{ category: 'Fuel', amount: '100.00', percent: 100 }]);
+    expect(categoryShares(rows, 'AED')).toEqual([]);
+  });
+});
+
+describe('buildDashboard sections', () => {
+  it('adds the categories and the newest transactions', () => {
+    const data = buildDashboard({
+      ...base,
+      comparison: { state: 'ready', rows: [comparison('PKR', [{ code: 'FUEL', label: 'Fuel', total: 100 }])] },
+      recent: { state: 'ready', items: [1, 2, 3, 4, 5, 6, 7].map(txn) },
+    });
+    expect(data.categories).toHaveLength(1);
+    expect(data.recent.map((t) => t.id)).toEqual(['1', '2', '3', '4', '5']);
+    expect(data).toMatchObject({ categoriesState: 'ready', recentState: 'ready' });
+  });
+
+  it('marks a section that could not be loaded', () => {
+    const data = buildDashboard({
+      ...base,
+      comparison: { state: 'unavailable', rows: [] },
+      recent: { state: 'unavailable', items: [] },
+    });
+    expect(data).toMatchObject({ categories: [], categoriesState: 'unavailable', recent: [], recentState: 'unavailable' });
   });
 });

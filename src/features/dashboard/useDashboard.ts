@@ -20,6 +20,16 @@ export function useDashboard() {
     }
   }, []);
 
+  // No spinner, and a failure keeps what is on screen: used when the tab is shown again.
+  const reloadSilently = useCallback(async () => {
+    try {
+      setData(await getDashboard());
+      setError(false);
+    } catch {
+      // the next pull to refresh shows the error
+    }
+  }, []);
+
   useEffect(() => {
     let active = true;
     getDashboard()
@@ -31,5 +41,5 @@ export function useDashboard() {
     };
   }, []);
 
-  return { data, loading, error, refresh };
+  return { data, loading, error, refresh, reloadSilently };
 }
