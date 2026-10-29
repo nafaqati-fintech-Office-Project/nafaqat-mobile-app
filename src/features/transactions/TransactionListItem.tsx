@@ -2,35 +2,32 @@ import { StyleSheet, View } from 'react-native';
 
 import { categoryLabelKey } from './categoryDisplay';
 import { categoryLook } from './categoryLook';
-import { daysAgo } from './groupByDay';
 import type { TransactionItem } from './transactionsApi';
 import { AppText } from '@/components/AppText';
+import { HighlightFlash } from '@/components/HighlightFlash';
 import { Icon } from '@/components/Icon';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
-import { intlLocale } from '@/utils/intl';
+import { dayTimeLabel, intlLocale } from '@/utils/intl';
 import { formatMoney } from '@/utils/money';
 
+type Props = { item: TransactionItem; showDay?: boolean; flashKey?: string | null };
+
 // showDay: the row is not under a day heading (as on the dashboard), so it says which day too.
-export function TransactionListItem({ item, showDay = false }: { item: TransactionItem; showDay?: boolean }) {
+// flashKey: highlight the row (it is the one a notification was about).
+export function TransactionListItem({ item, showDay = false, flashKey = null }: Props) {
   const { language, t } = useLanguage();
   const look = categoryLook(item.category);
   const debit = item.type === 'DEBIT';
   const amount = `${debit ? '-' : '+'} ${formatMoney(item.amount, item.currency, language)}`;
   const labelKey = categoryLabelKey(item.category);
-  const locale = intlLocale(language);
-  const clock = new Intl.DateTimeFormat(locale, { timeStyle: 'short' }).format(item.date);
-  const ago = daysAgo(item.date);
-  const day =
-    ago === 0
-      ? t('transactions.today')
-      : ago === 1
-        ? t('transactions.yesterday')
-        : new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(item.date);
-  const time = showDay ? `${day}, ${clock}` : clock;
+  const time = showDay
+    ? dayTimeLabel(item.date, language, { today: t('transactions.today'), yesterday: t('transactions.yesterday') })
+    : new Intl.DateTimeFormat(intlLocale(language), { timeStyle: 'short' }).format(item.date);
 
   return (
     <View style={styles.row}>
+      <HighlightFlash flashKey={flashKey} />
       <View style={[styles.tile, { backgroundColor: look.tintSoft }]}>
         <Icon name={look.icon} color={look.tint} size={sizes.iconLg} />
       </View>

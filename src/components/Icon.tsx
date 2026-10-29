@@ -26,6 +26,11 @@ const PATHS = {
   star: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z',
   bolt: 'M13 3L5 14h6l-1 7 8-11h-6z',
   car: 'M5 16v-5l2-5h10l2 5v5M3 16h18v3H3zM5 11h14',
+  info: 'M12 3a9 9 0 100 18 9 9 0 000-18zM12 11v5M12 8h.01',
+  alert: 'M12 4l9 16H3zM12 10v4M12 17h.01',
+  trash: 'M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3',
+  check: 'M5 12l5 5L20 7',
+  sliders: 'M4 7h9M17 7h3M15 5v4M4 17h3M11 17h9M9 15v4',
 } as const;
 
 export type IconName = keyof typeof PATHS;

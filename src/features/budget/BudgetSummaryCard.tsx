@@ -3,12 +3,14 @@ import { StyleSheet, View } from 'react-native';
 import { ProgressBar, TONE_COLORS } from './ProgressBar';
 import type { Budget } from './types';
 import { AppText } from '@/components/AppText';
+import { HighlightFlash } from '@/components/HighlightFlash';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, shadows, spacing } from '@/theme';
 import { intlLocale } from '@/utils/intl';
 import { formatMoney } from '@/utils/money';
 
-export function BudgetSummaryCard({ budget }: { budget: Budget }) {
+// flashKey: highlight the card (a budget alert was about the whole month).
+export function BudgetSummaryCard({ budget, flashKey = null }: { budget: Budget; flashKey?: string | null }) {
   const { language, t } = useLanguage();
   const over = budget.remaining.trim().startsWith('-');
   const money = (amount: string) => formatMoney(amount, budget.currency, language);
@@ -18,6 +20,7 @@ export function BudgetSummaryCard({ budget }: { budget: Budget }) {
 
   return (
     <View style={styles.card}>
+      <HighlightFlash flashKey={flashKey} inset={0} borderRadius={radius.lg} />
       <View style={styles.texts}>
         <AppText weight="bold" style={styles.title}>
           {t('budget.summary.monthly')}

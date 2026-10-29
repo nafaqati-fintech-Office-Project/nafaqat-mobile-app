@@ -1,5 +1,11 @@
 import { mockTransactions } from './mock';
-import { fetchTransactionPage, type TransactionPage, type TransactionQuery } from './transactionsApi';
+import {
+  fetchTransaction,
+  fetchTransactionPage,
+  type TransactionItem,
+  type TransactionPage,
+  type TransactionQuery,
+} from './transactionsApi';
 import { AUTH_BYPASS } from '@/config/flags';
 
 const MOCK_DELAY_MS = 400;
@@ -18,4 +24,11 @@ async function getMockPage({ filter, search }: TransactionQuery): Promise<Transa
 export function getTransactionPage(query: TransactionQuery): Promise<TransactionPage> {
   // The bypass session has no token, so the real endpoint would answer 401.
   return AUTH_BYPASS ? getMockPage(query) : fetchTransactionPage(query);
+}
+
+export async function getTransaction(id: string): Promise<TransactionItem> {
+  if (!AUTH_BYPASS) return fetchTransaction(id);
+  const row = mockTransactions.find((item) => item.id === id);
+  if (!row) throw new Error('Transaction not found');
+  return row;
 }

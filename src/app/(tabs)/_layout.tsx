@@ -5,6 +5,7 @@ import { Icon, type IconName } from '@/components/Icon';
 import { AUTH_BYPASS } from '@/config/flags';
 import { useFeedbackSync } from '@/features/categorizer/feedback/useFeedbackSync';
 import { useRetryPendingPredictions } from '@/features/categorizer/useRetryPendingPredictions';
+import { useUnreadCountPolling } from '@/features/notifications/unreadCount';
 import { useTransactionSync } from '@/features/transactions/sync/useTransactionSync';
 import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -25,6 +26,8 @@ export default function TabsLayout() {
   // Bypass mode has a mock user and no token, so there is no account to sync to.
   useTransactionSync(status === 'authenticated' && !AUTH_BYPASS);
   useFeedbackSync(status === 'authenticated' && !AUTH_BYPASS);
+  // The bell's unread badge (bypass mode counts the sample notifications).
+  useUnreadCountPolling(status === 'authenticated');
 
   if (status !== 'authenticated') return <Redirect href="/login" />;
 

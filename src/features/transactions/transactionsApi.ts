@@ -65,6 +65,12 @@ export function parseTransactionPage(raw: unknown): TransactionPage {
   };
 }
 
+// One transaction by the transaction service's id (a notification's referenceId).
+export async function fetchTransaction(id: string): Promise<TransactionItem> {
+  const { data } = await api.get<unknown>(`/api/transactions/${encodeURIComponent(id)}`);
+  return parseTransaction(data);
+}
+
 // Newest first. Only completed movements: pending and failed ones would read as money already spent.
 export async function fetchTransactionPage({ filter, search, page, size }: TransactionQuery): Promise<TransactionPage> {
   const q = search.trim().slice(0, MAX_SEARCH);

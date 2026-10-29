@@ -98,6 +98,8 @@ export function useTransactionList(filter: TransactionFilter, query: string) {
   return {
     items: status === 'ready' ? (result?.items ?? []) : [],
     status,
+    // The search the rows were loaded for: the typed text applies after a short pause.
+    appliedSearch: search,
     refreshing,
     loadingMore,
     moreFailed,

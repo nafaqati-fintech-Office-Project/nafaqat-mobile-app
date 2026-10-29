@@ -20,6 +20,7 @@ const families = {
 export const fontFamily = (weight: FontWeight) => families[getLanguage()][weight];
 
 export const fontSizes = {
+  xxs: 10,
   xs: 12,
   sm: 14,
   md: 16,
@@ -29,6 +30,7 @@ export const fontSizes = {
 } as const;
 
 export const lineHeights = {
+  xxs: 12,
   xs: 16,
   sm: 20,
   md: 24,

@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { ProgressBar } from './ProgressBar';
 import type { CategoryBudget } from './types';
 import { AppText } from '@/components/AppText';
+import { HighlightFlash } from '@/components/HighlightFlash';
 import { Icon } from '@/components/Icon';
 import { categoryLabelKey } from '@/features/transactions/categoryDisplay';
 import { categoryLook } from '@/features/transactions/categoryLook';
@@ -10,7 +11,10 @@ import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
 
-export function CategoryBudgetRow({ item, currency }: { item: CategoryBudget; currency: string }) {
+type Props = { item: CategoryBudget; currency: string; flashKey?: string | null };
+
+// flashKey: highlight the row (a budget alert was about this category).
+export function CategoryBudgetRow({ item, currency, flashKey = null }: Props) {
   const { language, t } = useLanguage();
   const look = categoryLook(item.category);
   const labelKey = categoryLabelKey(item.category);
@@ -18,6 +22,7 @@ export function CategoryBudgetRow({ item, currency }: { item: CategoryBudget; cu
 
   return (
     <View style={styles.row}>
+      <HighlightFlash flashKey={flashKey} />
       <View style={[styles.tile, { backgroundColor: look.tintSoft }]}>
         <Icon name={look.icon} color={look.tint} size={sizes.iconLg} />
       </View>

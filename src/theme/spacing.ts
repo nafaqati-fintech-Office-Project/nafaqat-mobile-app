@@ -41,6 +41,7 @@ export const sizes = {
   avatar: 48,
   bell: 44,
   bellDot: 9,
+  bellBadge: 18,
   iconTile: 40,
   chartHeight: 110,
   tabIcon: 24,

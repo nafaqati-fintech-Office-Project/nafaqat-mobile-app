@@ -14,7 +14,4 @@ export function groupByDay<T extends { date: Date }>(rows: T[]): DaySection<T>[]
   return sections;
 }
 
-export function daysAgo(date: Date, now = new Date()): number {
-  const start = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  return Math.round((start(now) - start(date)) / 86_400_000);
-}
+export { daysAgo } from '@/utils/intl';

@@ -1,6 +1,6 @@
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, type ComponentRef } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,12 +10,38 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { BudgetSummaryCard } from '@/features/budget/BudgetSummaryCard';
 import { CategoryBudgetRow } from '@/features/budget/CategoryBudgetRow';
 import { useBudget } from '@/features/budget/useBudget';
+import { OVERALL } from '@/features/notifications/notificationLink';
+import { categoryFromCode } from '@/features/transactions/categoryDisplay';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, shadows, sizes, spacing } from '@/theme';
 
 export default function BudgetRoute() {
   const { t, isRTL } = useLanguage();
   const { budget, status, refreshing, refresh, retry, reload } = useBudget();
+
+  // Opened from a budget alert: point out its category, or the month card for the whole budget.
+  const params = useLocalSearchParams<{ highlight?: string; at?: string }>();
+  const flashKey = params.highlight ? `${params.highlight}:${params.at ?? ''}` : null;
+  const target =
+    !params.highlight || params.highlight === OVERALL
+      ? null
+      : (categoryFromCode(params.highlight) ?? params.highlight);
+  const flashOverall = flashKey !== null && !target;
+  const targetFound = target !== null && (budget?.categories.some((item) => item.category === target) ?? false);
+
+  // Where the category rows are, to scroll the alert's row into view once per alert.
+  const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
+  const rowsY = useRef<number | null>(null);
+  const rowY = useRef<Record<string, number>>({});
+  const scrolledKey = useRef<string | null>(null);
+  // Called from both layout events, since either can come first.
+  const scrollToTarget = useCallback(() => {
+    if (!flashKey || !target || scrolledKey.current === flashKey || rowsY.current === null) return;
+    const y = rowY.current[target];
+    if (y === undefined) return;
+    scrolledKey.current = flashKey;
+    scrollRef.current?.scrollTo({ y: Math.max(0, rowsY.current + y - spacing.xxxl), animated: true });
+  }, [flashKey, target]);
 
   // Coming back to the screen picks up spending synced meanwhile; the first focus is the initial load.
   const focused = useRef(false);
@@ -46,6 +72,7 @@ export default function BudgetRoute() {
         <View style={styles.back} />
       </View>
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}>
@@ -70,14 +97,29 @@ export default function BudgetRoute() {
           </View>
         ) : (
           <>
-            <BudgetSummaryCard budget={budget} />
-            <View>
+            <BudgetSummaryCard budget={budget} flashKey={flashOverall ? flashKey : null} />
+            <View
+              onLayout={(event) => {
+                rowsY.current = event.nativeEvent.layout.y;
+                scrollToTarget();
+              }}>
               <AppText weight="bold" style={styles.section}>
                 {t('budget.categories')}
               </AppText>
               {budget.categories.length > 0 ? (
                 budget.categories.map((item) => (
-                  <CategoryBudgetRow key={item.category} item={item} currency={budget.currency} />
+                  <View
+                    key={item.category}
+                    onLayout={(event) => {
+                      rowY.current[item.category] = event.nativeEvent.layout.y;
+                      if (item.category === target) scrollToTarget();
+                    }}>
+                    <CategoryBudgetRow
+                      item={item}
+                      currency={budget.currency}
+                      flashKey={targetFound && item.category === target ? flashKey : null}
+                    />
+                  </View>
                 ))
               ) : (
                 <AppText style={styles.messageBody}>{t('budget.noCategories')}</AppText>

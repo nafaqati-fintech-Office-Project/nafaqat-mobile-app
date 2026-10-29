@@ -38,6 +38,18 @@ export default function MoreRoute() {
           <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
         </View>
       </Pressable>
+      <Pressable
+        onPress={() => router.push('/notification-settings')}
+        accessibilityRole="button"
+        accessibilityLabel={t('notifications.settings')}
+        style={styles.row}>
+        <AppText weight="medium" style={styles.rowLabel}>
+          {t('notifications.settings')}
+        </AppText>
+        <View style={isRTL && styles.flip}>
+          <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
+        </View>
+      </Pressable>
       <View style={styles.footer}>
         <PrimaryButton label={t('more.signOut')} onPress={onSignOut} />
       </View>
