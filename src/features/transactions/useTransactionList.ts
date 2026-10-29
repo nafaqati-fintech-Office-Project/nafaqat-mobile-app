@@ -95,6 +95,11 @@ export function useTransactionList(filter: TransactionFilter, query: string) {
     }
   }, [filter, search, loadingMore, status]);
 
+  // Takes a deleted row off the screen without waiting for a reload.
+  const remove = useCallback((id: string) => {
+    setResult((current) => current && { ...current, items: current.items.filter((row) => row.id !== id) });
+  }, []);
+
   return {
     items: status === 'ready' ? (result?.items ?? []) : [],
     status,
@@ -107,5 +112,6 @@ export function useTransactionList(filter: TransactionFilter, query: string) {
     refresh,
     reloadSilently,
     loadMore,
+    remove,
   };
 }

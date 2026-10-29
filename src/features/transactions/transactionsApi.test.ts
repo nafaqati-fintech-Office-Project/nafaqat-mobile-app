@@ -1,12 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { fetchTransactionPage, parseTransaction, parseTransactionPage } from './transactionsApi';
+import {
+  createCashExpense,
+  deleteTransaction,
+  fetchTransactionPage,
+  parseTransaction,
+  parseTransactionPage,
+} from './transactionsApi';
 
-const get = vi.hoisted(() => vi.fn());
-vi.mock('@/api/client', () => ({ api: { get } }));
+const { get, post, del } = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn(), del: vi.fn() }));
+vi.mock('@/api/client', () => ({ api: { get, post, delete: del } }));
 
 beforeEach(() => {
   get.mockReset();
+  post.mockReset();
+  del.mockReset();
 });
 
 const row = (overrides: Record<string, unknown> = {}) => ({
@@ -37,7 +45,12 @@ describe('parseTransaction', () => {
       amount: '28.5',
       currency: 'SAR',
       date: new Date('2026-10-28T07:24:00Z'),
+      manual: false,
     });
+  });
+
+  it('marks transactions entered by hand', () => {
+    expect(parseTransaction(row({ source: 'MANUAL' })).manual).toBe(true);
   });
 
   it('keeps a string amount as sent', () => {
@@ -85,5 +98,42 @@ describe('fetchTransactionPage', () => {
     get.mockResolvedValue({ data: empty });
     await fetchTransactionPage({ filter: 'all', search: ' ', page: 0, size: 30 });
     expect(get.mock.calls[0][1].params).toMatchObject({ type: undefined, q: undefined });
+  });
+});
+
+describe('cash expenses', () => {
+  const body = {
+    amount: '20.5',
+    currency: 'SAR',
+    merchant: null,
+    description: 'Cash expense',
+    category: 'UNCATEGORIZED',
+    transactionDate: '2026-10-28T09:00:00.000Z',
+  };
+
+  it('creates a manual debit: no external id, and no merchant when none was given', async () => {
+    post.mockResolvedValue({ data: row({ source: 'MANUAL', merchant: null, description: 'Cash expense' }) });
+    const created = await createCashExpense(body);
+    expect(post).toHaveBeenCalledWith('/api/transactions', {
+      amount: '20.5',
+      currency: 'SAR',
+      description: 'Cash expense',
+      category: 'UNCATEGORIZED',
+      transactionDate: '2026-10-28T09:00:00.000Z',
+      type: 'DEBIT',
+    });
+    expect(created).toMatchObject({ merchant: 'Cash expense', manual: true });
+  });
+
+  it('sends the merchant when there is one', async () => {
+    post.mockResolvedValue({ data: row({ source: 'MANUAL', merchant: 'Taxi' }) });
+    await createCashExpense({ ...body, merchant: 'Taxi', description: 'Taxi' });
+    expect(post.mock.calls[0][1]).toMatchObject({ merchant: 'Taxi' });
+  });
+
+  it('deletes by id', async () => {
+    del.mockResolvedValue({ status: 204 });
+    await deleteTransaction('a/b');
+    expect(del).toHaveBeenCalledWith('/api/transactions/a%2Fb');
   });
 });

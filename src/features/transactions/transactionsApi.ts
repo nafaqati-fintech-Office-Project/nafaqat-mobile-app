@@ -13,6 +13,18 @@ export type TransactionItem = {
   amount: string;
   currency: string;
   date: Date;
+  // Entered by hand in the app (a cash expense); only these can be deleted.
+  manual: boolean;
+};
+
+// A cash expense entered by hand. category is the service's code; transactionDate an ISO instant.
+export type NewCashExpense = {
+  amount: string;
+  currency: string;
+  merchant: string | null;
+  description: string;
+  category: string;
+  transactionDate: string;
 };
 
 export type TransactionPage = { items: TransactionItem[]; page: number; hasMore: boolean };
@@ -52,6 +64,7 @@ export function parseTransaction(raw: unknown): TransactionItem {
     amount: decimal(body.amount),
     currency: str(body.currency),
     date: parseDate(body.transactionDate),
+    manual: body.source === 'MANUAL',
   };
 }
 
@@ -85,4 +98,19 @@ export async function fetchTransactionPage({ filter, search, page, size }: Trans
     },
   });
   return parseTransactionPage(data);
+}
+
+// No externalTransactionId: the service then marks it MANUAL, which is what makes it deletable later.
+export async function createCashExpense({ merchant, ...rest }: NewCashExpense): Promise<TransactionItem> {
+  const { data } = await api.post<unknown>('/api/transactions', {
+    ...rest,
+    type: 'DEBIT',
+    ...(merchant ? { merchant } : {}),
+  });
+  return parseTransaction(data);
+}
+
+// A soft delete. The service refuses (409) anything not entered by hand.
+export async function deleteTransaction(id: string): Promise<void> {
+  await api.delete(`/api/transactions/${encodeURIComponent(id)}`);
 }

@@ -1,7 +1,7 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, RefreshControl, SectionList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, RefreshControl, SectionList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -15,13 +15,21 @@ import { TransactionListItem } from '@/features/transactions/TransactionListItem
 import { TransactionsHeader } from '@/features/transactions/TransactionsHeader';
 import type { TransactionFilter, TransactionItem } from '@/features/transactions/transactionsApi';
 import { useTransactionHighlight } from '@/features/transactions/useTransactionHighlight';
+import { deleteProblem, removeTransaction, type DeleteProblem } from '@/features/transactions/transactionsService';
 import { useTransactionList } from '@/features/transactions/useTransactionList';
+import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 import { intlLocale } from '@/utils/intl';
 
 // Lets the list lay out its rows before scrolling to one.
 const SCROLL_DELAY_MS = 150;
+
+const DELETE_PROBLEM: Record<Exclude<DeleteProblem, 'gone'>, TranslationKey> = {
+  notDeletable: 'transactions.cash.notDeletable',
+  network: 'errors.network',
+  unknown: 'transactions.cash.deleteFailed',
+};
 
 export default function TransactionsRoute() {
   const { language, t } = useLanguage();
@@ -100,6 +108,32 @@ export default function TransactionsRoute() {
     }, [reloadSilently]),
   );
 
+  // Only cash expenses entered by hand can be deleted; bank transactions stay as the bank reported them.
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { remove } = list;
+  const deleteRow = async (item: TransactionItem) => {
+    setDeletingId(item.id);
+    try {
+      await removeTransaction(item.id);
+      remove(item.id);
+      showToast(t('transactions.cash.deleted'));
+    } catch (error) {
+      const problem = deleteProblem(error);
+      if (problem === 'gone') remove(item.id);
+      else showToast(t(DELETE_PROBLEM[problem]));
+    } finally {
+      setDeletingId(null);
+    }
+    void reloadSilently();
+  };
+  const confirmDelete = (item: TransactionItem) =>
+    Alert.alert(t('transactions.cash.deleteTitle'), t('transactions.cash.deleteBody'), [
+      { text: t('notifications.cancel'), style: 'cancel' },
+      { text: t('transactions.cash.delete'), style: 'destructive', onPress: () => void deleteRow(item) },
+    ]);
+  const actionFor = (item: TransactionItem) =>
+    item.manual && deletingId === null ? () => confirmDelete(item) : undefined;
+
   const sectionTitle = (date: Date) => {
     const ago = daysAgo(date);
     if (ago === 0) return t('transactions.today');
@@ -137,7 +171,7 @@ export default function TransactionsRoute() {
     <SafeAreaView edges={['top']} style={styles.screen}>
       <StatusBar style="dark" />
       <View style={styles.top}>
-        <TransactionsHeader />
+        <TransactionsHeader onAdd={() => router.push('/transaction-add')} />
         <SearchBar value={query} onChangeText={setQuery} />
         <FilterTabs value={filter} onChange={setFilter} />
       </View>
@@ -161,6 +195,8 @@ export default function TransactionsRoute() {
           <TransactionListItem
             item={item}
             flashKey={request && highlight.inList && item.id === request.id ? request.key : null}
+            onPress={actionFor(item)}
+            busy={deletingId === item.id}
           />
         )}
         onScrollToIndexFailed={onScrollFailed}

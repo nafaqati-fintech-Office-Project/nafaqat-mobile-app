@@ -33,6 +33,7 @@ const row = (merchant: string | null, amount: string, category = 'Groceries', cu
   amount,
   currency,
   date: new Date(2026, 9, 5),
+  manual: false,
 });
 
 describe('lastMonths', () => {

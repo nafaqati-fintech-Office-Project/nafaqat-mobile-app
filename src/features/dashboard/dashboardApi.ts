@@ -2,6 +2,7 @@ import { isAxiosError } from 'axios';
 
 import { api } from '@/api/client';
 import { arr, num, obj, str } from '@/api/parse';
+import { AUTH_BYPASS } from '@/config/flags';
 
 export type DateRange = { startDate: string; endDate: string };
 
@@ -73,6 +74,9 @@ export async function getActiveSubscriptionCount(): Promise<number> {
 
 // 404 means the user has not saved preferences yet (normal for a new account).
 export async function getPreferences(): Promise<Preferences | null> {
+  // The bypass session has no token and often no gateway: without this the screens that wait for it
+  // (subscriptions, budget, insights) sit until the request times out.
+  if (AUTH_BYPASS) return null;
   try {
     const { data } = await api.get<unknown>('/api/users/me/preferences');
     const body = obj(data);

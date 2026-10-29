@@ -64,6 +64,7 @@ const txn = (id: number) => ({
   amount: '10.00',
   currency: 'PKR',
   date: new Date(2026, 9, 28),
+  manual: false,
 });
 
 describe('dates', () => {

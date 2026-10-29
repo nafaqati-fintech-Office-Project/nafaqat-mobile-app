@@ -12,6 +12,7 @@ import {
 
 const get = vi.hoisted(() => vi.fn());
 vi.mock('@/api/client', () => ({ api: { get } }));
+vi.mock('@/config/flags', () => ({ AUTH_BYPASS: false }));
 
 const range = { startDate: '2026-10-01', endDate: '2026-10-31' };
 // What axios throws for an HTTP error: isAxiosError is the flag its own isAxiosError() checks.
