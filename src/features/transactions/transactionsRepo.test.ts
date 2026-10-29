@@ -30,7 +30,7 @@ const processed = { txn, category: 'Food & Beverage', source: 'lookup' as const 
 
 beforeEach(() => {
   vi.clearAllMocks();
-  db.getFirstAsync.mockResolvedValue({ user_version: 13 });
+  db.getFirstAsync.mockResolvedValue({ user_version: 15 });
 });
 
 describe('getDb migrations', () => {
@@ -58,6 +58,9 @@ describe('getDb migrations', () => {
     expect(statements).not.toContain('ALTER TABLE transactions ADD COLUMN balance TEXT');
     expect(statements).toContain('PRAGMA user_version = 13');
     expect(statements).toContain('ALTER TABLE transactions ADD COLUMN server_id TEXT');
+    expect(statements).toContain('ALTER TABLE transactions ADD COLUMN prediction_id TEXT');
+    expect(statements).toContain('ALTER TABLE category_feedback ADD COLUMN prediction_id TEXT');
+    expect(statements).toContain('PRAGMA user_version = 15');
   });
 
   it('runs no migration when the database is already current', async () => {
@@ -106,13 +109,22 @@ describe('saveTransaction', () => {
 });
 
 describe('saving a transaction the model could not categorize', () => {
-  // the last three values: needs_prediction, prediction_attempts, retry_text
-  const flags = () => (db.runAsync.mock.calls[0][1] as unknown[]).slice(-3);
+  // needs_prediction, prediction_attempts, retry_text (prediction_id comes last)
+  const flags = () => (db.runAsync.mock.calls[0][1] as unknown[]).slice(-4, -1);
+  const predictionId = () => (db.runAsync.mock.calls[0][1] as unknown[]).at(-1);
 
   it('saves an answered row as not pending', async () => {
     db.runAsync.mockResolvedValue({ changes: 1 });
     await saveTransaction(processed);
     expect(flags()).toEqual([0, 0, null]);
+    expect(predictionId()).toBeNull();
+  });
+
+  it('keeps the server\'s prediction id with the row', async () => {
+    db.runAsync.mockResolvedValue({ changes: 1 });
+    await saveTransaction({ ...processed, source: 'model', confidence: 0.9, predictionId: 'p-1' });
+    expect(String(db.runAsync.mock.calls[0][0])).toMatch(/retry_text, prediction_id\)/);
+    expect(predictionId()).toBe('p-1');
   });
 
   it('flags an unreachable model without counting an attempt', async () => {
@@ -144,12 +156,12 @@ describe('pending predictions', () => {
   });
 
   it('stores an answer and clears the flag and the redacted text', async () => {
-    await saveRetryResult(4, { category: 'Health', source: 'model', confidence: 0.8, merchant: 'ZZQX SHOP' });
+    await saveRetryResult(4, { category: 'Health', source: 'model', confidence: 0.8, predictionId: 'p-4', merchant: 'ZZQX SHOP' });
     const [sql, params] = db.runAsync.mock.calls[0];
     expect(sql).toMatch(/needs_prediction = 0, retry_text = NULL/);
     // a category the user picked meanwhile (no longer pending) is left alone
     expect(sql).toMatch(/WHERE id = \? AND needs_prediction = 1/);
-    expect(params).toEqual(['Health', 'model', 0.8, 'ZZQX SHOP', 4]);
+    expect(params).toEqual(['Health', 'model', 0.8, 'p-4', 'ZZQX SHOP', 4]);
   });
 
   it('keeps a failed retry pending and counts only a refusal', async () => {

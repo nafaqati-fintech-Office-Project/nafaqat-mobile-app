@@ -13,7 +13,7 @@ const db = {
 };
 vi.mock('expo-sqlite', () => ({ openDatabaseAsync: () => Promise.resolve(db) }));
 
-type Row = { merchant: string | null; type: string; category: string; source: string };
+type Row = { merchant: string | null; type: string; category: string; source: string; prediction_id?: string | null };
 let row: Row | null;
 let rule: { category: string } | null;
 
@@ -67,8 +67,16 @@ describe('changeCategory', () => {
     expect(await changeCategory({ id: 7, category: 'Housing', applyToMerchant: false })).toBe(1);
     expect(updates()).toEqual([[expect.stringContaining('needs_prediction = 0, retry_text = NULL'), ['Housing', 'user', 7]]]);
     const feedback = sql().find(([statement]) => String(statement).includes('INTO category_feedback'));
-    expect(feedback?.[1]).toEqual(['user-1', 7, 'Ali  Raza', 'DEBIT', 'Uncategorized', 'fallback', 'Housing', expect.any(Number)]);
+    expect(feedback?.[1]).toEqual(['user-1', 7, 'Ali  Raza', 'DEBIT', 'Uncategorized', 'fallback', 'Housing', expect.any(Number), null]);
     expect(sql().some(([statement]) => String(statement).includes('category_rules'))).toBe(false);
+  });
+
+  it('copies the prediction id into the feedback and clears it from the row', async () => {
+    row = { merchant: 'Shell', type: 'DEBIT', category: 'Transportation', source: 'model', prediction_id: 'p-7' };
+    await changeCategory({ id: 7, category: 'Fuel', applyToMerchant: false });
+    expect(updates()[0][0]).toContain('prediction_id = NULL');
+    const feedback = sql().find(([statement]) => String(statement).includes('INTO category_feedback'));
+    expect(feedback?.[1]).toEqual(['user-1', 7, 'Shell', 'DEBIT', 'Transportation', 'model', 'Fuel', expect.any(Number), 'p-7']);
   });
 
   it('saves no feedback when the category did not change', async () => {

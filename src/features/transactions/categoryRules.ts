@@ -11,7 +11,7 @@ export const merchantKey = (merchant: string): string => merchant.trim().replace
 // source "user": picked by hand on this row, nothing overwrites it. "rule": filled in from the user's
 // rule for the merchant, so it follows when they change that rule.
 const SET_OWN_CATEGORY = `UPDATE transactions
-  SET category = ?, source = ?, confidence = NULL, needs_prediction = 0, retry_text = NULL
+  SET category = ?, source = ?, confidence = NULL, prediction_id = NULL, needs_prediction = 0, retry_text = NULL
   WHERE id = ?`;
 
 // The signed-in user's own category for this merchant, or null. Never throws (web has no database).
@@ -38,10 +38,13 @@ export type CategoryChange = { id: number; category: string; applyToMerchant: bo
 // Returns how many rows changed.
 export async function changeCategory({ id, category, applyToMerchant }: CategoryChange): Promise<number> {
   const db = await getDb();
-  const row = await db.getFirstAsync<{ merchant: string | null; type: TxnType; category: string; source: string }>(
-    'SELECT merchant, type, category, source FROM transactions WHERE id = ?',
-    [id],
-  );
+  const row = await db.getFirstAsync<{
+    merchant: string | null;
+    type: TxnType;
+    category: string;
+    source: string;
+    prediction_id: string | null;
+  }>('SELECT merchant, type, category, source, prediction_id FROM transactions WHERE id = ?', [id]);
   if (!row) return 0;
   const userId = getCurrentUserId();
   const now = Date.now();
@@ -53,9 +56,9 @@ export async function changeCategory({ id, category, applyToMerchant }: Category
     if (row.category !== category) {
       await db.runAsync(
         `INSERT INTO category_feedback
-          (user_id, transaction_id, merchant, type, from_category, from_source, to_category, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [userId, id, row.merchant, row.type, row.category, row.source, category, now],
+          (user_id, transaction_id, merchant, type, from_category, from_source, to_category, created_at, prediction_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [userId, id, row.merchant, row.type, row.category, row.source, category, now, row.prediction_id ?? null],
       );
     }
     if (!applyToMerchant || !row.merchant || !userId) return;

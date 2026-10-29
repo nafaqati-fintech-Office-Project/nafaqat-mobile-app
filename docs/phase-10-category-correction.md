@@ -82,8 +82,8 @@ Transaction `source` values added: `user` (picked by hand on this transaction) a
 the user's rule; it follows when the user changes that rule).
 
 ## 4. Known gaps
-- **Feedback is not sent anywhere yet.** The model server has no endpoint for it. If we add one later:
-  only shop names (never person names), only when many different users agree, and someone reviews it first.
+- ~~Feedback is not sent anywhere yet.~~ Now sent to the model server: see `prediction-log-feedback.md`
+  (only shop names, never person names; many different users must agree, and someone reviews it first).
 - **No "Transfers" in the spending list.** The backend has no Transfers or Person category, so money sent to
   a friend can only be given one of the 15 spending categories. Task #9 must decide how Transfers and Person
   are sent to the backend, and whether the backend should get a Transfers category.

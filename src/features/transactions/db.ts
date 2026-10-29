@@ -74,6 +74,11 @@ const MIGRATIONS = [
   'ALTER TABLE transactions ADD COLUMN server_id TEXT',
   'ALTER TABLE transactions ADD COLUMN synced_category TEXT',
   'ALTER TABLE transactions ADD COLUMN sync_attempts INTEGER NOT NULL DEFAULT 0',
+  // The model server's prediction log id for the category, copied into the feedback when the user
+  // changes it, so the server can tell which of its answers was corrected.
+  'ALTER TABLE transactions ADD COLUMN prediction_id TEXT',
+  // synced: 0 = to send, 1 = sent, 2 = stays on the device (not a model prediction, a person, or refused).
+  'ALTER TABLE category_feedback ADD COLUMN prediction_id TEXT',
 ];
 
 let database: Promise<SQLiteDatabase> | null = null;

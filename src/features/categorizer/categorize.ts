@@ -12,6 +12,8 @@ export type Categorized = {
   // transaction) is set only by changeCategory, never here.
   source: 'lookup' | 'model' | 'llm' | 'fallback' | 'rule' | 'user';
   confidence?: number;
+  // The server's prediction log id, when the category came from /predict.
+  predictionId?: string;
   // Set only when the server named a merchant the parser could not find.
   merchant?: string;
   // Set when a model call failed, so the transaction is saved for a later retry.
@@ -96,8 +98,9 @@ export async function categorizeMerchant(merchant: string): Promise<Categorized>
     devLog(`[categorize] server could not classify ${merchant} -> Uncategorized`);
     return { category: UNCATEGORIZED, source: 'fallback' };
   }
+  const logged = prediction.predictionId ? { predictionId: prediction.predictionId } : {};
   // A person's name is not a shop: the server labels it "Person" (a Gemini decision).
-  if (predictionSource === 'llm' || predictionSource === 'person') return { category, source: 'llm', confidence };
-  if (predictionSource === 'historical_lookup') return { category, source: 'lookup', confidence };
-  return { category, source: 'model', confidence };
+  if (predictionSource === 'llm' || predictionSource === 'person') return { category, source: 'llm', confidence, ...logged };
+  if (predictionSource === 'historical_lookup') return { category, source: 'lookup', confidence, ...logged };
+  return { category, source: 'model', confidence, ...logged };
 }

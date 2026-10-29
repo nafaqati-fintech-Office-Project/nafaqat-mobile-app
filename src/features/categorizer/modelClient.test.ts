@@ -17,7 +17,12 @@ describe('signed in: through the gateway', () => {
   it('posts to the ai-service route with a timeout', async () => {
     const { predictCategory } = await import('./modelClient');
     post.mockResolvedValue({ data: { category: 'Health', confidence: 0.8, prediction_source: 'ml' } });
-    expect(await predictCategory('ZZQX SHOP')).toEqual({ category: 'Health', confidence: 0.8, predictionSource: 'ml' });
+    expect(await predictCategory('ZZQX SHOP')).toEqual({
+      category: 'Health',
+      confidence: 0.8,
+      predictionSource: 'ml',
+      predictionId: null,
+    });
     expect(post).toHaveBeenCalledWith('/api/ai-service/predict', { text: 'ZZQX SHOP' }, { timeout: 15000 });
   });
 

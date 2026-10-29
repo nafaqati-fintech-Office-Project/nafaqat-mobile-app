@@ -26,6 +26,8 @@ export type ModelPrediction = {
   category: string;
   confidence: number;
   predictionSource: string | null;
+  // The server's id for this answer in its prediction log; sent back with a correction.
+  predictionId: string | null;
 };
 
 // Why a call gave no answer. "unavailable": no reply, an expired session, rate limiting, or the
@@ -149,10 +151,11 @@ export function predictCategory(text: string): Promise<ModelPrediction | ModelFa
       devLog('[model] unexpected response shape');
       return 'rejected';
     }
-    const { category, confidence, prediction_source } = body as {
+    const { category, confidence, prediction_source, prediction_id } = body as {
       category?: unknown;
       confidence?: unknown;
       prediction_source?: unknown;
+      prediction_id?: unknown;
     };
     if (typeof category !== 'string' || typeof confidence !== 'number') {
       devLog('[model] unexpected response shape');
@@ -163,6 +166,7 @@ export function predictCategory(text: string): Promise<ModelPrediction | ModelFa
       category,
       confidence,
       predictionSource: typeof prediction_source === 'string' ? prediction_source : null,
+      predictionId: typeof prediction_id === 'string' && prediction_id ? prediction_id : null,
     };
   });
 }

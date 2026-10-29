@@ -67,13 +67,13 @@ export const transactionKey = (txn: ParsedTxn): string =>
   [txn.date, txn.type, txn.amount, txn.currency, txn.cardLast4 ?? ''].join('|');
 
 export async function saveTransaction(processed: ProcessedSms): Promise<boolean> {
-  const { txn, category, source, confidence, retry, retryText } = processed;
+  const { txn, category, source, confidence, predictionId, retry, retryText } = processed;
   const db = await getDb();
   const result = await db.runAsync(
     `INSERT OR IGNORE INTO transactions
       (dedupe_key, sms_id, bank, type, amount, currency, merchant, card_last4, balance, date, txn_date, category, source, confidence,
-       needs_prediction, prediction_attempts, retry_text)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       needs_prediction, prediction_attempts, retry_text, prediction_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       transactionKey(txn),
       txn.smsId,
@@ -92,6 +92,7 @@ export async function saveTransaction(processed: ProcessedSms): Promise<boolean>
       retry ? 1 : 0,
       retry === 'rejected' ? 1 : 0,
       retry ? (retryText ?? null) : null,
+      predictionId ?? null,
     ],
   );
   return result.changes > 0;
@@ -124,10 +125,10 @@ export async function saveRetryResult(id: number, result: Categorized): Promise<
   }
   await db.runAsync(
     `UPDATE transactions
-     SET category = ?, source = ?, confidence = ?, merchant = COALESCE(?, merchant),
+     SET category = ?, source = ?, confidence = ?, prediction_id = ?, merchant = COALESCE(?, merchant),
          needs_prediction = 0, retry_text = NULL
      WHERE id = ? AND needs_prediction = 1`,
-    [result.category, result.source, result.confidence ?? null, result.merchant ?? null, id],
+    [result.category, result.source, result.confidence ?? null, result.predictionId ?? null, result.merchant ?? null, id],
   );
 }
 

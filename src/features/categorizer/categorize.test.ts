@@ -84,6 +84,11 @@ describe('categorize', () => {
     expect(await categorize(txn())).toEqual({ category: 'Health', source: 'model', confidence: 0.8 });
   });
 
+  it('keeps the server\'s prediction id for a later correction', async () => {
+    post.mockResolvedValue({ data: { category: 'Health', confidence: 0.8, prediction_source: 'ml', prediction_id: 'p-1' } });
+    expect(await categorize(txn())).toEqual({ category: 'Health', source: 'model', confidence: 0.8, predictionId: 'p-1' });
+  });
+
   it('still shows a low-confidence model category', async () => {
     post.mockReturnValue(modelResponse('Health', 0.3));
     expect(await categorize(txn())).toEqual({ category: 'Health', source: 'model', confidence: 0.3 });
