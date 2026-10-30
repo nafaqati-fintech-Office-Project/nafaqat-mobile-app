@@ -48,6 +48,10 @@ function Shell() {
           name="change-category"
           options={{ presentation: 'formSheet', sheetAllowedDetents: [0.85], sheetCornerRadius: 24 }}
         />
+        <Stack.Screen
+          name="goal-contribute"
+          options={{ presentation: 'formSheet', sheetAllowedDetents: [0.6], sheetCornerRadius: 24 }}
+        />
       </Stack>
       <ToastHost />
     </AuthProvider>

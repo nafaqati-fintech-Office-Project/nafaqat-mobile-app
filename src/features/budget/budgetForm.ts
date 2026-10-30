@@ -8,7 +8,7 @@ export const isBudgetCurrency = (value: unknown): value is BudgetCurrency =>
   typeof value === 'string' && (BUDGET_CURRENCIES as readonly string[]).includes(value);
 
 // Arabic-Indic (٠-٩) and Persian (۰-۹) digits, and a comma or Arabic decimal mark, as typed on Arabic keyboards.
-function normalize(text: string): string {
+export function normalize(text: string): string {
   return text
     .trim()
     .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660))

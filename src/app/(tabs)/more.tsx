@@ -26,6 +26,31 @@ export default function MoreRoute() {
         {t('tabs.more')}
       </AppText>
       <Pressable
+        onPress={() => router.push('/profile')}
+        accessibilityRole="button"
+        accessibilityLabel={t('more.profile')}
+        style={styles.row}>
+        <AppText weight="medium" style={styles.rowLabel}>
+          {t('more.profile')}
+        </AppText>
+        <View style={isRTL && styles.flip}>
+          <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
+        </View>
+      </Pressable>
+      <Pressable
+        onPress={() => router.push('/goals')}
+        accessibilityRole="button"
+        accessibilityLabel={t('goals.title')}
+        style={styles.row}>
+        <Icon name="savings" color={colors.primary} size={sizes.icon} />
+        <AppText weight="medium" style={styles.rowLabel}>
+          {t('goals.title')}
+        </AppText>
+        <View style={isRTL && styles.flip}>
+          <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
+        </View>
+      </Pressable>
+      <Pressable
         onPress={() => router.push('/language')}
         accessibilityRole="button"
         accessibilityLabel={t('more.language')}

@@ -17,6 +17,7 @@ import { endSession, refreshSession, startSession } from './session';
 import { getRefreshToken, loadPersistedTokens } from './tokenStore';
 import { showToast } from '@/components/Toast';
 import { AUTH_BYPASS } from '@/config/flags';
+import { getProfile } from '@/features/profile/profileApi';
 import { t } from '@/i18n';
 
 export type AuthUser = Pick<authApi.AuthResponse, 'id' | 'username' | 'email' | 'role'> & {
@@ -30,6 +31,7 @@ type AuthContextValue = {
   signIn: (credentials: authApi.LoginRequest) => Promise<void>;
   signOut: () => Promise<void>;
   restoreSession: () => Promise<boolean>;
+  setFirstName: (firstName: string) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -46,6 +48,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>('loading');
 
   useEffect(() => setCurrentUserId(user?.id ?? null), [user]);
+
+  const setFirstName = useCallback((firstName: string) => {
+    setUser((current) => current && { ...current, firstName });
+  }, []);
+
+  // The login answer has no name, so the greeting would show the username. Only a greeting: a failure changes nothing.
+  const userId = user?.id;
+  useEffect(() => {
+    if (AUTH_BYPASS || !userId) return;
+    let active = true;
+    getProfile()
+      .then((profile) => {
+        if (active && !profile.nameProvisional) setFirstName(profile.firstName);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [userId, setFirstName]);
 
   useEffect(
     () =>
@@ -107,8 +128,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, status, signIn, signOut, restoreSession }),
-    [user, status, signIn, signOut, restoreSession],
+    () => ({ user, status, signIn, signOut, restoreSession, setFirstName }),
+    [user, status, signIn, signOut, restoreSession, setFirstName],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
