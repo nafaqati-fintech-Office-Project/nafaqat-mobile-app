@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { InfoCard } from './InfoCard';
@@ -45,7 +46,9 @@ export function CashFlowCard({ data }: { data: DashboardData }) {
         : t('dashboard.cashFlowOver').replace('{percent}', String(Math.abs(savingsRate)));
 
   return (
-    <InfoCard title={t('dashboard.cashFlow')}>
+    <InfoCard
+      title={t('dashboard.cashFlow')}
+      action={{ label: t('reports.title'), onPress: () => router.push('/reports') }}>
       <FlowBar label={t('dashboard.income')} value={money(income)} share={share(incomeValue)} color={colors.success} />
       <FlowBar
         label={t('dashboard.expenses')}

@@ -38,6 +38,19 @@ export default function MoreRoute() {
         </View>
       </Pressable>
       <Pressable
+        onPress={() => router.push('/reports')}
+        accessibilityRole="button"
+        accessibilityLabel={t('reports.title')}
+        style={styles.row}>
+        <Icon name="insights" color={colors.primary} size={sizes.icon} />
+        <AppText weight="medium" style={styles.rowLabel}>
+          {t('reports.title')}
+        </AppText>
+        <View style={isRTL && styles.flip}>
+          <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
+        </View>
+      </Pressable>
+      <Pressable
         onPress={() => router.push('/goals')}
         accessibilityRole="button"
         accessibilityLabel={t('goals.title')}
