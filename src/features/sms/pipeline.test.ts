@@ -13,6 +13,7 @@ vi.mock('expo-notifications', () => ({
   requestPermissionsAsync: vi.fn(),
   AndroidImportance: { DEFAULT: 3 },
 }));
+vi.mock('react-native', () => ({ Platform: { OS: 'ios' } }));
 vi.mock('./smsReader', () => ({ readInbox: vi.fn() }));
 // The real rules store and api client load Expo modules: no personal rules, and the model is offline.
 vi.mock('@/features/transactions/categoryRules', () => ({ findUserCategory: vi.fn().mockResolvedValue(null) }));

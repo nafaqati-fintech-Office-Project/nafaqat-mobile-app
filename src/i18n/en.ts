@@ -141,6 +141,8 @@ export const en = {
   'alerts.exceededTitle': '{category} budget exceeded',
   'alerts.body': 'You have spent {spent} of your {limit} {category} budget this month.',
   'reports.title': 'Reports',
+  'reports.exportPdf': 'Export PDF',
+  'reports.exportFailed': 'Could not create the PDF',
   'reports.previousMonth': 'Previous month',
   'reports.nextMonth': 'Next month',
   'reports.loadError': 'Could not load this report',

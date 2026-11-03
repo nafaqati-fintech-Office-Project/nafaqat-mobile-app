@@ -1,13 +1,12 @@
+import { loadNotifications } from './loadNotifications';
 import type { ParsedTxn } from '@/features/sms/parser/types';
 
 const CHANNEL_ID = 'transactions';
 
-// Loaded on first use: importing expo-notifications touches native modules at once, which would
-// crash the whole app at startup in a build or in Expo Go that does not contain them.
-const loadNotifications = () => import('expo-notifications');
-
+// false where notifications cannot run (see loadNotifications) or the user said no.
 export async function ensureNotificationPermission(): Promise<boolean> {
   const Notifications = await loadNotifications();
+  if (!Notifications) return false;
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowBanner: true,
@@ -46,6 +45,7 @@ export async function notifyAlert(content: {
   try {
     if (!(await ensureNotificationPermission())) return;
     const Notifications = await loadNotifications();
+    if (!Notifications) return;
     await Notifications.setNotificationChannelAsync(ALERT_CHANNEL_ID, {
       name: 'Budget alerts',
       importance: Notifications.AndroidImportance.HIGH,
@@ -68,6 +68,7 @@ export async function notifyTransaction({
 }): Promise<void> {
   try {
     const Notifications = await loadNotifications();
+    if (!Notifications) return;
     await Notifications.scheduleNotificationAsync({
       content: buildNotificationContent(txn, category),
       trigger: { channelId: CHANNEL_ID },

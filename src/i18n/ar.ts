@@ -142,6 +142,8 @@ export const ar: Record<TranslationKey, string> = {
   'alerts.exceededTitle': 'تم تجاوز ميزانية {category}',
   'alerts.body': 'لقد أنفقت {spent} من ميزانية {category} البالغة {limit} هذا الشهر.',
   'reports.title': 'التقارير',
+  'reports.exportPdf': 'تصدير PDF',
+  'reports.exportFailed': 'تعذّر إنشاء ملف PDF',
   'reports.previousMonth': 'الشهر السابق',
   'reports.nextMonth': 'الشهر التالي',
   'reports.loadError': 'تعذّر تحميل هذا التقرير',
