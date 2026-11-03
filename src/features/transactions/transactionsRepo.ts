@@ -138,6 +138,20 @@ export async function listTransactions(limit = 200): Promise<StoredTransaction[]
   return rows.map(toStored);
 }
 
+// Spending on this phone between two instants (from inclusive, to exclusive) in one currency, per
+// category. Money moved between own accounts is not spending. Totals are for thresholds, not display.
+export async function spentByCategory(from: number, to: number, currency: string): Promise<Map<string, number>> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<{ category: string; total: number }>(
+    `SELECT category, SUM(CAST(amount AS REAL)) AS total FROM transactions
+     WHERE type = 'DEBIT' AND currency = ? AND category != 'Transfers'
+       AND COALESCE(txn_date, date) >= ? AND COALESCE(txn_date, date) < ?
+     GROUP BY category`,
+    [currency, from, to],
+  );
+  return new Map(rows.map((r) => [r.category, r.total]));
+}
+
 export async function getTransaction(id: number): Promise<StoredTransaction | null> {
   const db = await getDb();
   const row = await db.getFirstAsync<Row>(`SELECT ${COLUMNS} FROM transactions WHERE id = ?`, [id]);

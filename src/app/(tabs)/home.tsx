@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
+import { BudgetAlertStrip } from '@/features/dashboard/BudgetAlertStrip';
 import { CashFlowCard } from '@/features/dashboard/CashFlowCard';
 import { CategoryBreakdownCard } from '@/features/dashboard/CategoryBreakdownCard';
 import { HeatmapCard } from '@/features/dashboard/HeatmapCard';
@@ -49,6 +50,7 @@ export default function DashboardRoute() {
         <DashboardHeader />
         <Greeting name={user?.firstName ?? user?.username ?? ''} />
         <SmsDevEntry />
+        <BudgetAlertStrip />
         {data ? (
           <>
             <SpendingCard data={data} />

@@ -1,6 +1,7 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
 
+import { announceServerAlerts } from './budgetAlertService';
 import { getUnreadCount } from './notificationsService';
 
 // The service has no push channel, so the count is polled, as in the web app.
@@ -46,9 +47,11 @@ export function useUnreadCountPolling(enabled: boolean): void {
   useEffect(() => {
     if (!enabled) return;
     let timer: ReturnType<typeof setInterval> | null = null;
+    // The count, then a phone banner for any new budget or large-payment alert.
+    const tick = () => void refreshUnreadCount().then(announceServerAlerts);
     const start = () => {
-      void refreshUnreadCount();
-      timer ??= setInterval(() => void refreshUnreadCount(), POLL_MS);
+      tick();
+      timer ??= setInterval(tick, POLL_MS);
     };
     const stop = () => {
       if (timer) clearInterval(timer);

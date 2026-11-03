@@ -4,6 +4,7 @@ import { adjustUnreadCount, currentUnreadCount, refreshUnreadCount, setUnreadCou
 
 const getUnreadCount = vi.hoisted(() => vi.fn());
 vi.mock('./notificationsService', () => ({ getUnreadCount }));
+vi.mock('./budgetAlertService', () => ({ announceServerAlerts: vi.fn() }));
 vi.mock('react-native', () => ({ AppState: { addEventListener: vi.fn() } }));
 
 beforeEach(() => {

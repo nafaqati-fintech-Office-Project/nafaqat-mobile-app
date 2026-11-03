@@ -34,6 +34,31 @@ export function buildNotificationContent(txn: ParsedTxn, category: string) {
   };
 }
 
+const ALERT_CHANNEL_ID = 'budget-alerts';
+
+// A banner for a budget or large-payment alert. `data` says where tapping it goes (see
+// notificationLink): referenceType, referenceId, categoryCode.
+export async function notifyAlert(content: {
+  title: string;
+  body: string;
+  data: Record<string, string | null>;
+}): Promise<void> {
+  try {
+    if (!(await ensureNotificationPermission())) return;
+    const Notifications = await loadNotifications();
+    await Notifications.setNotificationChannelAsync(ALERT_CHANNEL_ID, {
+      name: 'Budget alerts',
+      importance: Notifications.AndroidImportance.HIGH,
+    });
+    await Notifications.scheduleNotificationAsync({
+      content: { title: content.title, body: content.body, data: content.data },
+      trigger: { channelId: ALERT_CHANNEL_ID },
+    });
+  } catch {
+    // A failed banner must not stop polling or the SMS pipeline.
+  }
+}
+
 export async function notifyTransaction({
   txn,
   category,

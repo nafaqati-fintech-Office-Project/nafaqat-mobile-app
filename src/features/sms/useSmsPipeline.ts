@@ -5,6 +5,7 @@ import { scanInbox, startSmsListener, stopSmsListener } from './listener';
 import { processSms } from './processSms';
 import { checkSmsPermission } from './smsPermission';
 import type { SmsMessage } from './smsReader';
+import { checkBudgetOnPhone } from '@/features/notifications/budgetAlertService';
 import { ensureNotificationPermission, notifyTransaction } from '@/features/notifications/notify';
 import { emitTransactionsChanged, saveTransaction } from '@/features/transactions/transactionsRepo';
 import { saveIfMissed } from '@/features/transactions/unparsedRepo';
@@ -31,6 +32,7 @@ export function useSmsPipeline() {
     if (result && isNew) {
       emitTransactionsChanged();
       await notifyTransaction(result);
+      if (result.txn.type === 'DEBIT') await checkBudgetOnPhone();
     }
     const unparsed = result ? false : await saveIfMissed(sms).catch(() => false);
     const item: LogItem = {
