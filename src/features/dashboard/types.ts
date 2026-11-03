@@ -8,6 +8,20 @@ export type WeeklyAmount = {
   amount: string;
 };
 
+// One day of the month heatmap; level 0 = no spending, 4 = the heaviest days.
+export type HeatLevel = 0 | 1 | 2 | 3 | 4;
+export type HeatDay = { day: number; amount: string; level: HeatLevel };
+export type Heatmap = { offset: number; days: HeatDay[] }; // offset = empty cells before day 1 (Monday first)
+
+export type CashFlow = {
+  income: string;
+  expenses: string;
+  net: string;
+  savingsRate: number | null; // percent of income kept; null when there is no income
+};
+
+export type MonthlySaving = { year: number; month: number; net: string };
+
 // "unavailable" means the backend part is not reachable yet; the tile shows "Coming soon".
 export type SectionState = 'ready' | 'unavailable';
 
@@ -25,6 +39,11 @@ export type DashboardData = {
   savings: string; // income minus expenses for the month
   categories: CategoryShare[]; // this month's largest categories, largest first
   categoriesState: SectionState;
+  cashFlow: CashFlow;
+  heatmap: Heatmap;
+  heatmapState: SectionState;
+  savingsTrend: MonthlySaving[]; // oldest first, ends with this month
+  savingsTrendState: SectionState;
   recent: TransactionItem[]; // newest first
   recentState: SectionState;
 };

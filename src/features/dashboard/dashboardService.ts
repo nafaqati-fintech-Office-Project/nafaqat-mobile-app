@@ -16,6 +16,7 @@ import {
   todayIn,
   weekDates,
 } from './dashboardBuilder';
+import { lastMonths } from './heatmapMath';
 import { mockDashboard } from './mock';
 import type { DashboardData, SectionState } from './types';
 import { AUTH_BYPASS, DASHBOARD_MOCK_FAIL } from '@/config/flags';
@@ -55,11 +56,26 @@ export async function getDashboard(): Promise<DashboardData> {
 
   // Optional sections: each one falls back on its own ("Coming soon" tiles, a note in the card).
   const month = `${period.year}-${String(period.month).padStart(2, '0')}`;
-  const [budgetResult, subscriptionsResult, comparisonResult, recentResult] = await Promise.allSettled([
+  const [
+    budgetResult,
+    subscriptionsResult,
+    comparisonResult,
+    recentResult,
+    monthDailyResult,
+    trendResult,
+  ] = await Promise.allSettled([
     getCurrentBudget(),
     getActiveSubscriptionCount(),
     getMonthlyComparison(month, timeZone),
     fetchTransactionPage({ filter: 'all', search: '', page: 0, size: RECENT_COUNT }),
+    getDailySpending(monthRange(period.year, period.month), timeZone),
+    Promise.all(
+      lastMonths(period.year, period.month).map(async ({ year, month: m }) => ({
+        year,
+        month: m,
+        rows: await getIncomeVsExpenses(monthRange(year, m), timeZone),
+      })),
+    ),
   ]);
   const state = (result: PromiseSettledResult<unknown>): SectionState =>
     result.status === 'fulfilled' ? 'ready' : 'unavailable';
@@ -72,6 +88,14 @@ export async function getDashboard(): Promise<DashboardData> {
     summary,
     daily,
     week,
+    monthDaily: {
+      state: state(monthDailyResult),
+      rows: monthDailyResult.status === 'fulfilled' ? monthDailyResult.value : [],
+    },
+    trend: {
+      state: state(trendResult),
+      months: trendResult.status === 'fulfilled' ? trendResult.value : [],
+    },
     budget: {
       state: state(budgetResult),
       percent: budgetResult.status === 'fulfilled' ? (budgetResult.value?.percentageUsed ?? null) : null,

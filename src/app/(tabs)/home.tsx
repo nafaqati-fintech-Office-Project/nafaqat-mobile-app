@@ -7,7 +7,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
+import { CashFlowCard } from '@/features/dashboard/CashFlowCard';
 import { CategoryBreakdownCard } from '@/features/dashboard/CategoryBreakdownCard';
+import { HeatmapCard } from '@/features/dashboard/HeatmapCard';
+import { SavingsTrendCard } from '@/features/dashboard/SavingsTrendCard';
 import { DashboardHeader } from '@/features/dashboard/DashboardHeader';
 import { DashboardSkeleton } from '@/features/dashboard/DashboardSkeleton';
 import { Greeting } from '@/features/dashboard/Greeting';
@@ -50,6 +53,9 @@ export default function DashboardRoute() {
           <>
             <SpendingCard data={data} />
             <StatGrid data={data} />
+            <CashFlowCard data={data} />
+            <HeatmapCard data={data} />
+            <SavingsTrendCard data={data} />
             <CategoryBreakdownCard data={data} />
             <RecentTransactionsCard data={data} />
           </>

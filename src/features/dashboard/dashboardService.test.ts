@@ -64,7 +64,24 @@ describe('getDashboard', () => {
     ]) {
       expect(call[1]).toBe('Asia/Karachi');
     }
-    expect(api.getIncomeVsExpenses).toHaveBeenCalledTimes(2);
+    // 2 for the cards above + 6 for the savings trend; the week and the month heatmap use the daily report
+    expect(api.getIncomeVsExpenses).toHaveBeenCalledTimes(8);
+    expect(api.getDailySpending).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps the other cards when the heatmap and trend reports fail', async () => {
+    api.getDailySpending
+      .mockResolvedValueOnce([{ currency: 'PKR', days: [] }])
+      .mockRejectedValueOnce(new Error('503'));
+    api.getIncomeVsExpenses
+      .mockResolvedValueOnce([{ currency: 'PKR', totalIncome: 1000, totalExpenses: 400, net: 600 }])
+      .mockResolvedValueOnce([{ currency: 'PKR', totalIncome: 1000, totalExpenses: 400, net: 600 }])
+      .mockRejectedValue(new Error('503'));
+    const data = await getDashboard();
+    expect(data.heatmapState).toBe('unavailable');
+    expect(data.savingsTrendState).toBe('unavailable');
+    expect(data.cashFlow.net).toBe('600.00');
+    expect(data.totalSpending).toBe('400.00');
   });
 
   it('shows "Coming soon" tiles when budget and subscriptions are unreachable', async () => {

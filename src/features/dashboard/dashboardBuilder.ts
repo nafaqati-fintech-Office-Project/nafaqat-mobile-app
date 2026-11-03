@@ -1,5 +1,14 @@
 import type { DailyEntry, DateRange, IncomeExpenses, SpendingEntry } from './dashboardApi';
-import type { CategoryShare, DashboardData, SectionState, WeeklyAmount } from './types';
+import { heatLevel, monthGrid, savingsRate } from './heatmapMath';
+import type {
+  CashFlow,
+  CategoryShare,
+  DashboardData,
+  Heatmap,
+  MonthlySaving,
+  SectionState,
+  WeeklyAmount,
+} from './types';
 import type { CurrencyComparison } from '@/features/insights/insightsApi';
 import { categoryFromCode } from '@/features/transactions/categoryDisplay';
 import type { TransactionItem } from '@/features/transactions/transactionsApi';
@@ -89,6 +98,8 @@ export type BuildInput = {
   summary: SpendingEntry[];
   daily: DailyEntry[];
   week: string[];
+  monthDaily: { state: SectionState; rows: DailyEntry[] };
+  trend: { state: SectionState; months: { year: number; month: number; rows: IncomeExpenses[] }[] };
   budget: { state: SectionState; percent: number | null };
   subscriptions: { state: SectionState; count: number };
   comparison: { state: SectionState; rows: CurrencyComparison[] };
@@ -109,6 +120,46 @@ export function categoryShares(comparison: CurrencyComparison[], currency: strin
       amount: amount(c.total, currency),
       percent: Math.round((c.total / total) * 100),
     }));
+}
+
+// Every day of the month with its shade; days without spending are level 0.
+export function buildHeatmap(
+  period: { year: number; month: number },
+  rows: DailyEntry[],
+  currency: string,
+): Heatmap {
+  const { offset, daysInMonth } = monthGrid(period.year, period.month);
+  const totals = new Map(
+    rows.find((row) => row.currency === currency)?.days.map((d) => [Number(d.date.slice(8, 10)), d.total]),
+  );
+  const peak = Math.max(0, ...totals.values());
+  return {
+    offset,
+    days: Array.from({ length: daysInMonth }, (_, i) => {
+      const value = totals.get(i + 1) ?? 0;
+      return { day: i + 1, amount: amount(value, currency), level: heatLevel(value, peak) };
+    }),
+  };
+}
+
+export function buildCashFlow(entry: IncomeExpenses | undefined, currency: string): CashFlow {
+  const income = entry?.totalIncome ?? 0;
+  const net = entry?.net ?? 0;
+  return {
+    income: amount(income, currency),
+    expenses: amount(entry?.totalExpenses ?? 0, currency),
+    net: amount(net, currency),
+    savingsRate: savingsRate(income, net),
+  };
+}
+
+// Net (income minus expenses) of each month; a month with no data counts as 0.
+export function buildSavingsTrend(months: BuildInput['trend']['months'], currency: string): MonthlySaving[] {
+  return months.map(({ year, month, rows }) => ({
+    year,
+    month,
+    net: amount(rows.find((row) => row.currency === currency)?.net ?? 0, currency),
+  }));
 }
 
 export function buildDashboard(input: BuildInput): DashboardData {
@@ -138,6 +189,11 @@ export function buildDashboard(input: BuildInput): DashboardData {
     activeSubscriptions: input.subscriptions.count,
     subscriptionsState: input.subscriptions.state,
     savings: amount(current?.net ?? 0, currency),
+    cashFlow: buildCashFlow(current, currency),
+    heatmap: buildHeatmap(input.period, input.monthDaily.rows, currency),
+    heatmapState: input.monthDaily.state,
+    savingsTrend: buildSavingsTrend(input.trend.months, currency),
+    savingsTrendState: input.trend.state,
     categories: categoryShares(input.comparison.rows, currency),
     categoriesState: input.comparison.state,
     recent: input.recent.items.slice(0, RECENT_COUNT),

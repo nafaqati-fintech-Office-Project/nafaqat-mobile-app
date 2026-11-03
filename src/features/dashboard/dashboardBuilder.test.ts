@@ -35,6 +35,8 @@ const base: BuildInput = {
     },
   ],
   week: weekDates({ year: 2026, month: 10, day: 27 }),
+  monthDaily: { state: 'ready', rows: [] },
+  trend: { state: 'ready', months: [] },
   budget: { state: 'ready', percent: 64.6 },
   subscriptions: { state: 'ready', count: 3 },
   comparison: { state: 'ready', rows: [] },
