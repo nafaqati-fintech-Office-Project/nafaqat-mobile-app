@@ -19,5 +19,9 @@ export function notificationLink(
     if (!notification.referenceId) return '/transactions';
     return { pathname: '/transactions', params: { highlight: notification.referenceId, at: String(at) } };
   }
+  if (notification.referenceType === 'SUBSCRIPTION') return '/subscriptions';
+  if (notification.referenceType === 'GOAL') {
+    return notification.referenceId ? { pathname: '/goal', params: { id: notification.referenceId } } : '/goals';
+  }
   return null;
 }

@@ -7,6 +7,7 @@ import { useFeedbackSync } from '@/features/categorizer/feedback/useFeedbackSync
 import { useRetryPendingPredictions } from '@/features/categorizer/useRetryPendingPredictions';
 import { useAlertTaps } from '@/features/notifications/useAlertTaps';
 import { useUnreadCountPolling } from '@/features/notifications/unreadCount';
+import { usePushRegistration } from '@/features/notifications/usePushRegistration';
 import { useTransactionSync } from '@/features/transactions/sync/useTransactionSync';
 import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -30,6 +31,8 @@ export default function TabsLayout() {
   // The bell's unread badge (bypass mode counts the sample notifications).
   useUnreadCountPolling(status === 'authenticated');
   useAlertTaps(status === 'authenticated');
+  // Bypass mode fetches the push token but has no account to send it to (see registerForPush).
+  usePushRegistration(status === 'authenticated');
 
   if (status !== 'authenticated') return <Redirect href="/login" />;
 

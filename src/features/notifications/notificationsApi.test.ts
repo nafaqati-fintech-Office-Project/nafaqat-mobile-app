@@ -139,6 +139,12 @@ describe('notificationLink', () => {
     expect(notificationLink(ref('BUDGET', 'b-1'), 7)).toEqual({ pathname: '/budget', params: { highlight: 'overall', at: '7' } });
   });
 
+  it('opens the subscriptions, and the goal itself when the alert names it', () => {
+    expect(notificationLink(ref('SUBSCRIPTION', 's-1'))).toBe('/subscriptions');
+    expect(notificationLink(ref('GOAL', 'g-1'))).toEqual({ pathname: '/goal', params: { id: 'g-1' } });
+    expect(notificationLink(ref('GOAL'))).toBe('/goals');
+  });
+
   it('opens nothing for the rest, and each tap is a new highlight', () => {
     expect(notificationLink(ref(null))).toBeNull();
     expect(notificationLink(ref('TRANSACTION', 'x'), 1)).not.toEqual(notificationLink(ref('TRANSACTION', 'x'), 2));

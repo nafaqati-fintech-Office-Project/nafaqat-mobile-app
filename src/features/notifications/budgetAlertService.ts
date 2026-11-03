@@ -8,6 +8,7 @@ import { planLocalAlerts, planServerAlerts, type LocalAlert } from './budgetAler
 import { notifyAlert } from './notify';
 import { OVERALL } from './notificationLink';
 import { getNotifications } from './notificationsService';
+import { isPushActive } from './push';
 import { getCurrentBudget } from '@/features/budget/budgetService';
 import { categoryLabelKey, codeForCategory } from '@/features/transactions/categoryDisplay';
 import { spentByCategory } from '@/features/transactions/transactionsRepo';
@@ -28,6 +29,8 @@ export async function announceServerAlerts(): Promise<void> {
 
     await saveAnnouncedIds(known, plan.ids);
     await saveLevels(plan.levels);
+    // With push on, the server already sent these to the phone; polling only records them, so none shows twice.
+    if (isPushActive()) return;
     for (const n of plan.show.slice(-MAX_BANNERS)) {
       await notifyAlert({
         title: n.title,

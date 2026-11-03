@@ -7,6 +7,7 @@ import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
+import { PushSettingsCard } from '@/features/notifications/PushSettingsCard';
 import { isMandatory, useNotificationPreferences } from '@/features/notifications/useNotificationPreferences';
 import type { NotificationType } from '@/features/notifications/types';
 import type { TranslationKey } from '@/i18n';
@@ -19,6 +20,11 @@ const LABELS: Record<NotificationType, { title: TranslationKey; body: Translatio
   LARGE_TRANSACTION: { title: 'notifications.type.largeTransaction', body: 'notifications.type.largeTransactionBody' },
   TRANSACTION_ALERT: { title: 'notifications.type.transactionAlert', body: 'notifications.type.transactionAlertBody' },
   FAMILY: { title: 'notifications.type.family', body: 'notifications.type.familyBody' },
+  SUBSCRIPTION_RENEWAL: {
+    title: 'notifications.type.subscriptionRenewal',
+    body: 'notifications.type.subscriptionRenewalBody',
+  },
+  GOAL_MILESTONE: { title: 'notifications.type.goalMilestone', body: 'notifications.type.goalMilestoneBody' },
   SECURITY_ALERT: { title: 'notifications.type.security', body: 'notifications.type.securityBody' },
   SYSTEM: { title: 'notifications.type.system', body: 'notifications.type.systemBody' },
 };
@@ -62,6 +68,7 @@ export default function NotificationSettingsRoute() {
           </View>
         ) : (
           <>
+            <PushSettingsCard />
             <AppText style={styles.intro}>{t('notifications.settingsIntro')}</AppText>
             {prefs.map(({ type, enabled }) => {
               const mandatory = isMandatory(type);

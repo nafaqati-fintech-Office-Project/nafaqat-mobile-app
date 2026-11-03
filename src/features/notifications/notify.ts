@@ -3,10 +3,8 @@ import type { ParsedTxn } from '@/features/sms/parser/types';
 
 const CHANNEL_ID = 'transactions';
 
-// false where notifications cannot run (see loadNotifications) or the user said no.
-export async function ensureNotificationPermission(): Promise<boolean> {
-  const Notifications = await loadNotifications();
-  if (!Notifications) return false;
+// Banners (local ones and pushes) also show while the app is open.
+export function presentInForeground(Notifications: NonNullable<Awaited<ReturnType<typeof loadNotifications>>>): void {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowBanner: true,
@@ -15,6 +13,13 @@ export async function ensureNotificationPermission(): Promise<boolean> {
       shouldSetBadge: false,
     }),
   });
+}
+
+// false where notifications cannot run (see loadNotifications) or the user said no.
+export async function ensureNotificationPermission(): Promise<boolean> {
+  const Notifications = await loadNotifications();
+  if (!Notifications) return false;
+  presentInForeground(Notifications);
   await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
     name: 'Transactions',
     importance: Notifications.AndroidImportance.DEFAULT,

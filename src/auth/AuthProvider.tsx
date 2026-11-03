@@ -17,6 +17,7 @@ import { endSession, refreshSession, startSession } from './session';
 import { getRefreshToken, loadPersistedTokens } from './tokenStore';
 import { showToast } from '@/components/Toast';
 import { AUTH_BYPASS } from '@/config/flags';
+import { unregisterPush } from '@/features/notifications/push';
 import { getProfile } from '@/features/profile/profileApi';
 import { t } from '@/i18n';
 
@@ -93,6 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
+    // First, while the session can still call the server: this phone stops getting the account's pushes.
+    await unregisterPush();
     if (AUTH_BYPASS) {
       // TEMP: remove when dashboard is connected to backend
       setUser(null);
