@@ -7,12 +7,14 @@ import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
+import { usePlan } from '@/features/plans/usePlan';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 
 export default function MoreRoute() {
   const { t, language, isRTL } = useLanguage();
   const { signOut } = useAuth();
+  const { plan } = usePlan();
 
   const onSignOut = async () => {
     await signOut();
@@ -33,6 +35,20 @@ export default function MoreRoute() {
         <AppText weight="medium" style={styles.rowLabel}>
           {t('more.profile')}
         </AppText>
+        <View style={isRTL && styles.flip}>
+          <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
+        </View>
+      </Pressable>
+      <Pressable
+        onPress={() => router.push('/plans')}
+        accessibilityRole="button"
+        accessibilityLabel={t('plans.title')}
+        style={styles.row}>
+        <Icon name="star" color={colors.violet} size={sizes.icon} />
+        <AppText weight="medium" style={styles.rowLabel}>
+          {t('more.plan')}
+        </AppText>
+        {plan && <AppText style={styles.rowValue}>{t(plan === 'premium' ? 'plans.premium' : 'plans.free')}</AppText>}
         <View style={isRTL && styles.flip}>
           <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
         </View>

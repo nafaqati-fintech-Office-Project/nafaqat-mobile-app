@@ -8,6 +8,8 @@ import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
+import { canUse } from '@/features/plans/plans';
+import { usePlan } from '@/features/plans/usePlan';
 import { exportReportPdf } from '@/features/reports/exportReport';
 import {
   CategorySection,
@@ -30,8 +32,15 @@ export default function ReportsRoute() {
   // Only a fully loaded report is exported, so the PDF never has half the data.
   const canExport = status === 'ready' && !!data && !refreshing && !exporting;
 
+  const { plan } = usePlan();
+
   const onExport = async () => {
-    if (!data) return;
+    if (!data || plan === null) return;
+    // PDF export is a Premium feature: free users see the plans with it highlighted.
+    if (!canUse(plan, 'pdfExport')) {
+      router.push({ pathname: '/plans', params: { feature: 'pdfExport' } });
+      return;
+    }
     setExporting(true);
     try {
       await exportReportPdf(data, language);
