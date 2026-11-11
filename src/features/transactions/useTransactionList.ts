@@ -29,7 +29,7 @@ export function useTransactionList(filter: TransactionFilter, query: string, sco
   // Each request gets a number; a reply for an older filter or search is dropped.
   const request = useRef(0);
 
-  const scopeKey = `${scope.category ?? ''}|${scope.from ?? ''}|${scope.to ?? ''}`;
+  const scopeKey = `${scope.category ?? ''}|${scope.from ?? ''}|${scope.to ?? ''}|${scope.card ?? ''}`;
   const key = `${filter}\n${search}\n${scopeKey}`;
   const status = result?.key === key ? result.status : 'loading';
 

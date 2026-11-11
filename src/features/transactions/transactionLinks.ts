@@ -12,6 +12,8 @@ export type TransactionLink = {
   from?: string;
   to?: string;
   q?: string;
+  // A card's last 3-4 digits
+  card?: string;
   // What the chip above the list says, e.g. "Groceries · November 2026".
   title: string;
 };
@@ -24,6 +26,7 @@ export type TransactionLinkParams = {
   from?: string;
   to?: string;
   q?: string;
+  card?: string;
   title?: string;
 };
 
@@ -45,6 +48,7 @@ export function openTransactions(link: TransactionLink) {
     from: link.from ?? '',
     to: link.to ?? '',
     q: link.q ?? '',
+    card: link.card ?? '',
     title: link.title,
   };
   router.navigate({ pathname: '/transactions', params });

@@ -7,7 +7,10 @@ import {
   createCashExpense,
   deleteTransaction,
   fetchTransaction,
+  fetchCards,
   fetchTransactionPage,
+  cardFromDescription,
+  type CardSummary,
   type NewCashExpense,
   type TransactionItem,
   type TransactionPage,
@@ -29,7 +32,8 @@ async function getMockPage({ filter, search, scope }: TransactionQuery): Promise
   const inScope = (row: TransactionItem) =>
     (!scope?.category || row.category === scope.category) &&
     (!scope?.from || dayOf(row.date) >= scope.from) &&
-    (!scope?.to || dayOf(row.date) <= scope.to);
+    (!scope?.to || dayOf(row.date) <= scope.to) &&
+    (!scope?.card || (row.card ?? cardFromDescription(row.description)) === scope.card);
   const items = mock
     .filter(
       (row) =>
@@ -39,6 +43,21 @@ async function getMockPage({ filter, search, scope }: TransactionQuery): Promise
     )
     .sort((a, b) => b.date.getTime() - a.date.getTime());
   return { items, page: 0, hasMore: false };
+}
+
+// The bypass session lists the cards of its mock rows.
+export async function getCards(): Promise<CardSummary[]> {
+  if (!AUTH_BYPASS) return fetchCards();
+  const counts = new Map<string, CardSummary>();
+  for (const row of mock) {
+    const card = row.card ?? cardFromDescription(row.description);
+    if (!card) continue;
+    const bank = row.description?.includes(' · ') ? row.description.split(' · ')[0] : null;
+    const entry = counts.get(card) ?? { card, bank, count: 0 };
+    entry.count += 1;
+    counts.set(card, entry);
+  }
+  return [...counts.values()].sort((a, b) => b.count - a.count);
 }
 
 export function getTransactionPage(query: TransactionQuery): Promise<TransactionPage> {

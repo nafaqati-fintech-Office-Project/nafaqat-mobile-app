@@ -9,17 +9,19 @@ import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
 import { useScanReceipt } from '@/features/receipts/useScanReceipt';
+import { CardChips } from '@/features/transactions/CardChips';
 import { FilterTabs } from '@/features/transactions/FilterTabs';
 import { daysAgo, groupByDay, type DaySection } from '@/features/transactions/groupByDay';
 import { SearchBar } from '@/features/transactions/SearchBar';
 import { TransactionListItem } from '@/features/transactions/TransactionListItem';
 import { TransactionsHeader } from '@/features/transactions/TransactionsHeader';
 import type { TransactionLinkParams } from '@/features/transactions/transactionLinks';
-import type { TransactionFilter, TransactionItem, TransactionScope } from '@/features/transactions/transactionsApi';
+import type { CardSummary, TransactionFilter, TransactionItem, TransactionScope } from '@/features/transactions/transactionsApi';
 import { useTransactionHighlight } from '@/features/transactions/useTransactionHighlight';
 import { TransactionDetailCard } from '@/features/transactions/TransactionDetailCard';
 import {
   deleteProblem,
+  getCards,
   removeTransaction,
   setTransactionCategory,
   type DeleteProblem,
@@ -45,9 +47,12 @@ export default function TransactionsRoute() {
   const [filter, setFilter] = useState<TransactionFilter>('all');
   // Set when a card elsewhere opened this list for one category, period or search; the chip above the list clears it.
   const [scope, setScope] = useState<(TransactionScope & { title: string }) | null>(null);
+  // Card-wise: one card's transactions (its last digits), picked from the chips or set by a link
+  const [card, setCard] = useState<string | null>(null);
+  const [cards, setCards] = useState<CardSummary[]>([]);
   const listScope = useMemo<TransactionScope>(
-    () => (scope ? { category: scope.category, from: scope.from, to: scope.to } : {}),
-    [scope],
+    () => ({ category: scope?.category, from: scope?.from, to: scope?.to, card: card ?? undefined }),
+    [scope, card],
   );
   const list = useTransactionList(filter, query, listScope);
   const scanReceipt = useScanReceipt();
@@ -67,6 +72,7 @@ export default function TransactionsRoute() {
     setQuery('');
     setFilter('all');
     setScope(null);
+    setCard(null);
   }
 
   // Opened from a dashboard, insights, report or budget card: show just its transactions.
@@ -81,13 +87,15 @@ export default function TransactionsRoute() {
       to: params.to || undefined,
       title: params.title ?? '',
     });
+    setCard(/^\d{3,4}$/.test(params.card ?? '') ? (params.card as string) : null);
   }
   const clearScope = () => {
     setScope(null);
     setQuery('');
+    setCard(null);
   };
 
-  const showingAll = filter === 'all' && list.appliedSearch === '' && !scope && list.status === 'ready';
+  const showingAll = filter === 'all' && list.appliedSearch === '' && !scope && !card && list.status === 'ready';
   const onMissing = useCallback(() => showToast(t('transactions.notFound')), [t]);
   const highlight = useTransactionHighlight(request, list.items, showingAll, onMissing);
 
@@ -136,11 +144,18 @@ export default function TransactionsRoute() {
   // Coming back to the tab picks up rows the SMS sync sent meanwhile; the first focus is the initial load.
   const focused = useRef(false);
   const { reloadSilently } = list;
+  // The card chips; a failure only hides them. Refreshed on focus, as new SMS may add a card.
+  const loadCards = useCallback(() => {
+    getCards()
+      .then(setCards)
+      .catch(() => undefined);
+  }, []);
   useFocusEffect(
     useCallback(() => {
       if (focused.current) void reloadSilently();
       focused.current = true;
-    }, [reloadSilently]),
+      loadCards();
+    }, [reloadSilently, loadCards]),
   );
 
   // Only cash expenses entered by hand can be deleted; bank transactions stay as the bank reported them.
@@ -199,7 +214,7 @@ export default function TransactionsRoute() {
       </View>
     ) : (
       <AppText style={styles.empty}>
-        {query.trim() || filter !== 'all' || scope ? t('transactions.noResults') : t('transactions.empty')}
+        {query.trim() || filter !== 'all' || scope || card ? t('transactions.noResults') : t('transactions.empty')}
       </AppText>
     );
 
@@ -220,6 +235,7 @@ export default function TransactionsRoute() {
         <TransactionsHeader onAdd={() => router.push('/transaction-add')} onScan={scanReceipt.start} scanning={scanReceipt.scanning} />
         <SearchBar value={query} onChangeText={setQuery} />
         <FilterTabs value={filter} onChange={setFilter} />
+        {(cards.length > 0 || card) && <CardChips cards={cards} value={card} onChange={setCard} />}
         {scope && (
           <View style={styles.scope}>
             <AppText weight="semibold" style={styles.scopeText} numberOfLines={1}>

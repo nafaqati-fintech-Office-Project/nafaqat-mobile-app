@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   createCashExpense,
   deleteTransaction,
+  fetchCards,
   fetchTransactionPage,
   parseTransaction,
   parseTransactionPage,
@@ -159,5 +160,28 @@ describe('cash expenses', () => {
     del.mockResolvedValue({ status: 204 });
     await deleteTransaction('a/b');
     expect(del).toHaveBeenCalledWith('/api/transactions/a%2Fb');
+  });
+});
+
+describe('card-wise transactions', () => {
+  it('reads the card digits from the server, or from the description an older server sends', () => {
+    expect(parseTransaction(row({ cardLast4: '1234' })).card).toBe('1234');
+    expect(parseTransaction(row({ description: 'Meezan · card ****789' })).card).toBe('789');
+    expect(parseTransaction(row({ description: 'Cash' })).card).toBeNull();
+  });
+
+  it('filters the list by a card', async () => {
+    get.mockResolvedValue({ data: { content: [], page: 0, size: 30, totalElements: 0, totalPages: 0 } });
+    await fetchTransactionPage({ filter: 'all', search: '', page: 0, size: 30, scope: { card: '1234' } });
+    expect(get.mock.calls[0][1].params).toMatchObject({ card: '1234' });
+  });
+
+  it('lists the cards with their bank', async () => {
+    get.mockResolvedValue({ data: [{ cardLast4: '1234', count: 5, lastUsed: '2026-11-01T10:00:00Z', bank: 'Meezan' }, { cardLast4: '999', count: 1, bank: null }] });
+    expect(await fetchCards()).toEqual([
+      { card: '1234', bank: 'Meezan', count: 5 },
+      { card: '999', bank: null, count: 1 },
+    ]);
+    expect(get).toHaveBeenCalledWith('/api/transactions/cards');
   });
 });

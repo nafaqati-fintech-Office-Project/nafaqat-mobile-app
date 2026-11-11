@@ -49,7 +49,9 @@ export function TransactionListItem({ item, showDay = false, flashKey = null, on
           {item.merchant ?? t('transactions.unknownMerchant')}
         </AppText>
         <AppText style={styles.meta} numberOfLines={1}>
-          {item.manual ? `${category} · ${t('transactions.cash.tag')}` : category}
+          {[category, item.manual ? t('transactions.cash.tag') : null, item.card ? `•••• ${item.card}` : null]
+            .filter(Boolean)
+            .join(' · ')}
         </AppText>
       </View>
       <View style={styles.end}>

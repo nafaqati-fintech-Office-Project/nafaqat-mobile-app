@@ -135,6 +135,7 @@ export function TransactionDetailCard({ item, onClose, onChangeCategory, onDelet
       ],
       [t('transactions.detail.source'), item.manual ? t('transactions.cash.tag') : t('transactions.detail.sourceBank')],
     );
+    if (item.card) rows.push([t('transactions.detail.card'), `•••• ${item.card}`]);
     if (item.description) rows.push([t('transactions.detail.description'), item.description]);
     if (balance) rows.push([t('transactions.detail.balance'), formatMoney(balance, item.currency, language)]);
     if (item.status) rows.push([t('transactions.detail.status'), item.status]);

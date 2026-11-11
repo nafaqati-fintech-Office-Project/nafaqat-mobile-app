@@ -405,7 +405,7 @@ export function PaymentMethodsSection({ report }: { report: Report }) {
         return (
           <DrillPressable
             key={m.card ?? 'other'}
-            link={m.card ? link(name, { type: 'expenses', q: `****${m.card}` }) : null}
+            link={m.card ? link(name, { type: 'expenses', card: m.card }) : null}
             style={styles.cat}
             label={`${name}, ${money(m.amount)}, ${m.percent}%`}>
             <View style={styles.line}>

@@ -20,7 +20,12 @@ export type TransactionItem = {
   status?: string | null;
   // "sms:" + the phone's duplicate key for a transaction read from an SMS; null for cash expenses.
   externalId?: string | null;
+  // Last 3-4 digits of the card / account it was made with, from the bank SMS; null when unknown.
+  card?: string | null;
 };
+
+// One of the user's cards (GET /api/transactions/cards), most used first. bank is null when unknown.
+export type CardSummary = { card: string; bank: string | null; count: number };
 
 // A cash expense entered by hand. category is the service's code; transactionDate an ISO instant.
 export type NewCashExpense = {
@@ -36,7 +41,12 @@ export type TransactionPage = { items: TransactionItem[]; page: number; hasMore:
 
 // Narrows the list further, from a drill-down link: one category (the app's name) and/or calendar days (yyyy-MM-dd,
 // inclusive, on the phone's calendar).
-export type TransactionScope = { category?: string; from?: string; to?: string };
+export type TransactionScope = { category?: string; from?: string; to?: string; card?: string };
+
+// "Meezan · card ****1234" (what the sync writes): the digits, for a server that does not send cardLast4 yet
+const CARD_IN_DESCRIPTION = /\*{4}\s*(\d{3,4})(?!\d)/;
+export const cardFromDescription = (description: string | null | undefined) =>
+  (description && CARD_IN_DESCRIPTION.exec(description)?.[1]) || null;
 
 export type TransactionQuery = { filter: TransactionFilter; search: string; page: number; size: number; scope?: TransactionScope };
 
@@ -86,6 +96,7 @@ export function parseTransaction(raw: unknown): TransactionItem {
     description: optionalText(body.description),
     status: optionalText(body.status),
     externalId: optionalText(body.externalTransactionId),
+    card: optionalText(body.cardLast4) ?? cardFromDescription(optionalText(body.description)),
   };
 }
 
@@ -116,6 +127,7 @@ export async function fetchTransactionPage({ filter, search, page, size, scope }
       category: scope?.category ? (codeForCategory(scope.category) ?? undefined) : undefined,
       startDate: scope?.from || undefined,
       endDate: scope?.to || undefined,
+      card: scope?.card || undefined,
       timeZone: dated ? phoneTimeZone() : undefined,
       status: 'COMPLETED',
       sort: 'transactionDate,desc',
@@ -139,4 +151,17 @@ export async function createCashExpense({ merchant, ...rest }: NewCashExpense): 
 // A soft delete. The service refuses (409) anything not entered by hand.
 export async function deleteTransaction(id: string): Promise<void> {
   await api.delete(`/api/transactions/${encodeURIComponent(id)}`);
+}
+
+export function parseCards(raw: unknown): CardSummary[] {
+  return arr(raw).map((item) => {
+    const body = obj(item);
+    return { card: str(body.cardLast4), bank: optionalText(body.bank), count: num(body.count) };
+  });
+}
+
+// The user's cards, most used first.
+export async function fetchCards(): Promise<CardSummary[]> {
+  const { data } = await api.get<unknown>('/api/transactions/cards');
+  return parseCards(data);
 }
