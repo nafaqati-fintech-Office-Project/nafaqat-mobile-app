@@ -9,7 +9,7 @@ vi.mock('@/features/transactions/categoryRules', () => ({ findUserCategory }));
 const post = vi.hoisted(() => vi.fn());
 vi.mock('@/api/client', () => ({ api: { post } }));
 vi.mock('@/config/flags', () => ({ AUTH_BYPASS: false }));
-vi.mock('@/config/env', () => ({ API_URL: 'http://api.test', MERCHANT_FALLBACK_ENABLED: true }));
+vi.mock('@/config/env', () => ({ API_URL: 'http://api.test', MERCHANT_FALLBACK_ENABLED: true, LLM_ONLY: false }));
 
 const txn = (overrides: Partial<ParsedTxn> = {}): ParsedTxn => ({
   smsId: '1',

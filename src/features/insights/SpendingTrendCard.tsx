@@ -1,34 +1,35 @@
-import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { TrendChart } from './TrendChart';
 import type { MonthAmount } from './types';
 import { AppText } from '@/components/AppText';
-import { SegmentedTabs, type SegmentedOption } from '@/components/SegmentedTabs';
+import { monthPeriod } from '@/features/dashboard/drill';
+import { openTransactions } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, shadows, spacing } from '@/theme';
 
-type Range = '3' | '6' | '12';
+// A single month still shows the last six, so there is a trend to read.
+const MIN_MONTHS = 6;
 
-const RANGES: SegmentedOption<Range>[] = [
-  { value: '3', label: 'insights.range.3' },
-  { value: '6', label: 'insights.range.6' },
-  { value: '12', label: 'insights.range.12' },
-];
-
-export function SpendingTrendCard({ monthly, currency }: { monthly: MonthAmount[]; currency: string }) {
-  const { t } = useLanguage();
-  const [range, setRange] = useState<Range>('6');
-  const months = monthly.slice(-Number(range));
+export function SpendingTrendCard({ monthly, currency, period }: { monthly: MonthAmount[]; currency: string; period: number }) {
+  const { t, language } = useLanguage();
+  const months = monthly.slice(-Math.max(period, MIN_MONTHS));
 
   return (
     <View style={styles.card}>
       <AppText weight="bold" style={styles.title}>
         {t('insights.spendingTrend')}
       </AppText>
-      <SegmentedTabs options={RANGES} value={range} onChange={setRange} />
-      {/* A new range starts again on its latest month. */}
-      <TrendChart key={range} months={months} currency={currency} />
+      {/* A new period starts again on its latest month. */}
+      <TrendChart
+        key={months.length}
+        months={months}
+        currency={currency}
+        onOpenMonth={(m) => {
+          const month = monthPeriod(m.year, m.month, language);
+          openTransactions({ type: 'expenses', from: month.from, to: month.to, title: `${t('insights.spendingTrend')} · ${month.title}` });
+        }}
+      />
     </View>
   );
 }

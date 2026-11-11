@@ -23,7 +23,7 @@ describe('signed in: through the gateway', () => {
       predictionSource: 'ml',
       predictionId: null,
     });
-    expect(post).toHaveBeenCalledWith('/api/ai-service/predict', { text: 'ZZQX SHOP' }, { timeout: 15000 });
+    expect(post).toHaveBeenCalledWith('/api/ai-service/predict', { text: 'ZZQX SHOP' }, { timeout: 30000 });
   });
 
   it('reports an unexpected response shape as rejected', async () => {
@@ -68,7 +68,7 @@ describe('signed in: through the gateway', () => {
     const { extractMerchant } = await import('./modelClient');
     post.mockResolvedValueOnce({ data: { merchant: '  KFC LAHORE ' } });
     expect(await extractMerchant('paid at kfc')).toEqual({ merchant: 'KFC LAHORE' });
-    expect(post).toHaveBeenCalledWith('/api/ai-service/extract-merchant', { text: 'paid at kfc' }, { timeout: 15000 });
+    expect(post).toHaveBeenCalledWith('/api/ai-service/extract-merchant', { text: 'paid at kfc' }, { timeout: 30000 });
     post.mockResolvedValueOnce({ data: { merchant: '  ' } });
     expect(await extractMerchant('paid at a stall')).toEqual({ merchant: null });
   });
@@ -128,7 +128,7 @@ describe('shared limits', () => {
     vi.useFakeTimers();
     try {
       const { extractMerchant, predictCategory } = await import('./modelClient');
-      post.mockRejectedValueOnce(httpError(503));
+      post.mockRejectedValueOnce(httpError(502));
       expect(await predictCategory('SHOP A')).toBe('unavailable');
       expect(await predictCategory('SHOP B')).toBe('unavailable');
       expect(await extractMerchant('paid at shop')).toBe('unavailable');
@@ -140,6 +140,15 @@ describe('shared limits', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it('does not pause the other calls when one request gets a 503', async () => {
+    const { predictCategory } = await import('./modelClient');
+    post.mockRejectedValueOnce(httpError(503));
+    expect(await predictCategory('SHOP A')).toBe('unavailable');
+    post.mockResolvedValueOnce(ok('Health'));
+    expect(await predictCategory('SHOP B')).toMatchObject({ category: 'Health' });
+    expect(post).toHaveBeenCalledTimes(2);
   });
 
   it('tells listeners once when the model answers again after being unreachable', async () => {
@@ -198,7 +207,7 @@ describe('auth bypass: straight to the model server', () => {
     const { predictCategory } = await import('./modelClient');
     expect(await predictCategory('PSO')).toMatchObject({ category: 'Fuel' });
     expect(create).toHaveBeenCalledWith({ baseURL: 'http://model.test:8000' });
-    expect(direct).toHaveBeenCalledWith('/predict', { text: 'PSO' }, { timeout: 15000 });
+    expect(direct).toHaveBeenCalledWith('/predict', { text: 'PSO' }, { timeout: 30000 });
     expect(post).not.toHaveBeenCalled();
   });
 });

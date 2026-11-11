@@ -8,14 +8,22 @@ import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
+import { useScanReceipt } from '@/features/receipts/useScanReceipt';
 import { FilterTabs } from '@/features/transactions/FilterTabs';
 import { daysAgo, groupByDay, type DaySection } from '@/features/transactions/groupByDay';
 import { SearchBar } from '@/features/transactions/SearchBar';
 import { TransactionListItem } from '@/features/transactions/TransactionListItem';
 import { TransactionsHeader } from '@/features/transactions/TransactionsHeader';
-import type { TransactionFilter, TransactionItem } from '@/features/transactions/transactionsApi';
+import type { TransactionLinkParams } from '@/features/transactions/transactionLinks';
+import type { TransactionFilter, TransactionItem, TransactionScope } from '@/features/transactions/transactionsApi';
 import { useTransactionHighlight } from '@/features/transactions/useTransactionHighlight';
-import { deleteProblem, removeTransaction, type DeleteProblem } from '@/features/transactions/transactionsService';
+import { TransactionDetailCard } from '@/features/transactions/TransactionDetailCard';
+import {
+  deleteProblem,
+  removeTransaction,
+  setTransactionCategory,
+  type DeleteProblem,
+} from '@/features/transactions/transactionsService';
 import { useTransactionList } from '@/features/transactions/useTransactionList';
 import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -35,12 +43,19 @@ export default function TransactionsRoute() {
   const { language, t } = useLanguage();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<TransactionFilter>('all');
-  const list = useTransactionList(filter, query);
+  // Set when a card elsewhere opened this list for one category, period or search; the chip above the list clears it.
+  const [scope, setScope] = useState<(TransactionScope & { title: string }) | null>(null);
+  const listScope = useMemo<TransactionScope>(
+    () => (scope ? { category: scope.category, from: scope.from, to: scope.to } : {}),
+    [scope],
+  );
+  const list = useTransactionList(filter, query, listScope);
+  const scanReceipt = useScanReceipt();
   const sections = useMemo(() => groupByDay(list.items), [list.items]);
   const listRef = useRef<SectionList<TransactionItem, DaySection<TransactionItem>>>(null);
 
   // Opened from a notification: point out that transaction.
-  const params = useLocalSearchParams<{ highlight?: string; at?: string }>();
+  const params = useLocalSearchParams<{ highlight?: string; at?: string } & TransactionLinkParams>();
   const request = useMemo(
     () => (params.highlight ? { id: params.highlight, key: `${params.highlight}:${params.at ?? ''}` } : null),
     [params.highlight, params.at],
@@ -51,8 +66,28 @@ export default function TransactionsRoute() {
     setHandledKey(request.key);
     setQuery('');
     setFilter('all');
+    setScope(null);
   }
-  const showingAll = filter === 'all' && list.appliedSearch === '' && list.status === 'ready';
+
+  // Opened from a dashboard, insights, report or budget card: show just its transactions.
+  const [handledDrill, setHandledDrill] = useState<string | null>(null);
+  if (params.drill && params.drill !== handledDrill) {
+    setHandledDrill(params.drill);
+    setFilter(params.type === 'expenses' || params.type === 'income' ? params.type : 'all');
+    setQuery(params.q ?? '');
+    setScope({
+      category: params.category || undefined,
+      from: params.from || undefined,
+      to: params.to || undefined,
+      title: params.title ?? '',
+    });
+  }
+  const clearScope = () => {
+    setScope(null);
+    setQuery('');
+  };
+
+  const showingAll = filter === 'all' && list.appliedSearch === '' && !scope && list.status === 'ready';
   const onMissing = useCallback(() => showToast(t('transactions.notFound')), [t]);
   const highlight = useTransactionHighlight(request, list.items, showingAll, onMissing);
 
@@ -131,8 +166,19 @@ export default function TransactionsRoute() {
       { text: t('notifications.cancel'), style: 'cancel' },
       { text: t('transactions.cash.delete'), style: 'destructive', onPress: () => void deleteRow(item) },
     ]);
-  const actionFor = (item: TransactionItem) =>
-    item.manual && deletingId === null ? () => confirmDelete(item) : undefined;
+
+  // Tapping a row opens its card: all the details, change category, and delete for cash expenses.
+  const [selected, setSelected] = useState<TransactionItem | null>(null);
+  const { setCategory } = list;
+  const changeCategory = async (item: TransactionItem, category: string) => {
+    await setTransactionCategory(item.id, category);
+    setCategory(item.id, category);
+    setSelected((current) => (current && current.id === item.id ? { ...current, category } : current));
+  };
+  const deleteFromCard = (item: TransactionItem) => {
+    setSelected(null);
+    confirmDelete(item);
+  };
 
   const sectionTitle = (date: Date) => {
     const ago = daysAgo(date);
@@ -153,7 +199,7 @@ export default function TransactionsRoute() {
       </View>
     ) : (
       <AppText style={styles.empty}>
-        {query.trim() || filter !== 'all' ? t('transactions.noResults') : t('transactions.empty')}
+        {query.trim() || filter !== 'all' || scope ? t('transactions.noResults') : t('transactions.empty')}
       </AppText>
     );
 
@@ -171,9 +217,23 @@ export default function TransactionsRoute() {
     <SafeAreaView edges={['top']} style={styles.screen}>
       <StatusBar style="dark" />
       <View style={styles.top}>
-        <TransactionsHeader onAdd={() => router.push('/transaction-add')} />
+        <TransactionsHeader onAdd={() => router.push('/transaction-add')} onScan={scanReceipt.start} scanning={scanReceipt.scanning} />
         <SearchBar value={query} onChangeText={setQuery} />
         <FilterTabs value={filter} onChange={setFilter} />
+        {scope && (
+          <View style={styles.scope}>
+            <AppText weight="semibold" style={styles.scopeText} numberOfLines={1}>
+              {scope.title || t('transactions.filtered')}
+            </AppText>
+            <Pressable
+              onPress={clearScope}
+              hitSlop={spacing.sm}
+              accessibilityRole="button"
+              accessibilityLabel={t('transactions.clearFilter')}>
+              <Icon name="close" color={colors.primary} size={sizes.icon} />
+            </Pressable>
+          </View>
+        )}
       </View>
       <SectionList
         ref={listRef}
@@ -195,7 +255,7 @@ export default function TransactionsRoute() {
           <TransactionListItem
             item={item}
             flashKey={request && highlight.inList && item.id === request.id ? request.key : null}
-            onPress={actionFor(item)}
+            onPress={() => setSelected(item)}
             busy={deletingId === item.id}
           />
         )}
@@ -203,6 +263,12 @@ export default function TransactionsRoute() {
         ListHeaderComponent={pinned || undefined}
         ListEmptyComponent={empty}
         ListFooterComponent={footer}
+      />
+      <TransactionDetailCard
+        item={selected}
+        onClose={() => setSelected(null)}
+        onChangeCategory={changeCategory}
+        onDelete={deleteFromCard}
       />
     </SafeAreaView>
   );
@@ -229,4 +295,16 @@ const styles = StyleSheet.create({
   },
   pinnedHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   pinnedTitle: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  scope: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    maxWidth: '100%',
+    gap: spacing.sm,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primarySoft,
+  },
+  scopeText: { flexShrink: 1, fontSize: fontSizes.sm, color: colors.primary },
 });

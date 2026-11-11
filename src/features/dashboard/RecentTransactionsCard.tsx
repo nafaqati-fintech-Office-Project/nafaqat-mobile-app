@@ -17,7 +17,12 @@ export function RecentTransactionsCard({ data }: { data: DashboardData }) {
   return (
     <DashboardSection title={t('dashboard.recent')} onSeeAll={() => router.navigate('/transactions')} note={note}>
       {data.recent.map((item) => (
-        <TransactionListItem key={item.id} item={item} showDay />
+        <TransactionListItem
+          key={item.id}
+          item={item}
+          showDay
+          onPress={() => router.navigate({ pathname: '/transactions', params: { highlight: item.id, at: String(Date.now()) } })}
+        />
       ))}
     </DashboardSection>
   );

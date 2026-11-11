@@ -7,6 +7,12 @@
     "icon": "./assets/images/icon.png",
     "scheme": "nafaqati",
     "userInterfaceStyle": "light",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d04820ad-5757-4f0a-acd8-9cee9e223e33"
+    },
     "ios": {
       "icon": "./assets/expo.icon"
     },
@@ -22,7 +28,8 @@
       "permissions": [
         "android.permission.READ_SMS",
         "android.permission.RECEIVE_SMS",
-        "android.permission.POST_NOTIFICATIONS"
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -55,7 +62,28 @@
       ],
       "expo-notifications",
       "expo-sqlite",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Nafaqati uses the camera so you can photograph a receipt or bill to add it as an expense.",
+          "photosPermission": "Nafaqati reads the receipt or bill photo you choose to add it as an expense.",
+          "microphonePermission": false
+        }
+      ],
+      "expo-document-picker",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Nafaqati uses the microphone so you can ask the assistant questions by voice.",
+          "speechRecognitionPermission": "Nafaqati turns your voice into text so you can ask the assistant questions.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox",
+            "com.google.android.as"
+          ]
+        }
+      ],
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true,

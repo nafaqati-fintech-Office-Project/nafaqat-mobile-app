@@ -1,8 +1,8 @@
 import { isAxiosError } from 'axios';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -12,9 +12,12 @@ import { showToast } from '@/components/Toast';
 import { AuthInput } from '@/features/auth/AuthInput';
 import { BUDGET_CURRENCIES, isBudgetCurrency, readAmount, type BudgetCurrency } from '@/features/budget/budgetForm';
 import { getPreferences } from '@/features/dashboard/dashboardApi';
-import { expenseInstant, recentDays } from '@/features/transactions/cashExpense';
+import { hasLikelyDuplicate } from '@/features/receipts/duplicate';
+import { convertAmount } from '@/features/receipts/convertCurrency';
+import { isReceiptCurrency, receiptDay } from '@/features/receipts/parseReceipt';
+import { daysWithReceiptDay, expenseInstant, recentDays } from '@/features/transactions/cashExpense';
 import { categoryLabelKey, codeForCategory, pickableCategories } from '@/features/transactions/categoryDisplay';
-import { addCashExpense } from '@/features/transactions/transactionsService';
+import { addCashExpense, getTransactionPage } from '@/features/transactions/transactionsService';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 import { intlLocale } from '@/utils/intl';
@@ -23,24 +26,49 @@ const CATEGORIES = pickableCategories('DEBIT');
 
 export default function TransactionAddRoute() {
   const { language, t, isRTL } = useLanguage();
-  const [amount, setAmount] = useState('');
+  // Opened after a receipt scan: what the server read, to be checked before adding.
+  const scan = useLocalSearchParams<{ scanned?: string; amount?: string; currency?: string; merchant?: string; category?: string; date?: string }>();
+  const scanned = scan.scanned === '1';
+  const [amount, setAmount] = useState(scanned ? (scan.amount ?? '') : '');
   // The user's own pick wins over their preferred currency, which arrives a moment later.
-  const [picked, setPicked] = useState<BudgetCurrency | null>(null);
+  const [picked, setPicked] = useState<BudgetCurrency | null>(isBudgetCurrency(scan.currency) ? scan.currency : null);
   const [preferred, setPreferred] = useState<BudgetCurrency | null>(null);
   const currency = picked ?? preferred ?? 'SAR';
-  const [what, setWhat] = useState('');
-  const [category, setCategory] = useState<string | null>(null);
-  const days = useMemo(() => recentDays(new Date()), []);
-  const [dayIndex, setDayIndex] = useState(0);
+  const [what, setWhat] = useState(scanned ? (scan.merchant ?? '') : '');
+  const [category, setCategory] = useState<string | null>(scanned && scan.category && CATEGORIES.includes(scan.category) ? scan.category : null);
+  const days = useMemo(() => {
+    const now = new Date();
+    return daysWithReceiptDay(recentDays(now), scanned ? receiptDay(scan.date) : null, now);
+  }, [scanned, scan.date]);
+  const [dayIndex, setDayIndex] = useState(() => {
+    const day = scanned ? receiptDay(scan.date) : null;
+    const index = day ? days.findIndex((d) => d.getTime() === day.getTime()) : -1;
+    return Math.max(index, 0);
+  });
   const [showErrors, setShowErrors] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  // Set when a receipt in another currency was converted: the original amount, for the note.
+  const [convertedFrom, setConvertedFrom] = useState<string | null>(null);
+
   useEffect(() => {
     getPreferences()
-      .then((preferences) => {
-        if (isBudgetCurrency(preferences?.currency)) setPreferred(preferences.currency);
+      .then(async (preferences) => {
+        const target = isBudgetCurrency(preferences?.currency) ? preferences.currency : null;
+        if (!target) return;
+        setPreferred(target);
+        // A receipt in another currency is added in the person's own currency.
+        if (scanned && isReceiptCurrency(scan.currency) && scan.currency !== target && scan.amount) {
+          const converted = await convertAmount(scan.amount, scan.currency, target);
+          if (converted) {
+            setAmount(converted);
+            setPicked(null);
+            setConvertedFrom(`${scan.amount} ${scan.currency}`);
+          }
+        }
       })
       .catch(() => undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const price = readAmount(amount, currency);
@@ -52,6 +80,8 @@ export default function TransactionAddRoute() {
   const dayLabel = (day: Date, index: number) => {
     if (index === 0) return t('transactions.today');
     if (index === 1) return t('transactions.yesterday');
+    // A receipt older than the last week: show its date in full.
+    if (index >= 7) return new Intl.DateTimeFormat(intlLocale(language), { day: 'numeric', month: 'short' }).format(day);
     return new Intl.DateTimeFormat(intlLocale(language), { weekday: 'short', day: 'numeric' }).format(day);
   };
 
@@ -60,11 +90,30 @@ export default function TransactionAddRoute() {
   const save = async () => {
     setShowErrors(true);
     if (price.kind !== 'ok') return;
+    if (scanned) {
+      setSaving(true);
+      // A scan may repeat an SMS or an earlier scan; ask first. If the check itself fails, just add.
+      const duplicate = await getTransactionPage({ filter: 'expenses', search: '', page: 0, size: 50 })
+        .then((page) => hasLikelyDuplicate(page.items, { amount: price.amount, currency, day: days[dayIndex] }))
+        .catch(() => false);
+      if (duplicate) {
+        setSaving(false);
+        Alert.alert(t('receipts.duplicateTitle'), t('receipts.duplicateBody'), [
+          { text: t('notifications.cancel'), style: 'cancel' },
+          { text: t('receipts.duplicateAdd'), onPress: () => void submit(price.amount) },
+        ]);
+        return;
+      }
+    }
+    await submit(price.amount);
+  };
+
+  const submit = async (amountToAdd: string) => {
     setSaving(true);
     const name = what.trim().slice(0, 255);
     try {
       await addCashExpense({
-        amount: price.amount,
+        amount: amountToAdd,
         currency,
         merchant: name || null,
         // The service needs a description; the row shows the merchant when there is one.
@@ -126,6 +175,16 @@ export default function TransactionAddRoute() {
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
         showsVerticalScrollIndicator={false}>
+        {scanned && (
+          <AppText weight="medium" style={styles.scanNote}>
+            {t('receipts.checkDetails')}
+          </AppText>
+        )}
+        {convertedFrom && (
+          <AppText weight="medium" style={styles.scanNote}>
+            {t('receipts.converted', { original: convertedFrom, currency })}
+          </AppText>
+        )}
         <AuthInput
           label={t('transactions.cash.amount', { currency })}
           value={amount}
@@ -188,6 +247,7 @@ const styles = StyleSheet.create({
   flip: { transform: [{ scaleX: -1 }] },
   title: { flex: 1, textAlign: 'center', fontSize: fontSizes.lg, color: colors.textPrimary },
   content: { padding: spacing.xl, paddingTop: spacing.sm, gap: spacing.lg, paddingBottom: spacing.xxl },
+  scanNote: { fontSize: fontSizes.sm, color: colors.primary },
   field: { gap: spacing.sm },
   label: { fontSize: fontSizes.sm, color: colors.textPrimary },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },

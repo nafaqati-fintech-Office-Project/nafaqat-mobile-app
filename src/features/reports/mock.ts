@@ -49,5 +49,19 @@ export function mockReport(period: { year: number; month: number }): Report {
     ],
     merchantsState: 'ready',
     merchantsTruncated: false,
+    weeks: [
+      { start: `${period.year}-${String(period.month).padStart(2, '0')}-01`, amount: '780.00', partial: true },
+      { start: `${period.year}-${String(period.month).padStart(2, '0')}-08`, amount: '1120.00', partial: false },
+      { start: `${period.year}-${String(period.month).padStart(2, '0')}-15`, amount: '950.00', partial: false },
+      { start: `${period.year}-${String(period.month).padStart(2, '0')}-22`, amount: '1400.00', partial: false },
+    ],
+    paymentMethods: [
+      { card: '4821', amount: '2400.00', count: 70, percent: 56 },
+      { card: '2046', amount: '1350.00', count: 41, percent: 32 },
+      { card: null, amount: '500.00', count: 17, percent: 12 },
+    ],
+    rows: [],
+    movement: { dayToDay: '4250.00', transfers: '0.00', cash: '300.00', income: '5450.00' },
+    debt: { loans: '0.00', percentOfIncome: 0, percentOfSpending: 0 },
   };
 }

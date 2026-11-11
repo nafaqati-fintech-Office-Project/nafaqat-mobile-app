@@ -14,10 +14,7 @@ type ReadInboxOptions = {
 
 type RawSms = { _id: number | string; address?: string; body?: string; date: number | string };
 
-export function readInbox({ limit, minDate }: ReadInboxOptions): Promise<SmsMessage[]> {
-  const filter: SmsFilter = { box: 'inbox', maxCount: limit, sortOrder: 'date DESC' };
-  if (minDate !== undefined) filter.minDate = minDate;
-
+function list(filter: SmsFilter): Promise<SmsMessage[]> {
   return new Promise((resolve, reject) => {
     SmsAndroid.list(
       JSON.stringify(filter),
@@ -39,4 +36,18 @@ export function readInbox({ limit, minDate }: ReadInboxOptions): Promise<SmsMess
       },
     );
   });
+}
+
+export function readInbox({ limit, minDate }: ReadInboxOptions): Promise<SmsMessage[]> {
+  const filter: SmsFilter = { box: 'inbox', maxCount: limit, sortOrder: 'date DESC' };
+  if (minDate !== undefined) filter.minDate = minDate;
+  return list(filter);
+}
+
+// One message by its inbox id, or null when it is no longer there.
+export async function readSmsById(id: string): Promise<SmsMessage | null> {
+  const numeric = Number(id);
+  if (!Number.isInteger(numeric)) return null;
+  const [message] = await list({ box: 'inbox', _id: numeric, maxCount: 1 });
+  return message?.id === id ? message : null;
 }

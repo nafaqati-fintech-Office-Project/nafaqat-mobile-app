@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { TransactionFilter, TransactionItem } from './transactionsApi';
+import type { TransactionFilter, TransactionItem, TransactionScope } from './transactionsApi';
 import { getTransactionPage } from './transactionsService';
 
 const PAGE_SIZE = 30;
@@ -15,7 +15,9 @@ function merge(current: TransactionItem[], next: TransactionItem[]): Transaction
   return [...current, ...next.filter((row) => !seen.has(row.id))];
 }
 
-export function useTransactionList(filter: TransactionFilter, query: string) {
+const NO_SCOPE: TransactionScope = {};
+
+export function useTransactionList(filter: TransactionFilter, query: string, scope: TransactionScope = NO_SCOPE) {
   const [search, setSearch] = useState(query);
   const [result, setResult] = useState<Result | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -27,7 +29,8 @@ export function useTransactionList(filter: TransactionFilter, query: string) {
   // Each request gets a number; a reply for an older filter or search is dropped.
   const request = useRef(0);
 
-  const key = `${filter}\n${search}`;
+  const scopeKey = `${scope.category ?? ''}|${scope.from ?? ''}|${scope.to ?? ''}`;
+  const key = `${filter}\n${search}\n${scopeKey}`;
   const status = result?.key === key ? result.status : 'loading';
 
   useEffect(() => {
@@ -39,20 +42,22 @@ export function useTransactionList(filter: TransactionFilter, query: string) {
   const fetchFirst = useCallback(
     (keepOnError: boolean) => {
       const id = ++request.current;
-      return getTransactionPage({ filter, search, page: 0, size: PAGE_SIZE })
+      return getTransactionPage({ filter, search, page: 0, size: PAGE_SIZE, scope })
         .then((next) => {
           if (id !== request.current) return;
           page.current = next.page;
           hasMore.current = next.hasMore;
           setMoreFailed(false);
-          setResult({ key: `${filter}\n${search}`, status: 'ready', items: next.items });
+          setResult({ key: `${filter}\n${search}\n${scopeKey}`, status: 'ready', items: next.items });
         })
         .catch(() => {
           if (id !== request.current || keepOnError) return;
-          setResult({ key: `${filter}\n${search}`, status: 'error', items: [] });
+          setResult({ key: `${filter}\n${search}\n${scopeKey}`, status: 'error', items: [] });
         });
     },
-    [filter, search],
+    // scope is read through scopeKey, so a new object with the same filters does not refetch
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filter, search, scopeKey],
   );
 
   useEffect(() => {
@@ -82,7 +87,7 @@ export function useTransactionList(filter: TransactionFilter, query: string) {
     const id = request.current;
     setLoadingMore(true);
     try {
-      const next = await getTransactionPage({ filter, search, page: page.current + 1, size: PAGE_SIZE });
+      const next = await getTransactionPage({ filter, search, page: page.current + 1, size: PAGE_SIZE, scope });
       if (id !== request.current) return;
       page.current = next.page;
       hasMore.current = next.hasMore;
@@ -93,14 +98,24 @@ export function useTransactionList(filter: TransactionFilter, query: string) {
     } finally {
       setLoadingMore(false);
     }
-  }, [filter, search, loadingMore, status]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter, search, scopeKey, loadingMore, status]);
 
   // Takes a deleted row off the screen without waiting for a reload.
   const remove = useCallback((id: string) => {
     setResult((current) => current && { ...current, items: current.items.filter((row) => row.id !== id) });
   }, []);
 
+  // Shows a changed category without waiting for a reload.
+  const setCategory = useCallback((id: string, category: string) => {
+    setResult(
+      (current) =>
+        current && { ...current, items: current.items.map((row) => (row.id === id ? { ...row, category } : row)) },
+    );
+  }, []);
+
   return {
+    setCategory,
     items: status === 'ready' ? (result?.items ?? []) : [],
     status,
     // The search the rows were loaded for: the typed text applies after a short pause.

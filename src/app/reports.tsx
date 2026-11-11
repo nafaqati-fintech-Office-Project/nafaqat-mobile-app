@@ -10,14 +10,18 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
 import { canUse } from '@/features/plans/plans';
 import { usePlan } from '@/features/plans/usePlan';
-import { exportReportPdf } from '@/features/reports/exportReport';
+import { exportReportCsv, exportReportPdf } from '@/features/reports/exportReport';
 import {
   CategorySection,
   ComparisonSection,
+  DebtSection,
   LifestyleSection,
   MerchantSection,
+  MovementSection,
+  PaymentMethodsSection,
   SavingsSection,
   SummarySection,
+  WeeklySection,
 } from '@/features/reports/ReportSections';
 import { useReport } from '@/features/reports/useReport';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -34,21 +38,22 @@ export default function ReportsRoute() {
 
   const { plan } = usePlan();
 
-  const onExport = async () => {
+  const onExport = async (kind: 'pdf' | 'csv') => {
     if (!data || plan === null) return;
-    // PDF export is a Premium feature: free users see the plans with it highlighted.
+    // Exports are a Premium feature: free users see the plans with it highlighted.
     if (!canUse(plan, 'pdfExport')) {
       router.push({ pathname: '/plans', params: { feature: 'pdfExport' } });
       return;
     }
     setExporting(true);
     try {
-      await exportReportPdf(data, language);
+      if (kind === 'pdf') await exportReportPdf(data, language);
+      else await exportReportCsv(data);
     } catch (error) {
       // In development the real reason is shown and logged; users only see the general message.
-      if (__DEV__) console.warn('[reports] PDF export failed', error);
+      if (__DEV__) console.warn(`[reports] ${kind} export failed`, error);
       const reason = __DEV__ && error instanceof Error ? `: ${error.message}` : '';
-      showToast(`${t('reports.exportFailed')}${reason}`);
+      showToast(`${t(kind === 'pdf' ? 'reports.exportFailed' : 'reports.exportCsvFailed')}${reason}`);
     } finally {
       setExporting(false);
     }
@@ -86,7 +91,18 @@ export default function ReportsRoute() {
           {t('reports.title')}
         </AppText>
         <Pressable
-          onPress={onExport}
+          onPress={() => onExport('csv')}
+          disabled={!canExport}
+          accessibilityRole="button"
+          accessibilityLabel={t('reports.exportCsv')}
+          accessibilityState={{ disabled: !canExport, busy: exporting }}
+          style={[styles.export, !canExport && styles.disabled]}>
+          <AppText weight="bold" style={styles.exportText}>
+            {t('reports.exportCsv')}
+          </AppText>
+        </Pressable>
+        <Pressable
+          onPress={() => onExport('pdf')}
           disabled={!canExport}
           accessibilityRole="button"
           accessibilityLabel={t('reports.exportPdf')}
@@ -127,8 +143,12 @@ export default function ReportsRoute() {
           <SummarySection report={data} />
           <CategorySection report={data} />
           <MerchantSection report={data} />
+          <WeeklySection report={data} />
+          <PaymentMethodsSection report={data} />
+          <MovementSection report={data} />
           <LifestyleSection report={data} />
           <SavingsSection report={data} />
+          <DebtSection report={data} />
           <ComparisonSection report={data} />
         </ScrollView>
       )}

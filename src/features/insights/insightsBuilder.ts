@@ -5,6 +5,8 @@ import { categoryFromCode } from '@/features/transactions/categoryDisplay';
 import { currencyDecimals } from '@/utils/money';
 
 export const TREND_MONTHS = 12;
+// How many months the Insights numbers cover, ending with the current one.
+export type Period = 1 | 3 | 6 | 12;
 const TOP_MERCHANTS = 10;
 
 export type BuildInput = {
@@ -14,6 +16,8 @@ export type BuildInput = {
   comparison: CurrencyComparison[];
   // null when the spending rows could not be loaded.
   spending: SpendingRows | null;
+  // comparison and spending already cover this many months.
+  months?: Period;
 };
 
 const amount = (value: number, currency: string) => value.toFixed(currencyDecimals(currency));
@@ -25,10 +29,10 @@ export function changeOf(current: number, previous: number): number | null {
   return previous > 0 ? Math.round(((current - previous) / previous) * 100) : null;
 }
 
-// The last TREND_MONTHS calendar months ending with today's, oldest first.
-export function lastMonths(today: DateParts): { year: number; month: number }[] {
-  return Array.from({ length: TREND_MONTHS }, (_, i) => {
-    const index = today.year * 12 + (today.month - 1) - (TREND_MONTHS - 1 - i);
+// The last `count` calendar months ending with today's, oldest first.
+export function lastMonths(today: DateParts, count: number = TREND_MONTHS): { year: number; month: number }[] {
+  return Array.from({ length: count }, (_, i) => {
+    const index = today.year * 12 + (today.month - 1) - (count - 1 - i);
     return { year: Math.floor(index / 12), month: (index % 12) + 1 };
   });
 }
@@ -66,13 +70,46 @@ export function merchantTotals(spending: SpendingRows, currency: string): Mercha
     }));
 }
 
+// One monthly comparison per month of the period, oldest first, as a single comparison of the whole
+// period (nothing to compare it against, so no changes).
+export function combineComparisons(perMonth: CurrencyComparison[][]): CurrencyComparison[] {
+  if (perMonth.length === 1) return perMonth[0];
+  const totals = new Map<string, MonthTotals>();
+  for (const { currency, current } of perMonth.flat()) {
+    const sum = totals.get(currency) ?? { income: 0, expenses: 0, net: 0, categories: [] };
+    sum.income += current.income;
+    sum.expenses += current.expenses;
+    sum.net += current.net;
+    for (const category of current.categories) {
+      const found = sum.categories.find((c) => (c.code ?? c.label) === (category.code ?? category.label));
+      if (found) found.total += category.total;
+      else sum.categories.push({ ...category });
+    }
+    totals.set(currency, sum);
+  }
+  const none: MonthTotals = { income: 0, expenses: 0, net: 0, categories: [] };
+  return [...totals].map(([currency, current]) => ({
+    currency,
+    current: { ...current, categories: current.categories.sort((a, b) => b.total - a.total) },
+    previous: none,
+    netChangePercent: null,
+    categoryChanges: [],
+  }));
+}
+
+// Days from the start of the period through today.
+function elapsedDays(today: DateParts, months: number): number {
+  const before = lastMonths(today, months).slice(0, -1);
+  return before.reduce((days, m) => days + daysInMonth(m.year, m.month), today.day);
+}
+
 const asIncomeExpenses = (rows: CurrencyComparison[], pick: (c: CurrencyComparison) => MonthTotals) =>
   rows.map((c) => {
     const totals = pick(c);
     return { currency: c.currency, totalIncome: totals.income, totalExpenses: totals.expenses, net: totals.net };
   });
 
-export function buildInsights({ today, preferredCurrency, trend, comparison, spending }: BuildInput): Insights {
+export function buildInsights({ today, preferredCurrency, trend, comparison, spending, months = 1 }: BuildInput): Insights {
   const currency = pickCurrency(
     preferredCurrency,
     asIncomeExpenses(comparison, (c) => c.current),
@@ -82,9 +119,9 @@ export function buildInsights({ today, preferredCurrency, trend, comparison, spe
   const current = compared?.current;
 
   const before = today.month === 1 ? { year: today.year - 1, month: 12 } : { year: today.year, month: today.month - 1 };
-  // This month so far (today included) against the whole previous month.
-  const avgNow = (current?.expenses ?? 0) / today.day;
-  const avgBefore = (compared?.previous.expenses ?? 0) / daysInMonth(before.year, before.month);
+  // The period so far (today included); a single month is also compared with the whole previous one.
+  const avgNow = (current?.expenses ?? 0) / elapsedDays(today, months);
+  const avgBefore = months === 1 ? (compared?.previous.expenses ?? 0) / daysInMonth(before.year, before.month) : 0;
 
   const changes = new Map((compared?.categoryChanges ?? []).map((c) => [c.code ?? c.label, c.percent]));
 

@@ -1,8 +1,10 @@
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
+import { dashboardPeriod } from './drill';
 import { StatCard } from './StatCard';
 import type { DashboardData } from './types';
+import { openTransactions } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
@@ -21,6 +23,9 @@ export function StatGrid({ data }: { data: DashboardData }) {
       ? comingSoon
       : `${data.activeSubscriptions} ${t('dashboard.active')}`;
 
+  const period = dashboardPeriod(data, t, language);
+  const all = (label: string) => openTransactions({ from: period.from, to: period.to, title: `${label} · ${period.title}` });
+
   return (
     <View style={styles.grid}>
       <StatCard
@@ -29,7 +34,7 @@ export function StatGrid({ data }: { data: DashboardData }) {
         tintSoft={colors.primarySoft}
         label={t('dashboard.transactions')}
         value={String(data.transactionCount)}
-        onPress={() => router.navigate('/transactions')}
+        onPress={() => all(t('dashboard.transactions'))}
       />
       <StatCard
         icon="budget"
@@ -53,6 +58,7 @@ export function StatGrid({ data }: { data: DashboardData }) {
         tintSoft={colors.successSoft}
         label={t('dashboard.savings')}
         value={formatMoney(data.savings, data.currency, language)}
+        onPress={() => all(t('dashboard.savings'))}
       />
     </View>
   );

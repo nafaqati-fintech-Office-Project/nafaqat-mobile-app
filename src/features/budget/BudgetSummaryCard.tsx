@@ -14,16 +14,17 @@ export function BudgetSummaryCard({ budget, flashKey = null }: { budget: Budget;
   const { language, t } = useLanguage();
   const over = budget.remaining.trim().startsWith('-');
   const money = (amount: string) => formatMoney(amount, budget.currency, language);
-  const month = new Intl.DateTimeFormat(intlLocale(language), { month: 'long', year: 'numeric' }).format(
-    budget.startDate,
-  );
+  const format = new Intl.DateTimeFormat(intlLocale(language), { month: 'long', year: 'numeric' });
+  const several = (budget.months ?? 1) > 1;
+  // The months a longer period covers: "August 2026 – October 2026".
+  const month = several ? `${format.format(budget.startDate)} – ${format.format(budget.endDate)}` : format.format(budget.startDate);
 
   return (
     <View style={styles.card}>
       <HighlightFlash flashKey={flashKey} inset={0} borderRadius={radius.lg} />
       <View style={styles.texts}>
         <AppText weight="bold" style={styles.title}>
-          {t('budget.summary.monthly')}
+          {several ? t('budget.summary.period').replace('{count}', String(budget.months)) : t('budget.summary.monthly')}
         </AppText>
         <AppText style={styles.meta}>{month}</AppText>
       </View>

@@ -38,7 +38,7 @@ export function TransactionListItem({ item, showDay = false, flashKey = null, on
       onPress={onPress}
       disabled={!onPress || busy}
       accessibilityRole={onPress ? 'button' : undefined}
-      accessibilityHint={onPress ? t('transactions.cash.rowHint') : undefined}
+      accessibilityHint={onPress ? t('transactions.detail.rowHint') : undefined}
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       <HighlightFlash flashKey={flashKey} />
       <View style={[styles.tile, { backgroundColor: look.tintSoft }]}>

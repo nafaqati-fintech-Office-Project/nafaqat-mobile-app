@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { dayPeriod } from './drill';
 import { InfoCard } from './InfoCard';
 import type { DashboardData, HeatLevel } from './types';
 import { AppText } from '@/components/AppText';
+import { openTransactions } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, spacing } from '@/theme';
 import { monthName, weekdayShort } from '@/utils/intl';
@@ -64,6 +66,19 @@ export function HeatmapCard({ data }: { data: DashboardData }) {
         </View>
       ))}
       <View style={styles.footer}>
+        {pickedDay && (
+          <Pressable
+            onPress={() => {
+              const day = dayPeriod(new Date(data.period.year, data.period.month - 1, pickedDay.day), language);
+              openTransactions({ type: 'expenses', ...day, title: `${t('dashboard.expenses')} · ${day.title}` });
+            }}
+            accessibilityRole="link"
+            hitSlop={spacing.sm}>
+            <AppText weight="semibold" style={styles.link}>
+              {t('transactions.viewDay', { day: `${pickedDay.day} ${month}` })}
+            </AppText>
+          </Pressable>
+        )}
         <AppText style={styles.picked}>
           {pickedDay
             ? `${pickedDay.day} ${month}: ${formatMoney(pickedDay.amount, data.currency, language)}`
@@ -94,6 +109,7 @@ const styles = StyleSheet.create({
   dayOnDark: { color: colors.white },
   footer: { gap: spacing.sm },
   picked: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  link: { fontSize: fontSizes.sm, color: colors.primary },
   legend: { flexDirection: 'row', alignItems: 'center', gap: GAP, alignSelf: 'flex-end' },
   swatch: { width: 14, height: 14, borderRadius: 4 },
 });

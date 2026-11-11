@@ -1,7 +1,7 @@
 import { router, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -16,6 +16,7 @@ import { SubscriptionRow } from '@/features/subscriptions/SubscriptionRow';
 import { actionProblem, type ActionProblem } from '@/features/subscriptions/subscriptionsService';
 import { SubscriptionSummaryCards } from '@/features/subscriptions/SubscriptionSummaryCards';
 import type { Subscription } from '@/features/subscriptions/types';
+import { openTransactions } from '@/features/transactions/transactionLinks';
 import { useSubscriptions } from '@/features/subscriptions/useSubscriptions';
 import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -70,12 +71,22 @@ export default function SubscriptionsRoute() {
     ]);
 
   // An active one: end it (stopped paying; a new charge brings it back) or say it was never a subscription.
+  // Its charges: the bank SMS name the merchant, so the list is searched for it.
+  const payments = (item: Subscription) =>
+    openTransactions({ type: 'expenses', q: item.name, title: `${item.name} · ${t('subscriptions.payments')}` });
+  // Android shows at most three buttons, so there the dialog is closed by tapping outside instead of Cancel.
   const manage = (item: Subscription) =>
-    Alert.alert(item.name, t('subscriptions.manageBody'), [
-      { text: t('subscriptions.markEnded'), onPress: () => void perform(item, 'end') },
-      { text: t('subscriptions.notSubscription'), style: 'destructive', onPress: () => dismiss(item) },
-      { text: t('notifications.cancel'), style: 'cancel' },
-    ]);
+    Alert.alert(
+      item.name,
+      t('subscriptions.manageBody'),
+      [
+        { text: t('subscriptions.payments'), onPress: () => payments(item) },
+        { text: t('subscriptions.markEnded'), onPress: () => void perform(item, 'end') },
+        { text: t('subscriptions.notSubscription'), style: 'destructive', onPress: () => dismiss(item) },
+        ...(Platform.OS === 'android' ? [] : [{ text: t('notifications.cancel'), style: 'cancel' as const }]),
+      ],
+      { cancelable: true },
+    );
 
   const tabs: SegmentedOption<Tab>[] = view
     ? [
@@ -173,7 +184,9 @@ export default function SubscriptionsRoute() {
                   <SubscriptionRow
                     item={item}
                     busy={busyId === item.id}
-                    onPress={item.status === 'CONFIRMED' && busyId === null ? () => manage(item) : undefined}
+                    onPress={
+                      busyId !== null ? undefined : item.status === 'CONFIRMED' ? () => manage(item) : () => payments(item)
+                    }
                   />
                 </View>
               ))

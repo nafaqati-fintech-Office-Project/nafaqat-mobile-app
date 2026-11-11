@@ -1,5 +1,13 @@
 [
  {
+  "pattern": "ptcl",
+  "category": "Utilities"
+ },
+ {
+  "pattern": "transworld",
+  "category": "Utilities"
+ },
+ {
   "pattern": "1 bill pakistan",
   "category": "Utilities"
  },
@@ -7317,7 +7325,7 @@
  },
  {
   "pattern": "ek emirates",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "ek holidays",
@@ -7441,11 +7449,11 @@
  },
  {
   "pattern": "emirates",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "emirates airline",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "emirates holidays",
@@ -8549,7 +8557,7 @@
  },
  {
   "pattern": "flydubai",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "flydubai holidays",
@@ -8849,7 +8857,7 @@
  },
  {
   "pattern": "fz flydubai",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "g f o travel",
@@ -17537,7 +17545,7 @@
  },
  {
   "pattern": "pia airlines",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "pia booking",
@@ -18461,7 +18469,7 @@
  },
  {
   "pattern": "qatar airlines",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "qatar airways",
@@ -19517,7 +19525,7 @@
  },
  {
   "pattern": "saudi airlines",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "saudi holidays",
@@ -19525,7 +19533,7 @@
  },
  {
   "pattern": "saudia",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "saudia holidays",
@@ -21725,7 +21733,7 @@
  },
  {
   "pattern": "sv saudia",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "swat package",
@@ -22341,7 +22349,7 @@
  },
  {
   "pattern": "tk airlines",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "tk hajj",
@@ -22889,7 +22897,7 @@
  },
  {
   "pattern": "turkish airlines",
-  "category": "Transportation"
+  "category": "Travel"
  },
  {
   "pattern": "turkish airlines holidays",
@@ -24710,5 +24718,741 @@
  {
   "pattern": "zu karachi",
   "category": "Education"
+ },
+ {
+  "pattern": "panda ret",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "panda retail",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "airalo",
+  "category": "Travel"
+ },
+ {
+  "pattern": "fitness time membership",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "fitness time",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "lulu hype",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "lulu hypermarket",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "max fashion",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "hungerstation llc",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "hungerstation",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "amazon sa",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "byteplus",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "tim horto",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "jahez",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "tamwinat",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "tamwinat mini market",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "maestro p",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "maestro pizza",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "danube fo",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "danube",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "shahid vip",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "aldawaa p",
+  "category": "Health"
+ },
+ {
+  "pattern": "al dawaa pharmacy",
+  "category": "Health"
+ },
+ {
+  "pattern": "aramex",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "gents sal",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "gents salon",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "the chefz",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "centrepoi",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "centrepoint",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "noon com",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "sasco",
+  "category": "Fuel"
+ },
+ {
+  "pattern": "nahdi pha",
+  "category": "Health"
+ },
+ {
+  "pattern": "nahdi pharmacy",
+  "category": "Health"
+ },
+ {
+  "pattern": "dr sulaim",
+  "category": "Health"
+ },
+ {
+  "pattern": "dr sulaiman al habib",
+  "category": "Health"
+ },
+ {
+  "pattern": "s tami",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "tamimi markets",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "mouwasat",
+  "category": "Health"
+ },
+ {
+  "pattern": "mouwasat hospital",
+  "category": "Health"
+ },
+ {
+  "pattern": "baqala al",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "baqala mini market",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "bindawood",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "spotify p f a",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "spotify",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "redtag",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "saco",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "sparkys",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "shawarmer",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "namshi",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "faby land",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "fabyland",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "vox cinem",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "vox cinemas",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "naft serv",
+  "category": "Fuel"
+ },
+ {
+  "pattern": "naft services",
+  "category": "Fuel"
+ },
+ {
+  "pattern": "zara",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "dr cafe",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "ikea dhah",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "ikea",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "jarir boo",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "jarir bookstore",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "java time",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "herfy",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "othaim ma",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "othaim markets",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "barns caf",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "barns cafe",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "baskin ro",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "baskin robbins",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "home cent",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "home centre",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "biller",
+  "category": "Utilities"
+ },
+ {
+  "pattern": "zain",
+  "category": "Utilities"
+ },
+ {
+  "pattern": "mobily",
+  "category": "Utilities"
+ },
+ {
+  "pattern": "saudi electricity company",
+  "category": "Utilities"
+ },
+ {
+  "pattern": "national water company",
+  "category": "Utilities"
+ },
+ {
+  "pattern": "kudu",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "whites ph",
+  "category": "Health"
+ },
+ {
+  "pattern": "whites pharmacy",
+  "category": "Health"
+ },
+ {
+  "pattern": "saad spec",
+  "category": "Health"
+ },
+ {
+  "pattern": "saad specialist hospital",
+  "category": "Health"
+ },
+ {
+  "pattern": "aldrees",
+  "category": "Fuel"
+ },
+ {
+  "pattern": "aliexpress",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "shein com",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "shein",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "half mill",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "half million",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "mrsool",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "google youtubepre",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "youtube premium",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "dominos p",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "godaddy com",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "godaddy",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "github inc",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "github",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "daiso",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "farm supe",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "farm superstores",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "aws emea",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "amazon web services",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "nana direct",
+  "category": "Groceries"
+ },
+ {
+  "pattern": "shopify",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "netflix com",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "netflix",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "apple",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "salla store",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "krispy kr",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "krispy kreme",
+  "category": "Food & Beverage"
+ },
+ {
+  "pattern": "openai chatgpt subscr",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "merchant not named",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "muvi cine",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "muvi cinemas",
+  "category": "Personal Care & Leisure"
+ },
+ {
+  "pattern": "digitalocean com",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "digitalocean",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "extra sto",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "extra stores",
+  "category": "Clothing & Shopping"
+ },
+ {
+  "pattern": "atlantis",
+  "category": "Travel"
+ },
+ {
+  "pattern": "atlantis uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "cafe bate",
+  "category": "Travel"
+ },
+ {
+  "pattern": "cafe bate uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "emirates uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "rove hote",
+  "category": "Travel"
+ },
+ {
+  "pattern": "rove hote uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "global vi",
+  "category": "Travel"
+ },
+ {
+  "pattern": "global vi uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "spinneys",
+  "category": "Travel"
+ },
+ {
+  "pattern": "spinneys uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "dubai mal",
+  "category": "Travel"
+ },
+ {
+  "pattern": "dubai mal uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "taxi duba",
+  "category": "Travel"
+ },
+ {
+  "pattern": "taxi duba uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "google temporary hold",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "rta dubai",
+  "category": "Travel"
+ },
+ {
+  "pattern": "rta dubai uae",
+  "category": "Travel"
+ },
+ {
+  "pattern": "upwork membe",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "upwork membership",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "petromin",
+  "category": "Fuel"
+ },
+ {
+  "pattern": "moi traffic violations",
+  "category": "Government & Fines"
+ },
+ {
+  "pattern": "adobe creative",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "paypal verify",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "paypal verification",
+  "category": "Subscriptions"
+ },
+ {
+  "pattern": "istanbulk",
+  "category": "Travel"
+ },
+ {
+  "pattern": "istanbulk t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "migros",
+  "category": "Travel"
+ },
+ {
+  "pattern": "migros t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "hilton is",
+  "category": "Travel"
+ },
+ {
+  "pattern": "hilton is t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "simit sar",
+  "category": "Travel"
+ },
+ {
+  "pattern": "simit sar t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "bosphorus",
+  "category": "Travel"
+ },
+ {
+  "pattern": "bosphorus t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "grand baz",
+  "category": "Travel"
+ },
+ {
+  "pattern": "grand baz t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "hafiz mus",
+  "category": "Travel"
+ },
+ {
+  "pattern": "hafiz mus t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "galata ku",
+  "category": "Travel"
+ },
+ {
+  "pattern": "galata ku t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "taksi ist",
+  "category": "Travel"
+ },
+ {
+  "pattern": "taksi ist t rkiye",
+  "category": "Travel"
+ },
+ {
+  "pattern": "dragonpass",
+  "category": "Travel"
+ },
+ {
+  "pattern": "saudia com",
+  "category": "Travel"
+ },
+ {
+  "pattern": "evisa gov az az s",
+  "category": "Travel"
+ },
+ {
+  "pattern": "azerbaijan e visa",
+  "category": "Travel"
+ },
+ {
+  "pattern": "taksi bak",
+  "category": "Travel"
+ },
+ {
+  "pattern": "taksi bak azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "port baku",
+  "category": "Travel"
+ },
+ {
+  "pattern": "port baku azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "bravo sup",
+  "category": "Travel"
+ },
+ {
+  "pattern": "bravo sup azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "fairmont",
+  "category": "Travel"
+ },
+ {
+  "pattern": "fairmont azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "nizami st",
+  "category": "Travel"
+ },
+ {
+  "pattern": "nizami st azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "shahdag r",
+  "category": "Travel"
+ },
+ {
+  "pattern": "shahdag r azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "ganjlik m",
+  "category": "Travel"
+ },
+ {
+  "pattern": "ganjlik m azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "flame tow",
+  "category": "Travel"
+ },
+ {
+  "pattern": "flame tow azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "cay evi",
+  "category": "Travel"
+ },
+ {
+  "pattern": "cay evi azerbaijan",
+  "category": "Travel"
+ },
+ {
+  "pattern": "moi",
+  "category": "Government & Fines"
+ },
+ {
+  "pattern": "absher",
+  "category": "Government & Fines"
+ },
+ {
+  "pattern": "traffic violation",
+  "category": "Government & Fines"
  }
 ]

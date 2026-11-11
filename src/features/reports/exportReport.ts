@@ -1,3 +1,4 @@
+import { buildReportCsv, reportCsvFileName } from './reportCsv';
 import { buildReportHtml } from './reportHtml';
 import type { Report } from './types';
 import type { Language } from '@/i18n';
@@ -32,4 +33,15 @@ export async function exportReportPdf(report: Report, language: Language): Promi
   }
 
   await Sharing.shareAsync(uri, { mimeType: 'application/pdf', UTI: 'com.adobe.pdf', dialogTitle: 'Nafaqati' });
+}
+
+// The month's spending rows as a CSV file (opens in Excel), shared the same way. Throws when it cannot.
+export async function exportReportCsv(report: Report): Promise<void> {
+  const [Sharing, Files] = await Promise.all([loadSharing(), loadFiles()]);
+  if (!(await Sharing.isAvailableAsync())) throw new Error('Sharing is not available');
+
+  const file = new Files.File(Files.Paths.cache, reportCsvFileName(report));
+  file.create({ overwrite: true });
+  file.write(buildReportCsv(report));
+  await Sharing.shareAsync(file.uri, { mimeType: 'text/csv', UTI: 'public.comma-separated-values-text', dialogTitle: 'Nafaqati' });
 }

@@ -32,6 +32,7 @@ const PATHS = {
   check: 'M5 12l5 5L20 7',
   sliders: 'M4 7h9M17 7h3M15 5v4M4 17h3M11 17h9M9 15v4',
   pencil: 'M4 20h4L19 9l-4-4L4 16zM14 6l4 4',
+  mic: 'M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4M9 21h6',
 } as const;
 
 export type IconName = keyof typeof PATHS;

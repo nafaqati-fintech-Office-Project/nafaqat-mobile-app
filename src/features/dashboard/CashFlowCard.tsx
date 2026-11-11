@@ -1,18 +1,21 @@
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
+import { dashboardPeriod } from './drill';
 import { InfoCard } from './InfoCard';
 import type { DashboardData } from './types';
 import { AppText } from '@/components/AppText';
+import { DrillPressable } from '@/features/transactions/DrillPressable';
+import type { TransactionLink } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
 
 const BAR_HEIGHT = 10;
 
-function FlowBar({ label, value, share, color }: { label: string; value: string; share: number; color: string }) {
+function FlowBar({ label, value, share, color, link }: { label: string; value: string; share: number; color: string; link: TransactionLink }) {
   return (
-    <View style={styles.bar} accessible accessibilityLabel={`${label}, ${value}`}>
+    <DrillPressable link={link} style={styles.bar} label={`${label}, ${value}`}>
       <View style={styles.line}>
         <AppText style={styles.label}>{label}</AppText>
         <AppText weight="semibold" style={styles.value}>
@@ -22,7 +25,7 @@ function FlowBar({ label, value, share, color }: { label: string; value: string;
       <View style={styles.track}>
         <View style={[styles.fill, { width: `${share}%`, backgroundColor: color }]} />
       </View>
-    </View>
+    </DrillPressable>
   );
 }
 
@@ -37,31 +40,50 @@ export function CashFlowCard({ data }: { data: DashboardData }) {
   const peak = Math.max(incomeValue, expensesValue);
   const share = (value: number) => (peak > 0 ? Math.max(Math.round((value / peak) * 100), value > 0 ? 3 : 0) : 0);
   const positive = Number(net) >= 0;
+  const period = dashboardPeriod(data, t, language);
+  const link = (label: string, type?: TransactionLink['type']): TransactionLink => ({
+    type,
+    from: period.from,
+    to: period.to,
+    title: `${label} · ${period.title}`,
+  });
 
+  // "this month" in the sentences, or "in this period" when the card covers several months.
+  const month = data.months === 1;
   const summary =
     savingsRate === null
-      ? t('dashboard.cashFlowNoIncome')
+      ? t(month ? 'dashboard.cashFlowNoIncome' : 'dashboard.cashFlowNoIncomePeriod')
       : positive
-        ? t('dashboard.cashFlowKept').replace('{percent}', String(savingsRate))
-        : t('dashboard.cashFlowOver').replace('{percent}', String(Math.abs(savingsRate)));
+        ? t(month ? 'dashboard.cashFlowKept' : 'dashboard.cashFlowKeptPeriod').replace('{percent}', String(savingsRate))
+        : t(month ? 'dashboard.cashFlowOver' : 'dashboard.cashFlowOverPeriod').replace(
+            '{percent}',
+            String(Math.abs(savingsRate)),
+          );
 
   return (
     <InfoCard
       title={t('dashboard.cashFlow')}
       action={{ label: t('reports.title'), onPress: () => router.push('/reports') }}>
-      <FlowBar label={t('dashboard.income')} value={money(income)} share={share(incomeValue)} color={colors.success} />
+      <FlowBar
+        label={t('dashboard.income')}
+        value={money(income)}
+        share={share(incomeValue)}
+        color={colors.success}
+        link={link(t('dashboard.income'), 'income')}
+      />
       <FlowBar
         label={t('dashboard.expenses')}
         value={money(expenses)}
         share={share(expensesValue)}
         color={colors.danger}
+        link={link(t('dashboard.expenses'), 'expenses')}
       />
-      <View style={styles.netRow}>
+      <DrillPressable link={link(t('dashboard.net'))} style={styles.netRow} label={`${t('dashboard.net')}, ${money(net)}`}>
         <AppText style={styles.label}>{t('dashboard.net')}</AppText>
         <AppText weight="bold" style={[styles.net, { color: positive ? colors.success : colors.danger }]}>
           {money(net)}
         </AppText>
-      </View>
+      </DrillPressable>
       <AppText style={styles.summary}>{summary}</AppText>
     </InfoCard>
   );

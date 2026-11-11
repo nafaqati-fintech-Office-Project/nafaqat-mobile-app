@@ -2,10 +2,13 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { DashboardSection } from './DashboardSection';
+import { dashboardPeriod } from './drill';
 import type { CategoryShare, DashboardData } from './types';
 import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { categoryLabelKey } from '@/features/transactions/categoryDisplay';
+import { DrillPressable } from '@/features/transactions/DrillPressable';
+import { canOpenCategory, type TransactionLink } from '@/features/transactions/transactionLinks';
 import { categoryLook } from '@/features/transactions/categoryLook';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
@@ -13,7 +16,7 @@ import { formatMoney } from '@/utils/money';
 
 const BAR_HEIGHT = 6;
 
-function CategoryRow({ item, currency }: { item: CategoryShare; currency: string }) {
+function CategoryRow({ item, currency, period }: { item: CategoryShare; currency: string; period: { title: string; from: string; to: string } }) {
   const { language, t } = useLanguage();
   const look = categoryLook(item.category);
   const labelKey = categoryLabelKey(item.category);
@@ -21,7 +24,14 @@ function CategoryRow({ item, currency }: { item: CategoryShare; currency: string
   const money = formatMoney(item.amount, currency, language);
 
   return (
-    <View style={styles.row} accessible accessibilityLabel={`${name}, ${money}, ${item.percent}%`}>
+    <DrillPressable
+      link={
+        canOpenCategory(item.category)
+          ? ({ type: 'expenses', category: item.category, from: period.from, to: period.to, title: `${name} · ${period.title}` } satisfies TransactionLink)
+          : null
+      }
+      style={styles.row}
+      label={`${name}, ${money}, ${item.percent}%`}>
       <View style={[styles.tile, { backgroundColor: look.tintSoft }]}>
         <Icon name={look.icon} color={look.tint} size={sizes.iconLg} />
       </View>
@@ -41,12 +51,13 @@ function CategoryRow({ item, currency }: { item: CategoryShare; currency: string
           <AppText style={styles.percent}>{`${item.percent}%`}</AppText>
         </View>
       </View>
-    </View>
+    </DrillPressable>
   );
 }
 
 export function CategoryBreakdownCard({ data }: { data: DashboardData }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const period = dashboardPeriod(data, t, language);
   const note =
     data.categoriesState === 'unavailable'
       ? t('dashboard.sectionUnavailable')
@@ -57,7 +68,7 @@ export function CategoryBreakdownCard({ data }: { data: DashboardData }) {
   return (
     <DashboardSection title={t('dashboard.byCategory')} onSeeAll={() => router.navigate('/insights')} note={note}>
       {data.categories.map((item) => (
-        <CategoryRow key={item.category} item={item} currency={data.currency} />
+        <CategoryRow key={item.category} item={item} currency={data.currency} period={period} />
       ))}
     </DashboardSection>
   );

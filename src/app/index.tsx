@@ -20,8 +20,6 @@ import { getOnboardingSeen } from '@/storage/flags';
 import { colors, fontSizes, gradients, lineHeights, shadows, sizes, spacing } from '@/theme';
 
 const SPLASH_MS = 2000;
-// Temporary: show onboarding on every launch.
-const ALWAYS_SHOW_ONBOARDING = true;
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 type Target = '/onboarding' | '/language' | '/home' | '/login';
@@ -37,9 +35,11 @@ export default function SplashRoute() {
     let active = true;
     const resolveTarget = async (): Promise<Target> => {
       const [seen] = await Promise.all([getOnboardingSeen(), wait(SPLASH_MS)]);
-      if (ALWAYS_SHOW_ONBOARDING || !seen) return '/onboarding';
+      // A login saved with "Remember me" goes straight in, whatever else a new visitor is shown.
+      if (await restoreSession()) return '/home';
+      if (!seen) return '/onboarding';
       if (!chosen) return '/language';
-      return (await restoreSession()) ? '/home' : '/login';
+      return '/login';
     };
     resolveTarget().then((target) => {
       if (active) router.replace(target);

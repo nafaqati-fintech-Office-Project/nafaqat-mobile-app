@@ -1,4 +1,4 @@
-import { categoryFromCode } from './categoryDisplay';
+import { categoryFromCode, codeForCategory } from './categoryDisplay';
 import { api } from '@/api/client';
 import { arr, decimal, num, obj, str } from '@/api/parse';
 
@@ -15,6 +15,11 @@ export type TransactionItem = {
   date: Date;
   // Entered by hand in the app (a cash expense); only these can be deleted.
   manual: boolean;
+  // Shown on the details card. Optional: rows made on the phone (mock) may not have them.
+  description?: string | null;
+  status?: string | null;
+  // "sms:" + the phone's duplicate key for a transaction read from an SMS; null for cash expenses.
+  externalId?: string | null;
 };
 
 // A cash expense entered by hand. category is the service's code; transactionDate an ISO instant.
@@ -29,7 +34,20 @@ export type NewCashExpense = {
 
 export type TransactionPage = { items: TransactionItem[]; page: number; hasMore: boolean };
 
-export type TransactionQuery = { filter: TransactionFilter; search: string; page: number; size: number };
+// Narrows the list further, from a drill-down link: one category (the app's name) and/or calendar days (yyyy-MM-dd,
+// inclusive, on the phone's calendar).
+export type TransactionScope = { category?: string; from?: string; to?: string };
+
+export type TransactionQuery = { filter: TransactionFilter; search: string; page: number; size: number; scope?: TransactionScope };
+
+// The phone's time zone, so "1 November" on the server is the same day the person sees.
+const phoneTimeZone = () => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || undefined;
+  } catch {
+    return undefined;
+  }
+};
 
 const TYPES: Record<TransactionFilter, 'DEBIT' | 'CREDIT' | undefined> = {
   all: undefined,
@@ -65,6 +83,9 @@ export function parseTransaction(raw: unknown): TransactionItem {
     currency: str(body.currency),
     date: parseDate(body.transactionDate),
     manual: body.source === 'MANUAL',
+    description: optionalText(body.description),
+    status: optionalText(body.status),
+    externalId: optionalText(body.externalTransactionId),
   };
 }
 
@@ -85,12 +106,17 @@ export async function fetchTransaction(id: string): Promise<TransactionItem> {
 }
 
 // Newest first. Only completed movements: pending and failed ones would read as money already spent.
-export async function fetchTransactionPage({ filter, search, page, size }: TransactionQuery): Promise<TransactionPage> {
+export async function fetchTransactionPage({ filter, search, page, size, scope }: TransactionQuery): Promise<TransactionPage> {
   const q = search.trim().slice(0, MAX_SEARCH);
+  const dated = Boolean(scope?.from || scope?.to);
   const { data } = await api.get<unknown>('/api/transactions', {
     params: {
       type: TYPES[filter],
       q: q || undefined,
+      category: scope?.category ? (codeForCategory(scope.category) ?? undefined) : undefined,
+      startDate: scope?.from || undefined,
+      endDate: scope?.to || undefined,
+      timeZone: dated ? phoneTimeZone() : undefined,
       status: 'COMPLETED',
       sort: 'transactionDate,desc',
       page,

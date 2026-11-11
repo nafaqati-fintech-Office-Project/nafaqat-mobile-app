@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { CurrencyComparison } from './insightsApi';
-import { buildInsights, changeOf, lastMonths, merchantTotals } from './insightsBuilder';
+import { buildInsights, changeOf, combineComparisons, lastMonths, merchantTotals } from './insightsBuilder';
 import type { TransactionItem } from '@/features/transactions/transactionsApi';
 
 const today = { year: 2026, month: 10, day: 10 };
@@ -42,6 +42,35 @@ describe('lastMonths', () => {
     expect(months).toHaveLength(12);
     expect(months[0]).toEqual({ year: 2025, month: 3 });
     expect(months[11]).toEqual({ year: 2026, month: 2 });
+  });
+});
+
+describe('combineComparisons', () => {
+  it('returns a single month as it is', () => {
+    expect(combineComparisons([[comparison]])).toEqual([comparison]);
+  });
+
+  it('adds up the months and their categories, largest category first, without changes', () => {
+    const second: CurrencyComparison = {
+      ...comparison,
+      current: {
+        income: 1000,
+        expenses: 700,
+        net: 300,
+        categories: [
+          { code: 'FOOD_AND_BEVERAGE', label: 'Food & Beverage', total: 700 },
+          { code: 'FUEL', label: 'Fuel', total: 50 },
+        ],
+      },
+    };
+    const [total] = combineComparisons([[comparison], [second]]);
+    expect(total).toMatchObject({ currency: 'SAR', netChangePercent: null, categoryChanges: [] });
+    expect(total.current).toMatchObject({ income: 8500, expenses: 2200, net: 6300 });
+    expect(total.current.categories).toEqual([
+      { code: 'FOOD_AND_BEVERAGE', label: 'Food & Beverage', total: 1300 },
+      { code: 'GROCERIES', label: 'Groceries', total: 900 },
+      { code: 'FUEL', label: 'Fuel', total: 50 },
+    ]);
   });
 });
 

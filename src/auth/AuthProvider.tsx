@@ -30,6 +30,7 @@ type AuthContextValue = {
   user: AuthUser | null;
   status: Status;
   signIn: (credentials: authApi.LoginRequest) => Promise<void>;
+  signInWithGoogle: (idToken: string) => Promise<void>;
   signOut: () => Promise<void>;
   restoreSession: () => Promise<boolean>;
   setFirstName: (firstName: string) => void;
@@ -93,6 +94,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus('authenticated');
   }, []);
 
+  // Stays signed in on this phone, like "Remember me" ticked: there is no password to type again.
+  const signInWithGoogle = useCallback(async (idToken: string) => {
+    if (AUTH_BYPASS) {
+      // TEMP: remove when dashboard is connected to backend
+      setUser(MOCK_USER);
+      setStatus('authenticated');
+      return;
+    }
+    const auth = await authApi.googleLogin(idToken, true);
+    await startSession(auth, true);
+    setUser(toUser(auth));
+    setStatus('authenticated');
+  }, []);
+
   const signOut = useCallback(async () => {
     // First, while the session can still call the server: this phone stops getting the account's pushes.
     await unregisterPush();
@@ -131,8 +146,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, status, signIn, signOut, restoreSession, setFirstName }),
-    [user, status, signIn, signOut, restoreSession, setFirstName],
+    () => ({ user, status, signIn, signInWithGoogle, signOut, restoreSession, setFirstName }),
+    [user, status, signIn, signInWithGoogle, signOut, restoreSession, setFirstName],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

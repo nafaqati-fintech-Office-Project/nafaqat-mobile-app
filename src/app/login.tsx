@@ -10,6 +10,8 @@ import { Logo } from '@/components/Logo';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { AuthInput } from '@/features/auth/AuthInput';
 import { Checkbox } from '@/features/auth/Checkbox';
+import { GoogleButton } from '@/features/auth/GoogleButton';
+import { useGoogleSignIn } from '@/features/auth/useGoogleSignIn';
 import { useLogin } from '@/features/auth/useLogin';
 import { useExitOnBack } from '@/hooks/useExitOnBack';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -18,6 +20,7 @@ import { colors, fontSizes, gradients, lineHeights, radius, sizes, spacing } fro
 export default function LoginRoute() {
   const { t } = useLanguage();
   const form = useLogin();
+  const google = useGoogleSignIn();
   const passwordRef = useRef<TextInputInstance>(null);
 
   useExitOnBack();
@@ -100,6 +103,7 @@ export default function LoginRoute() {
               onPress={form.submit}
               loading={form.submitting}
             />
+            <GoogleButton onPress={google.submit} loading={google.busy} />
 
             <View style={styles.divider} />
             <View style={styles.footer}>

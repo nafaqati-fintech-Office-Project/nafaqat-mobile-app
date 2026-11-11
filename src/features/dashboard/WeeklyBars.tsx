@@ -3,11 +3,14 @@ import { StyleSheet, View } from 'react-native';
 import { barHeight } from './barHeight';
 import type { WeeklyAmount } from './types';
 import { AppText } from '@/components/AppText';
+import { DrillPressable } from '@/features/transactions/DrillPressable';
+import type { TransactionLink } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 import { weekdayShort } from '@/utils/intl';
 
-export function WeeklyBars({ weekly }: { weekly: WeeklyAmount[] }) {
+// linkFor: a weekday's bar opens that day's transactions.
+export function WeeklyBars({ weekly, linkFor }: { weekly: WeeklyAmount[]; linkFor?: (day: number) => TransactionLink }) {
   const { t, language } = useLanguage();
   const values = weekly.map((w) => Number(w.amount)); // chart scale only, not money math
   const highest = Math.max(...values);
@@ -18,7 +21,7 @@ export function WeeklyBars({ weekly }: { weekly: WeeklyAmount[] }) {
     <View style={styles.chart}>
       <View style={styles.row}>
         {weekly.map((w, i) => (
-          <View key={w.day} style={styles.col}>
+          <DrillPressable key={w.day} link={linkFor ? linkFor(w.day) : null} style={styles.col} label={weekdayShort(w.day, language)}>
             <View style={styles.track}>
               <View
                 style={[
@@ -30,7 +33,7 @@ export function WeeklyBars({ weekly }: { weekly: WeeklyAmount[] }) {
               />
             </View>
             <AppText style={styles.day}>{weekdayShort(w.day, language)}</AppText>
-          </View>
+          </DrillPressable>
         ))}
       </View>
       {highest <= 0 && <AppText style={styles.empty}>{t('dashboard.noSpendingWeek')}</AppText>}

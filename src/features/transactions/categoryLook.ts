@@ -15,6 +15,12 @@ const LOOKS: Record<string, CategoryLook> = {
   Fuel: { icon: 'car', tint: colors.danger, tintSoft: colors.dangerSoft },
   Entertainment: { icon: 'star', tint: colors.danger, tintSoft: colors.dangerSoft },
   Utilities: { icon: 'bolt', tint: colors.violet, tintSoft: colors.violetSoft },
+  'Cash Withdrawals': { icon: 'savings', tint: colors.orange, tintSoft: colors.orangeSoft },
+  'Bank Fees': { icon: 'info', tint: colors.textSecondary, tintSoft: colors.border },
+  'Government & Fines': { icon: 'alert', tint: colors.danger, tintSoft: colors.dangerSoft },
+  'Personal Care & Leisure': { icon: 'star', tint: colors.violet, tintSoft: colors.violetSoft },
+  'Internal Transfers': { icon: 'transactions', tint: colors.textSecondary, tintSoft: colors.border },
+  Refunds: { icon: 'check', tint: colors.success, tintSoft: colors.successSoft },
 };
 const FALLBACK: CategoryLook = { icon: 'transactions', tint: colors.textSecondary, tintSoft: colors.border };
 

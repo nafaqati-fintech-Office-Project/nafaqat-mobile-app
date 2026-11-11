@@ -9,8 +9,9 @@ import { en } from '@/i18n/en';
 const SERVER = [
   'Charity', 'Clothing & Shopping', 'Education', 'Entertainment', 'Food & Beverage', 'Fuel', 'Groceries',
   'Health', 'Housing', 'Investments', 'Loans/EMI', 'Subscriptions', 'Transportation', 'Travel', 'Utilities',
+  'Cash Withdrawals', 'Bank Fees', 'Government & Fines', 'Personal Care & Leisure', 'Internal Transfers',
 ];
-const APP = ['Income', 'Transfers', 'Person', 'Uncategorized', 'Salary', 'Other Income'];
+const APP = ['Income', 'Transfers', 'Person', 'Uncategorized', 'Salary', 'Other Income', 'Refunds'];
 
 describe('categoryLabelKey', () => {
   it('has an English and an Arabic name for every category the app can store', () => {
@@ -40,7 +41,7 @@ describe('categoryTone', () => {
 });
 
 describe('pickableCategories', () => {
-  it('offers the 15 spending categories for money out and the income ones for money in', () => {
+  it('offers the 20 spending categories for money out and the income ones for money in', () => {
     expect([...pickableCategories('DEBIT')].sort()).toEqual([...SERVER].sort());
     expect(pickableCategories('CREDIT')).toEqual(['Salary', 'Other Income']);
     expect(categoryTone('Salary')).toBe('income');

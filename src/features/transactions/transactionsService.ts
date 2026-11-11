@@ -1,6 +1,7 @@
 import { isAxiosError } from 'axios';
 
-import { categoryFromCode } from './categoryDisplay';
+import { categoryFromCode, codeForCategory } from './categoryDisplay';
+import { updateCategory } from './sync/syncApi';
 import { mockTransactions } from './mock';
 import {
   createCashExpense,
@@ -19,14 +20,22 @@ const wait = () => new Promise<void>((resolve) => setTimeout(resolve, MOCK_DELAY
 // The bypass session keeps added and deleted rows in memory.
 let mock: TransactionItem[] = [...mockTransactions];
 
-async function getMockPage({ filter, search }: TransactionQuery): Promise<TransactionPage> {
+const dayOf = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+async function getMockPage({ filter, search, scope }: TransactionQuery): Promise<TransactionPage> {
   await wait();
   const needle = search.trim().toLowerCase();
+  const inScope = (row: TransactionItem) =>
+    (!scope?.category || row.category === scope.category) &&
+    (!scope?.from || dayOf(row.date) >= scope.from) &&
+    (!scope?.to || dayOf(row.date) <= scope.to);
   const items = mock
     .filter(
       (row) =>
         (filter === 'all' || (filter === 'income') === (row.type === 'CREDIT')) &&
-        (!needle || (row.merchant ?? '').toLowerCase().includes(needle)),
+        (!needle || (row.merchant ?? '').toLowerCase().includes(needle)) &&
+        inScope(row),
     )
     .sort((a, b) => b.date.getTime() - a.date.getTime());
   return { items, page: 0, hasMore: false };
@@ -65,6 +74,17 @@ export async function removeTransaction(id: string): Promise<void> {
   if (!AUTH_BYPASS) return deleteTransaction(id);
   await wait();
   mock = mock.filter((row) => row.id !== id);
+}
+
+// Changes the category of a transaction on the service (the bypass session changes the in-memory row).
+export async function setTransactionCategory(id: string, category: string): Promise<void> {
+  if (!AUTH_BYPASS) {
+    const code = codeForCategory(category);
+    if (!code) throw new Error('Category has no service code');
+    return updateCategory(id, code);
+  }
+  await wait();
+  mock = mock.map((row) => (row.id === id ? { ...row, category } : row));
 }
 
 // gone: already deleted (on another device, for example), so the row can just go.

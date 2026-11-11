@@ -41,6 +41,12 @@ export async function login(request: LoginRequest): Promise<AuthResponse> {
   return data;
 }
 
+// Signs in with the ID token Google gave the phone; the first time, the server creates the account.
+export async function googleLogin(idToken: string, rememberMe: boolean): Promise<AuthResponse> {
+  const { data } = await publicApi.post<AuthResponse>('/api/auth/google', { idToken, rememberMe });
+  return data;
+}
+
 export async function refresh(refreshToken: string): Promise<AuthResponse> {
   const { data } = await publicApi.post<AuthResponse>('/api/auth/refresh', { refreshToken });
   return data;

@@ -5,19 +5,21 @@ import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { categoryLabelKey } from '@/features/transactions/categoryDisplay';
 import { categoryLook } from '@/features/transactions/categoryLook';
+import { DrillPressable } from '@/features/transactions/DrillPressable';
+import type { TransactionLink } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
 
-type Props = { item: MerchantTotal; rank: number; currency: string };
+type Props = { item: MerchantTotal; rank: number; currency: string; link?: TransactionLink | null };
 
-export function MerchantRow({ item, rank, currency }: Props) {
+export function MerchantRow({ item, rank, currency, link = null }: Props) {
   const { language, t } = useLanguage();
   const look = categoryLook(item.category);
   const labelKey = categoryLabelKey(item.category);
 
   return (
-    <View style={styles.row}>
+    <DrillPressable link={link} style={styles.row}>
       <AppText weight="bold" style={styles.rank}>
         {rank}
       </AppText>
@@ -35,7 +37,7 @@ export function MerchantRow({ item, rank, currency }: Props) {
       <AppText weight="bold" style={styles.amount}>
         {formatMoney(item.amount, currency, language)}
       </AppText>
-    </View>
+    </DrillPressable>
   );
 }
 

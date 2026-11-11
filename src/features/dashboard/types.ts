@@ -27,6 +27,7 @@ export type SectionState = 'ready' | 'unavailable';
 
 export type DashboardData = {
   period: { year: number; month: number };
+  months: number; // how many months, ending with `period`, the totals and categories cover (1 = this month)
   currency: string;
   totalSpending: string;
   changePercent: number; // signed, vs previous period

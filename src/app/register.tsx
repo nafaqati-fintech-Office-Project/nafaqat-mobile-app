@@ -6,6 +6,8 @@ import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { AuthInput } from '@/features/auth/AuthInput';
 import { AuthScreen } from '@/features/auth/AuthScreen';
+import { GoogleButton } from '@/features/auth/GoogleButton';
+import { useGoogleSignIn } from '@/features/auth/useGoogleSignIn';
 import { useRegister } from '@/features/auth/useRegister';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, spacing } from '@/theme';
@@ -13,6 +15,7 @@ import { colors, fontSizes, radius, spacing } from '@/theme';
 export default function RegisterRoute() {
   const { t } = useLanguage();
   const form = useRegister();
+  const google = useGoogleSignIn();
   const lastNameRef = useRef<TextInputInstance>(null);
   const usernameRef = useRef<TextInputInstance>(null);
   const emailRef = useRef<TextInputInstance>(null);
@@ -114,6 +117,7 @@ export default function RegisterRoute() {
         </View>
       )}
       <PrimaryButton label={t('register.submit')} onPress={form.submit} loading={form.submitting} />
+      <GoogleButton onPress={google.submit} loading={google.busy} />
 
       <View style={styles.divider} />
       <View style={styles.footer}>

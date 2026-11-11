@@ -3,6 +3,7 @@ import { mockTransactions } from '@/features/transactions/mock';
 
 export const mockDashboard: DashboardData = {
   period: { year: 2026, month: 5 },
+  months: 1,
   currency: 'SAR',
   totalSpending: '4250',
   changePercent: -12,

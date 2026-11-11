@@ -3,13 +3,18 @@ import { describe, expect, it } from 'vitest';
 import {
   biggestExpense,
   buildReport,
+  debtSummary,
   lifestyleGroup,
   lifestyleShares,
+  moneyMovement,
+  paymentMethods,
   pickReportCurrency,
   reportCategories,
+  weeklySpending,
   type BuildInput,
 } from './reportBuilder';
 import type { CurrencyComparison, MonthTotals, SpendingRows } from '@/features/insights/insightsApi';
+import type { TransactionItem } from '@/features/transactions/transactionsApi';
 
 const totals = (income: number, expenses: number, categories: MonthTotals['categories'] = []): MonthTotals => ({
   income,
@@ -159,5 +164,99 @@ describe('buildReport', () => {
   it('uses three decimals for KWD', () => {
     const report = buildReport({ ...base, preferredCurrency: 'KWD', comparison: [comparison('KWD', totals(20, 12.5), totals(0, 0))] });
     expect(report.spent).toBe('12.500');
+  });
+});
+
+describe('the report pages added from the client sheet', () => {
+  const item = (
+    day: number,
+    amount: string,
+    category: string,
+    description: string | null = null,
+    currency = 'SAR',
+  ): TransactionItem => ({
+    id: `${day}-${amount}`,
+    merchant: 'Shop',
+    category,
+    type: 'DEBIT',
+    amount,
+    currency,
+    date: new Date(2026, 9, day, 12), // October 2026
+    manual: false,
+    description,
+  });
+  const period = { year: 2026, month: 10 };
+
+  it('adds up everyday spending week by week, starting on Sunday, and marks a week that runs into another month', () => {
+    // 1 Oct 2026 is a Thursday, so the first week starts on Sunday 27 Sep.
+    const weeks = weeklySpending(
+      [item(1, '10', 'Groceries'), item(3, '20', 'Fuel'), item(4, '5', 'Groceries'), item(5, '400', 'Transfers')],
+      period,
+      'SAR',
+    );
+    expect(weeks).toEqual([
+      { start: '2026-09-27', amount: '30.00', partial: true },
+      { start: '2026-10-04', amount: '5.00', partial: false },
+    ]);
+  });
+
+  it('groups spending by the card in the description', () => {
+    const methods = paymentMethods(
+      [
+        item(2, '60', 'Groceries', 'SNB · card ****4821'),
+        item(3, '20', 'Fuel', 'SNB · card ****4821'),
+        item(4, '20', 'Fuel', null),
+        item(5, '900', 'Transfers', 'SNB · card ****4821'),
+      ],
+      'SAR',
+    );
+    expect(methods).toEqual([
+      { card: '4821', amount: '80.00', count: 2, percent: 80 },
+      { card: null, amount: '20.00', count: 1, percent: 20 },
+    ]);
+  });
+
+  it('separates everyday spending from transfers and cash', () => {
+    const cats = [
+      { category: 'Transfers', amount: '300.00', percent: 30 },
+      { category: 'Cash Withdrawals', amount: '100.00', percent: 10 },
+      { category: 'Groceries', amount: '600.00', percent: 60 },
+    ];
+    expect(moneyMovement(cats, 1000, 1500, 'SAR')).toEqual({
+      dayToDay: '700.00',
+      transfers: '300.00',
+      cash: '100.00',
+      income: '1500.00',
+    });
+  });
+
+  it('works out what loans take of income and of spending', () => {
+    const cats = [{ category: 'Loans/EMI', amount: '250.00', percent: 25 }];
+    expect(debtSummary(cats, 1000, 2000, 'SAR')).toEqual({ loans: '250.00', percentOfIncome: 13, percentOfSpending: 25 });
+    expect(debtSummary(cats, 1000, 0, 'SAR').percentOfIncome).toBeNull();
+    expect(debtSummary([], 1000, 2000, 'SAR').loans).toBe('0.00');
+  });
+
+  it('leaves money moved between own accounts out of the shop list, the count and the weeks', () => {
+    const spending: SpendingRows = {
+      truncated: false,
+      rows: [item(2, '40', 'Groceries'), item(3, '5000', 'Internal Transfers'), item(4, '10', 'Fuel')],
+    };
+    const report = buildReport({
+      period,
+      preferredCurrency: 'SAR',
+      comparison: [comparison('SAR', totals(1000, 50), totals(900, 40))],
+      trend: null,
+      spending,
+      daysCounted: 31,
+    });
+    expect(report.transactionCount).toBe(2);
+    expect(report.rows.map((r) => r.category)).toEqual(['Groceries', 'Fuel']);
+    expect(report.biggest?.amount).toBe('40');
+    expect(report.weeks.reduce((sum, w) => sum + Number(w.amount), 0)).toBe(50);
+  });
+
+  it('files Personal Care & Leisure with lifestyle spending', () => {
+    expect(lifestyleGroup('Personal Care & Leisure')).toBe('lifestyle');
   });
 });

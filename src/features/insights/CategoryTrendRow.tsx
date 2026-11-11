@@ -6,17 +6,19 @@ import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { categoryLabelKey } from '@/features/transactions/categoryDisplay';
 import { categoryLook } from '@/features/transactions/categoryLook';
+import { DrillPressable } from '@/features/transactions/DrillPressable';
+import type { TransactionLink } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
 
-export function CategoryTrendRow({ item, currency }: { item: CategoryTrend; currency: string }) {
+export function CategoryTrendRow({ item, currency, link = null }: { item: CategoryTrend; currency: string; link?: TransactionLink | null }) {
   const { language, t } = useLanguage();
   const look = categoryLook(item.category);
   const labelKey = categoryLabelKey(item.category);
 
   return (
-    <View style={styles.row}>
+    <DrillPressable link={link} style={styles.row}>
       <View style={[styles.tile, { backgroundColor: look.tintSoft }]}>
         <Icon name={look.icon} color={look.tint} size={sizes.iconLg} />
       </View>
@@ -34,7 +36,7 @@ export function CategoryTrendRow({ item, currency }: { item: CategoryTrend; curr
         </AppText>
         <ChangeChip percent={item.changePercent} goodWhen="down" />
       </View>
-    </View>
+    </DrillPressable>
   );
 }
 

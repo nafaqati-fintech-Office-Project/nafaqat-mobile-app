@@ -1,9 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 
+import { dashboardPeriod, dayOfThisWeek, dayPeriod } from './drill';
 import type { DashboardData } from './types';
 import { WeeklyBars } from './WeeklyBars';
 import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
+import { DrillPressable } from '@/features/transactions/DrillPressable';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, lineHeights, radius, shadows, sizes, spacing } from '@/theme';
 import { monthName } from '@/utils/intl';
@@ -19,11 +21,21 @@ export function SpendingCard({ data }: { data: DashboardData }) {
   const down = data.changePercent <= 0;
   const tone = down ? colors.success : colors.danger;
   const change = `${percent(data.changePercent)}%`;
+  const period = dashboardPeriod(data, t, language);
+  const spending = t('dashboard.totalSpending');
 
   return (
     <View style={styles.card}>
+      <DrillPressable
+        link={{ type: 'expenses', from: period.from, to: period.to, title: `${spending} · ${period.title}` }}
+        label={`${spending}, ${formatMoney(data.totalSpending, data.currency, language)}`}
+        style={styles.head}>
       <AppText style={styles.label}>
-        {`${t('dashboard.totalSpending')} (${month} ${data.period.year})`}
+        {`${t('dashboard.totalSpending')} (${
+          data.months === 1
+            ? `${month} ${data.period.year}`
+            : t('dashboard.lastMonths').replace('{count}', String(data.months))
+        })`}
       </AppText>
       <View style={styles.amountRow}>
         <AppText weight="bold" style={styles.amount} numberOfLines={1} adjustsFontSizeToFit>
@@ -39,7 +51,14 @@ export function SpendingCard({ data }: { data: DashboardData }) {
           </AppText>
         </View>
       </View>
-      <WeeklyBars weekly={data.weekly} />
+      </DrillPressable>
+      <WeeklyBars
+        weekly={data.weekly}
+        linkFor={(day) => {
+          const date = dayPeriod(dayOfThisWeek(day), language);
+          return { type: 'expenses', ...date, title: `${spending} · ${date.title}` };
+        }}
+      />
     </View>
   );
 }
@@ -52,6 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     ...shadows.card,
   },
+  head: { gap: spacing.md },
   label: { fontSize: fontSizes.sm, color: colors.textSecondary },
   amountRow: {
     flexDirection: 'row',

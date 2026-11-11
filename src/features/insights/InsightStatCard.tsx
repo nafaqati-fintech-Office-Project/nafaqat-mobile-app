@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { ChangeChip } from './ChangeChip';
 import { AppText } from '@/components/AppText';
 import { Icon, type IconName } from '@/components/Icon';
+import { DrillPressable } from '@/features/transactions/DrillPressable';
+import type { TransactionLink } from '@/features/transactions/transactionLinks';
 import { colors, fontSizes, radius, shadows, sizes, spacing } from '@/theme';
 
 type Props = {
@@ -13,11 +15,13 @@ type Props = {
   value: string;
   changePercent: number | null;
   goodWhen: 'up' | 'down';
+  // Opens the transactions behind the number.
+  link?: TransactionLink | null;
 };
 
-export function InsightStatCard({ icon, tint, tintSoft, label, value, changePercent, goodWhen }: Props) {
+export function InsightStatCard({ icon, tint, tintSoft, label, value, changePercent, goodWhen, link = null }: Props) {
   return (
-    <View style={styles.card}>
+    <DrillPressable link={link} style={styles.card} label={`${label}, ${value}`}>
       <View style={styles.top}>
         <View style={[styles.tile, { backgroundColor: tintSoft }]}>
           <Icon name={icon} color={tint} size={sizes.iconLg} />
@@ -30,7 +34,7 @@ export function InsightStatCard({ icon, tint, tintSoft, label, value, changePerc
         {value}
       </AppText>
       <ChangeChip percent={changePercent} goodWhen={goodWhen} />
-    </View>
+    </DrillPressable>
   );
 }
 

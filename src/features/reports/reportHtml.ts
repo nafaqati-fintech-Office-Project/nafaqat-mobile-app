@@ -92,6 +92,40 @@ export function buildReportHtml(report: Report, language: Language, generatedAt:
             .join('')
         : `<tr><td class="muted">${escapeHtml(t('insights.noMerchants'))}</td></tr>`;
 
+  const weekDay = new Intl.DateTimeFormat(intlLocale(language), { month: 'short', day: 'numeric' });
+  const weeks = report.weeks.length
+    ? report.weeks
+        .map((w) => {
+          const [y, m, d] = w.start.split('-').map(Number);
+          return `<tr><td>${escapeHtml(weekDay.format(new Date(y, m - 1, d)))}${w.partial ? ' *' : ''}</td><td class="num">${money(w.amount)}</td></tr>`;
+        })
+        .join('') + (report.weeks.some((w) => w.partial) ? `<tr><td class="muted" colspan="2">* ${escapeHtml(t('reports.partialWeek'))}</td></tr>` : '')
+    : `<tr><td class="muted">${escapeHtml(t(report.merchantsState === 'unavailable' ? 'insights.merchantsUnavailable' : 'reports.noWeeks'))}</td></tr>`;
+
+  const methods = report.paymentMethods.length
+    ? report.paymentMethods
+        .map(
+          (m) => `<tr><td>${escapeHtml(m.card ? `${t('reports.card')} ****${m.card}` : t('reports.otherMethod'))}<div class="bar"><span style="width:${m.percent}%"></span></div></td>
+            <td class="num">${money(m.amount)} · ${m.percent}%</td></tr>`,
+        )
+        .join('')
+    : `<tr><td class="muted">${escapeHtml(t(report.merchantsState === 'unavailable' ? 'insights.merchantsUnavailable' : 'reports.noMethods'))}</td></tr>`;
+
+  const { movement, debt } = report;
+  const movementRows = [
+    row(t('reports.dayToDay'), money(movement.dayToDay)),
+    row(t('reports.transfersOut'), money(movement.transfers)),
+    row(t('reports.cashOut'), money(movement.cash)),
+    row(t('reports.moneyIn'), money(movement.income)),
+  ].join('');
+  const debtRows = Number(debt.loans) > 0
+    ? [
+        row(t('reports.debt'), money(debt.loans)),
+        ...(debt.percentOfIncome !== null ? [row(t('reports.debtOfIncome'), `${debt.percentOfIncome}%`)] : []),
+        row(t('reports.debtOfSpending'), `${debt.percentOfSpending}%`),
+      ].join('')
+    : `<tr><td class="muted">${escapeHtml(t('reports.noDebt'))}</td></tr>`;
+
   const split = report.lifestyle
     .filter((s) => s.percent > 0)
     .map((s) => `<span style="flex:${s.percent};background:${GROUP_COLOR[s.group]}"></span>`)
@@ -138,10 +172,15 @@ export function buildReportHtml(report: Report, language: Language, generatedAt:
     <div class="hero">${money(report.spent)}</div><table>${summary}</table></section>
   <section><h2>${escapeHtml(t('reports.categories'))}</h2><table>${categories}</table></section>
   <section><h2>${escapeHtml(t('reports.merchants'))}</h2><table>${merchants}</table></section>
+  <section><h2>${escapeHtml(t('reports.weekly'))}</h2><table>${weeks}</table></section>
+  <section><h2>${escapeHtml(t('reports.paymentMethods'))}</h2><table>${methods}</table></section>
+  <section><h2>${escapeHtml(t('reports.movement'))}</h2><table>${movementRows}</table>
+    <div class="muted">${escapeHtml(t('reports.movementNote'))}</div></section>
   <section><h2>${escapeHtml(t('reports.lifestyleTitle'))}</h2><div class="split">${split}</div><table>${lifestyle}</table></section>
   <section><h2>${escapeHtml(t('reports.savings'))}</h2>
     <div class="hero ${kept ? 'good' : 'bad'}">${money(report.net)}</div>
     <div class="muted">${escapeHtml(savingsText)}</div></section>
+  <section><h2>${escapeHtml(t('reports.debt'))}</h2><table>${debtRows}</table></section>
   <section><h2>${escapeHtml(t('reports.comparison'))}</h2>
     <table><thead><tr><th></th><th>${escapeHtml(t('reports.thisMonth'))}</th><th>${escapeHtml(t('reports.lastMonth'))}</th><th></th></tr></thead>
     <tbody>${compare(t('dashboard.income'), income)}${compare(t('dashboard.expenses'), expenses, true)}${compare(t('dashboard.net'), net)}</tbody></table>

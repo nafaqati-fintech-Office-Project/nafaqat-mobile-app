@@ -92,6 +92,8 @@ export function changePercent(current: number, previous: number): number {
 
 export type BuildInput = {
   period: { year: number; month: number };
+  // How many months, ending with `period`, the totals and categories cover.
+  months?: number;
   preferredCurrency: string | null;
   current: IncomeExpenses[];
   previous: IncomeExpenses[];
@@ -179,6 +181,7 @@ export function buildDashboard(input: BuildInput): DashboardData {
 
   return {
     period: input.period,
+    months: input.months ?? 1,
     currency,
     totalSpending: amount(current?.totalExpenses ?? 0, currency),
     changePercent: changePercent(current?.totalExpenses ?? 0, previous?.totalExpenses ?? 0),

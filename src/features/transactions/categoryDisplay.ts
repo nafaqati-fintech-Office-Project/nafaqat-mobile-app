@@ -23,6 +23,12 @@ const LABELS: Record<string, TranslationKey> = {
   Salary: 'category.salary',
   'Other Income': 'category.otherIncome',
   Transfers: 'category.transfers',
+  'Cash Withdrawals': 'category.cashWithdrawals',
+  'Bank Fees': 'category.bankFees',
+  'Government & Fines': 'category.governmentFines',
+  'Personal Care & Leisure': 'category.personalCare',
+  'Internal Transfers': 'category.internalTransfers',
+  Refunds: 'category.refunds',
   Person: 'category.person',
   Uncategorized: 'category.uncategorized',
 };
@@ -47,6 +53,13 @@ const BY_CODE: Record<string, string> = {
   SALARY: 'Salary',
   OTHER_INCOME: 'Other Income',
   UNCATEGORIZED: 'Uncategorized',
+  TRANSFERS: 'Transfers',
+  CASH_WITHDRAWALS: 'Cash Withdrawals',
+  BANK_FEES: 'Bank Fees',
+  GOVERNMENT_AND_FINES: 'Government & Fines',
+  PERSONAL_CARE: 'Personal Care & Leisure',
+  INTERNAL_TRANSFERS: 'Internal Transfers',
+  REFUNDS: 'Refunds',
 };
 
 // Returns null for a code the app does not know yet.
@@ -54,7 +67,7 @@ export function categoryFromCode(code: unknown): string | null {
   return typeof code === 'string' ? (BY_CODE[code] ?? null) : null;
 }
 
-// The service's code for one of the app's category names; null for the app's own (Transfers, Person, Income).
+// The service's code for one of the app's category names; null for the app's own (Person, Income).
 export function codeForCategory(category: string): string | null {
   return Object.entries(BY_CODE).find(([, name]) => name === category)?.[0] ?? null;
 }
@@ -64,6 +77,7 @@ export function codeForCategory(category: string): string | null {
 const SPENDING = [
   'Food & Beverage', 'Groceries', 'Clothing & Shopping', 'Transportation', 'Fuel', 'Entertainment', 'Subscriptions',
   'Health', 'Education', 'Travel', 'Utilities', 'Investments', 'Housing', 'Charity', 'Loans/EMI',
+  'Cash Withdrawals', 'Bank Fees', 'Government & Fines', 'Personal Care & Leisure', 'Internal Transfers',
 ];
 const INCOME = ['Salary', 'Other Income'];
 

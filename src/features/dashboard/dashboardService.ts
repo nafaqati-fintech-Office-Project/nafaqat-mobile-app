@@ -21,6 +21,7 @@ import { mockDashboard } from './mock';
 import type { DashboardData, SectionState } from './types';
 import { AUTH_BYPASS, DASHBOARD_MOCK_FAIL } from '@/config/flags';
 import { getMonthlyComparison } from '@/features/insights/insightsApi';
+import { combineComparisons, lastMonths as periodMonths, type Period } from '@/features/insights/insightsBuilder';
 import { fetchTransactionPage } from '@/features/transactions/transactionsApi';
 
 const MOCK_DELAY_MS = 500;
@@ -34,7 +35,12 @@ async function getMockDashboard(): Promise<DashboardData> {
 // Preferences only refine currency and time zone, so a failure here never blocks the dashboard.
 const optionalPreferences = (): Promise<Preferences | null> => getPreferences().catch(() => null);
 
-export async function getDashboard(): Promise<DashboardData> {
+const monthKey = ({ year, month }: { year: number; month: number }) => `${year}-${String(month).padStart(2, '0')}`;
+
+// Spending, income, savings, the transaction count and the categories cover the last `months` months,
+// ending with the current one; the change is against the same number of months before. The week, the
+// month heatmap and the savings trend keep their own time frames.
+export async function getDashboard(months: Period = 1): Promise<DashboardData> {
   // The bypass session has no token, so the real endpoints would answer 401.
   if (AUTH_BYPASS) return getMockDashboard();
   if (DASHBOARD_MOCK_FAIL) throw new Error('Mock dashboard failure');
@@ -46,16 +52,26 @@ export async function getDashboard(): Promise<DashboardData> {
   const before = previousMonth(today.year, today.month);
   const week = weekDates(today);
 
+  const covered = periodMonths(today, months);
+  const range = {
+    startDate: monthRange(covered[0].year, covered[0].month).startDate,
+    endDate: monthRange(period.year, period.month).endDate,
+  };
+  const earlier = periodMonths({ ...before, day: 1 }, months);
+  const previousRange = {
+    startDate: monthRange(earlier[0].year, earlier[0].month).startDate,
+    endDate: monthRange(before.year, before.month).endDate,
+  };
+
   // Core numbers: if any of these fail the dashboard shows its error state.
   const [current, previous, summary, daily] = await Promise.all([
-    getIncomeVsExpenses(monthRange(period.year, period.month), timeZone),
-    getIncomeVsExpenses(monthRange(before.year, before.month), timeZone),
-    getSpendingSummary(monthRange(period.year, period.month), timeZone),
+    getIncomeVsExpenses(range, timeZone),
+    getIncomeVsExpenses(previousRange, timeZone),
+    getSpendingSummary(range, timeZone),
     getDailySpending({ startDate: week[0], endDate: week[6] }, timeZone),
   ]);
 
   // Optional sections: each one falls back on its own ("Coming soon" tiles, a note in the card).
-  const month = `${period.year}-${String(period.month).padStart(2, '0')}`;
   const [
     budgetResult,
     subscriptionsResult,
@@ -66,7 +82,7 @@ export async function getDashboard(): Promise<DashboardData> {
   ] = await Promise.allSettled([
     getCurrentBudget(),
     getActiveSubscriptionCount(),
-    getMonthlyComparison(month, timeZone),
+    Promise.all(covered.map((m) => getMonthlyComparison(monthKey(m), timeZone))).then(combineComparisons),
     fetchTransactionPage({ filter: 'all', search: '', page: 0, size: RECENT_COUNT }),
     getDailySpending(monthRange(period.year, period.month), timeZone),
     Promise.all(
@@ -82,6 +98,7 @@ export async function getDashboard(): Promise<DashboardData> {
 
   return buildDashboard({
     period,
+    months,
     preferredCurrency: preferences?.currency ?? null,
     current,
     previous,

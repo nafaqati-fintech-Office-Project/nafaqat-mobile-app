@@ -24,5 +24,8 @@ export type Budget = {
   tone: BudgetTone;
   // True while the service is still adding the month's earlier transactions to the totals.
   catchingUp: boolean;
+  // Set when the figures cover the last `months` months instead of this one: spent is what was spent in
+  // them and every limit is the monthly limit times `months`; startDate is the first of those months.
+  months?: number;
   categories: CategoryBudget[];
 };

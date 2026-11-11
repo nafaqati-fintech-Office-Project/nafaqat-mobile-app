@@ -5,8 +5,8 @@ import { API_URL } from '@/config/env';
 import { AUTH_BYPASS } from '@/config/flags';
 import { devLog } from '@/utils/devLog';
 
-// The server may call Gemini inside the request, so the timeout allows for it.
-const TIMEOUT_MS = 15000;
+// The server may try up to three Gemini keys at 10s each; the gateway gives it 30s.
+const TIMEOUT_MS = 30000;
 // Model calls at once across the whole app (history import, SMS listener, retry).
 const MAX_IN_FLIGHT = 3;
 // Once the model was unreachable, calls fail at once for this long instead of each waiting out
@@ -89,13 +89,16 @@ function request<T extends object>(
   path: string,
   text: string,
   parse: (data: unknown) => T | ModelFailure,
+  extra: object = {},
 ): Promise<T | ModelFailure> {
+  // The same name can be another category for another kind of payment, so the extra facts are part of the key.
   const key = `${path}
-${text}`;
+${text}
+${JSON.stringify(extra)}`;
   const cached = answers.get(key);
   if (cached && Date.now() - cached.at < ANSWER_TTL_MS) return cached.result as Promise<T | ModelFailure>;
 
-  const result = send(path, text, parse);
+  const result = send(path, text, parse, extra);
   if (answers.size >= MAX_ANSWERS) answers.delete(answers.keys().next().value!);
   answers.set(key, { at: Date.now(), result });
   void result.then((value) => {
@@ -104,13 +107,18 @@ ${text}`;
   return result;
 }
 
-async function send<T>(path: string, text: string, parse: (data: unknown) => T | ModelFailure): Promise<T | ModelFailure> {
+async function send<T>(
+  path: string,
+  text: string,
+  parse: (data: unknown) => T | ModelFailure,
+  extra: object,
+): Promise<T | ModelFailure> {
   if (Date.now() < unavailableUntil) return 'unavailable';
   await acquire();
   try {
     // The model may have gone down while this call waited for a slot.
     if (Date.now() < unavailableUntil) return 'unavailable';
-    const result = parse(await post(path, { text }));
+    const result = parse(await post(path, { text, ...extra }));
     if (wasUnavailable) {
       wasUnavailable = false;
       devLog('[model] reachable again');
@@ -120,7 +128,9 @@ async function send<T>(path: string, text: string, parse: (data: unknown) => T |
   } catch (error) {
     const kind = failure(error, path);
     if (kind === 'unavailable') {
-      unavailableUntil = Date.now() + COOLDOWN_MS;
+      // A 503 is one request the model could not answer (its LLM failed just then): that row is retried
+      // later, but the others still get their turn. Only a real outage pauses every call.
+      if (!isAxiosError(error) || error.response?.status !== 503) unavailableUntil = Date.now() + COOLDOWN_MS;
       wasUnavailable = true;
     }
     return kind;
@@ -145,7 +155,11 @@ export function extractMerchant(redactedText: string): Promise<{ merchant: strin
   });
 }
 
-export function predictCategory(text: string): Promise<ModelPrediction | ModelFailure> {
+// What the SMS says about the payment, as short labels. Sent only when there is something to say.
+export type ModelContext = { kind?: string; currency?: string; bank?: string };
+
+export function predictCategory(text: string, context?: ModelContext): Promise<ModelPrediction | ModelFailure> {
+  const extra = Object.fromEntries(Object.entries(context ?? {}).filter(([, value]) => value));
   return request('/predict', text, (body) => {
     if (typeof body !== 'object' || body === null) {
       devLog('[model] unexpected response shape');
@@ -168,5 +182,5 @@ export function predictCategory(text: string): Promise<ModelPrediction | ModelFa
       predictionSource: typeof prediction_source === 'string' ? prediction_source : null,
       predictionId: typeof prediction_id === 'string' && prediction_id ? prediction_id : null,
     };
-  });
+  }, extra);
 }

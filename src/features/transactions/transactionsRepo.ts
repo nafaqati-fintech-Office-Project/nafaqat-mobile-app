@@ -95,7 +95,18 @@ export async function saveTransaction(processed: ProcessedSms): Promise<boolean>
       predictionId ?? null,
     ],
   );
-  return result.changes > 0;
+  if (result.changes > 0) return true;
+
+  // Already saved: a re-import fills in the category of a row that is still Uncategorized, and leaves any
+  // other category (including one the user picked) alone. The sync then sends the change to the server.
+  if (category === 'Uncategorized') return false;
+  const upgraded = await db.runAsync(
+    `UPDATE transactions SET category = ?, source = ?, confidence = ?, prediction_id = ?,
+       needs_prediction = 0, retry_text = NULL
+     WHERE dedupe_key = ? AND category = 'Uncategorized'`,
+    [category, source, confidence ?? null, predictionId ?? null, transactionKey(txn)],
+  );
+  return upgraded.changes > 0;
 }
 
 // Rows still waiting for the model, newest first, skipping those the server refused maxAttempts times.
@@ -132,6 +143,69 @@ export async function saveRetryResult(id: number, result: Categorized): Promise<
   );
 }
 
+// A saved transaction as it is looked at again when the categories improve.
+export type RecategorizeCandidate = {
+  id: number;
+  smsId: string;
+  bank: string;
+  type: ParsedTxn['type'];
+  amount: string;
+  currency: string;
+  merchant: string | null;
+  cardLast4: string | null;
+  balance: string | null;
+  date: number;
+  txnDate: number | null;
+  category: string;
+};
+
+// Rows worth a second look, newest first: still Uncategorized, filed as plain Income (it may be a refund or a
+// card payment), or answered by the lookup list (which has changed). Never a row the user set by hand, nor one
+// that follows their own merchant rule.
+export async function listRecategorizeCandidates(limit: number): Promise<RecategorizeCandidate[]> {
+  const db = await getDb();
+  const rows = await db.getAllAsync<{
+    id: number;
+    sms_id: string;
+    bank: string;
+    type: ParsedTxn['type'];
+    amount: string;
+    currency: string;
+    merchant: string | null;
+    card_last4: string | null;
+    balance: string | null;
+    date: number;
+    txn_date: number | null;
+    category: string;
+  }>(
+    `SELECT id, sms_id, bank, type, amount, currency, merchant, card_last4, balance, date, txn_date, category
+     FROM transactions
+     WHERE source NOT IN ('user', 'rule') AND (category IN ('Uncategorized', 'Income') OR source = 'lookup')
+     ORDER BY date DESC LIMIT ?`,
+    [limit],
+  );
+  return rows.map(({ sms_id, card_last4, txn_date, ...row }) => ({
+    ...row,
+    smsId: sms_id,
+    cardLast4: card_last4,
+    txnDate: txn_date,
+  }));
+}
+
+// Stores a better category for a row. Only if the row still has the category it was read with and is not the
+// user's own choice, so a change made meanwhile is never overwritten. The sync then sends it to the server.
+export async function saveRecategorized(id: number, from: string, result: Categorized): Promise<boolean> {
+  const db = await getDb();
+  const changed = await db.runAsync(
+    `UPDATE transactions
+     SET category = ?, source = ?, confidence = ?, prediction_id = ?, needs_prediction = 0, retry_text = NULL,
+         sync_attempts = 0
+     WHERE id = ? AND category = ? AND source NOT IN ('user')`,
+    [result.category, result.source, result.confidence ?? null, result.predictionId ?? null, id, from],
+  );
+  return changed.changes > 0;
+}
+
 export async function listTransactions(limit = 200): Promise<StoredTransaction[]> {
   const db = await getDb();
   const rows = await db.getAllAsync<Row>(`SELECT ${COLUMNS} FROM transactions ORDER BY date DESC LIMIT ?`, [limit]);
@@ -144,12 +218,24 @@ export async function spentByCategory(from: number, to: number, currency: string
   const db = await getDb();
   const rows = await db.getAllAsync<{ category: string; total: number }>(
     `SELECT category, SUM(CAST(amount AS REAL)) AS total FROM transactions
-     WHERE type = 'DEBIT' AND currency = ? AND category != 'Transfers'
+     WHERE type = 'DEBIT' AND currency = ? AND category NOT IN ('Transfers', 'Internal Transfers')
        AND COALESCE(txn_date, date) >= ? AND COALESCE(txn_date, date) < ?
      GROUP BY category`,
     [currency, from, to],
   );
   return new Map(rows.map((r) => [r.category, r.total]));
+}
+
+// The phone's copy of a transaction the service holds, found by the duplicate key the sync sent.
+export async function getTransactionByDedupeKey(
+  dedupeKey: string,
+): Promise<(StoredTransaction & { smsId: string }) | null> {
+  const db = await getDb();
+  const row = await db.getFirstAsync<Row & { sms_id: string }>(
+    `SELECT ${COLUMNS}, sms_id FROM transactions WHERE dedupe_key = ?`,
+    [dedupeKey],
+  );
+  return row ? { ...toStored(row), smsId: row.sms_id } : null;
 }
 
 export async function getTransaction(id: number): Promise<StoredTransaction | null> {

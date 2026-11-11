@@ -1,6 +1,7 @@
 declare module 'react-native-get-sms-android' {
   type SmsFilter = {
     box?: 'inbox' | 'sent' | 'draft' | '';
+    _id?: number;
     minDate?: number;
     maxDate?: number;
     maxCount?: number;

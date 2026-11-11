@@ -37,7 +37,7 @@ const row = (overrides: Record<string, unknown> = {}) => ({
 
 describe('parseTransaction', () => {
   it('maps the server fields the list shows', () => {
-    expect(parseTransaction(row())).toEqual({
+    expect(parseTransaction(row())).toMatchObject({
       id: '01a13571-0000-0000-0000-000000000001',
       merchant: 'Starbucks',
       category: 'Food & Beverage',
@@ -92,6 +92,30 @@ describe('fetchTransactionPage', () => {
     expect(get).toHaveBeenCalledWith('/api/transactions', {
       params: { type: 'DEBIT', q: 'star', status: 'COMPLETED', sort: 'transactionDate,desc', page: 2, size: 30 },
     });
+  });
+
+  it('narrows to a category code and calendar days for a drill-down', async () => {
+    get.mockResolvedValue({ data: empty });
+    await fetchTransactionPage({
+      filter: 'expenses',
+      search: '',
+      page: 0,
+      size: 30,
+      scope: { category: 'Groceries', from: '2026-11-01', to: '2026-11-30' },
+    });
+    expect(get.mock.calls[0][1].params).toMatchObject({
+      type: 'DEBIT',
+      category: 'GROCERIES',
+      startDate: '2026-11-01',
+      endDate: '2026-11-30',
+    });
+    expect(typeof get.mock.calls[0][1].params.timeZone).toBe('string');
+  });
+
+  it('sends no category or dates without a scope', async () => {
+    get.mockResolvedValue({ data: empty });
+    await fetchTransactionPage({ filter: 'all', search: '', page: 0, size: 30 });
+    expect(get.mock.calls[0][1].params).toMatchObject({ category: undefined, startDate: undefined, endDate: undefined, timeZone: undefined });
   });
 
   it('sends no type or search when they are not set', async () => {

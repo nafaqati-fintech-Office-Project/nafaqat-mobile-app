@@ -1,7 +1,8 @@
 import { lookupCategory } from './lookup';
-import { extractMerchant, predictCategory, type ModelFailure } from './modelClient';
+import { extractMerchant, predictCategory, type ModelContext, type ModelFailure } from './modelClient';
 import { redactForModel } from './redact';
-import { MERCHANT_FALLBACK_ENABLED } from '@/config/env';
+import { smsKind, type SmsKind } from './smsKind';
+import { LLM_ONLY, MERCHANT_FALLBACK_ENABLED } from '@/config/env';
 import { findUserCategory } from '@/features/transactions/categoryRules';
 import { devLog } from '@/utils/devLog';
 import type { ParsedTxn } from '@/features/sms/parser/types';
@@ -25,6 +26,11 @@ export type Categorized = {
 export const UNCATEGORIZED = 'Uncategorized';
 const INCOME = 'Income';
 const TRANSFERS = 'Transfers';
+const CASH_WITHDRAWALS = 'Cash Withdrawals';
+const GOVERNMENT_FINES = 'Government & Fines';
+const BANK_FEES = 'Bank Fees';
+const INTERNAL_TRANSFERS = 'Internal Transfers';
+const REFUNDS = 'Refunds';
 const TRANSFER_RE = /\b(?:raast|ibft|iban)\b/i;
 const RETAIL_RE = /\bretail\s+(?:transaction|payment)\b/i;
 
@@ -36,25 +42,54 @@ export async function userCategory(merchant: string, type: ParsedTxn['type']): P
   return { category, source: 'rule' };
 }
 
-export async function categorize(txn: ParsedTxn): Promise<Categorized> {
-  const merchant = txn.merchant?.trim();
+// The answers that need neither the lookup list nor the model: the user's own rule, then what the SMS wording
+// says (own-account move, refund, income, ATM, fine, fee, transfer). null = go on to the merchant.
+async function ruleCategory(txn: ParsedTxn, merchant: string | undefined, kind: SmsKind | undefined): Promise<Categorized | null> {
   if (merchant) {
     const own = await userCategory(merchant, txn.type);
     if (own) return own;
   }
 
+  // Money moved between the person's own accounts or paid to their own card is neither spending nor income.
+  if (kind === 'internal') return { category: INTERNAL_TRANSFERS, source: 'lookup' };
+
   if (txn.type === 'CREDIT') {
+    // Money handed back for a reversed or refunded payment is not income.
+    if (kind === 'refund') return { category: REFUNDS, source: 'lookup' };
     devLog('[categorize] credit -> Income (no model call)');
     return { category: INCOME, source: 'fallback' };
   }
 
+  // Some payments say what they are without naming a shop: cash from an ATM, a fine, a fee the bank charged.
+  if (kind === 'atm') return { category: CASH_WITHDRAWALS, source: 'lookup' };
+  if (kind === 'fine') return { category: GOVERNMENT_FINES, source: 'lookup' };
+  if (kind === 'fee' && !merchant) return { category: BANK_FEES, source: 'lookup' };
+
   // NayaPay retail receipts also say "Channel Raast", but they are shop payments, not transfers.
-  if (TRANSFER_RE.test(txn.raw) && !RETAIL_RE.test(txn.raw)) {
+  if (!LLM_ONLY && TRANSFER_RE.test(txn.raw) && !RETAIL_RE.test(txn.raw)) {
     devLog('[categorize] person-to-person transfer -> Transfers (no model call)');
     return { category: TRANSFERS, source: 'lookup' };
   }
+  return null;
+}
 
-  if (merchant) return categorizeMerchant(merchant);
+// Everything that can be answered on the phone, with no model call: the rules above, then the lookup list.
+// null means only the model could tell. Used to re-check transactions that are already saved.
+export async function categorizeLocally(txn: ParsedTxn): Promise<Categorized | null> {
+  const merchant = txn.merchant?.trim();
+  const ruled = await ruleCategory(txn, merchant, smsKind(txn.raw));
+  if (ruled) return ruled;
+  const hit = merchant && !LLM_ONLY ? lookupCategory(merchant) : null;
+  return hit ? { category: hit, source: 'lookup' } : null;
+}
+
+export async function categorize(txn: ParsedTxn): Promise<Categorized> {
+  const merchant = txn.merchant?.trim();
+  const kind = smsKind(txn.raw);
+  const ruled = await ruleCategory(txn, merchant, kind);
+  if (ruled) return ruled;
+
+  if (merchant) return categorizeMerchant(merchant, { kind, currency: txn.currency, bank: txn.bank });
   if (MERCHANT_FALLBACK_ENABLED) {
     // Only the redacted text leaves the device (no digits, amounts, IBANs, URLs or emails).
     const result = await categorizeRedacted(redactForModel(txn.raw));
@@ -79,14 +114,16 @@ export async function categorizeRedacted(redacted: string): Promise<Categorized>
   return { ...result, merchant: extracted.merchant };
 }
 
-export async function categorizeMerchant(merchant: string): Promise<Categorized> {
-  const hit = lookupCategory(merchant);
+// context: what the SMS says about the payment (kind, currency, bank); it helps the model and is optional.
+export async function categorizeMerchant(merchant: string, context?: ModelContext): Promise<Categorized> {
+  const hit = LLM_ONLY ? null : lookupCategory(merchant);
   if (hit) {
     devLog(`[categorize] lookup hit: ${merchant} -> ${hit}`);
     return { category: hit, source: 'lookup' };
   }
 
-  const prediction = await predictCategory(merchant);
+  // In the experiment names also reach the LLM, so digits and account-like parts are removed first.
+  const prediction = await predictCategory(LLM_ONLY ? redactForModel(merchant) : merchant, context);
   if (typeof prediction === 'string') {
     devLog(`[categorize] no model answer for ${merchant} (${prediction}) -> Uncategorized for now`);
     return { category: UNCATEGORIZED, source: 'fallback', retry: prediction };

@@ -154,3 +154,56 @@ describe('categorize', () => {
     expect(post).not.toHaveBeenCalled();
   });
 });
+
+describe('payments that need no merchant', () => {
+  it('puts an ATM withdrawal under Cash Withdrawals without asking the model', async () => {
+    const raw = 'You have withdrawn Rs. 5,000 from your Digitt Plus account via ATM';
+    expect(await categorize(txn({ merchant: null, raw }))).toEqual({ category: 'Cash Withdrawals', source: 'lookup' });
+    expect(post).not.toHaveBeenCalled();
+  });
+
+  it('puts a traffic fine under Government & Fines', async () => {
+    const raw = 'SAR 300 debited for MOI traffic violation';
+    expect((await categorize(txn({ merchant: 'MOI', raw }))).category).toBe('Government & Fines');
+  });
+
+  it('puts a fee the bank charged under Bank Fees when no shop is named', async () => {
+    const raw = 'Card transfer fee of SAR 34.50 debited from card 4821';
+    expect((await categorize(txn({ merchant: null, raw }))).category).toBe('Bank Fees');
+  });
+
+  it('does not treat a shop payment that mentions a fee as a bank fee', async () => {
+    post.mockReturnValue(modelResponse('Travel', 0.9));
+    const raw = 'Online purchase SAR 40 at AIRALO, international fee SAR 0.14';
+    expect((await categorize(txn({ merchant: 'AIRALO', raw }))).category).toBe('Travel');
+  });
+
+  it('tells the model what kind of payment it was, with the currency and bank', async () => {
+    post.mockReturnValue(modelResponse('Groceries', 0.9));
+    await categorize(txn({ merchant: 'ZZQX SHOP', bank: 'SNB', currency: 'SAR', raw: 'POS purchase SAR 28 at ZZQX SHOP' }));
+    expect(post.mock.calls[0][1]).toEqual({ text: 'ZZQX SHOP', kind: 'pos', currency: 'SAR', bank: 'SNB' });
+  });
+});
+
+describe('money that is neither spending nor income', () => {
+  it('puts an own-account move or card payment under Internal Transfers, in either direction', async () => {
+    const out = 'Credit card payment of SAR 4,500 to card 4821';
+    const inn = 'Payment received SAR 4,500 on your card 4821';
+    expect(await categorize(txn({ merchant: null, raw: out }))).toEqual({ category: 'Internal Transfers', source: 'lookup' });
+    expect(await categorize(txn({ type: 'CREDIT', merchant: null, raw: inn }))).toEqual({
+      category: 'Internal Transfers',
+      source: 'lookup',
+    });
+    expect(post).not.toHaveBeenCalled();
+  });
+
+  it('puts a refund under Refunds, not Income', async () => {
+    const raw = 'SAR 28 refunded to card 4821 for your purchase';
+    expect(await categorize(txn({ type: 'CREDIT', merchant: null, raw }))).toEqual({ category: 'Refunds', source: 'lookup' });
+  });
+
+  it('keeps an ordinary credit as Income', async () => {
+    const raw = 'SAR 7,500 salary credited to your account';
+    expect((await categorize(txn({ type: 'CREDIT', merchant: null, raw }))).category).toBe('Income');
+  });
+});

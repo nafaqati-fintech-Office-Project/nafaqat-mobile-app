@@ -5,14 +5,18 @@ import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { PeriodTabs } from '@/components/PeriodTabs';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { SegmentedTabs, type SegmentedOption } from '@/components/SegmentedTabs';
 import { CategoryTrendRow } from '@/features/insights/CategoryTrendRow';
 import { InsightStatCard } from '@/features/insights/InsightStatCard';
+import type { Period } from '@/features/insights/insightsBuilder';
 import { MerchantRow } from '@/features/insights/MerchantRow';
 import { SpendingTrendCard } from '@/features/insights/SpendingTrendCard';
 import type { Insights } from '@/features/insights/types';
 import { useInsights } from '@/features/insights/useInsights';
+import { categoryLabelKey } from '@/features/transactions/categoryDisplay';
+import { canOpenCategory, monthsRange, type TransactionLink } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, shadows, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
@@ -28,7 +32,8 @@ const TABS: SegmentedOption<Tab>[] = [
 export default function InsightsRoute() {
   const { t } = useLanguage();
   const [tab, setTab] = useState<Tab>('overview');
-  const { data, status, refreshing, refresh, retry, reload } = useInsights();
+  const [period, setPeriod] = useState<Period>(1);
+  const { data, status, refreshing, refresh, retry, reload } = useInsights(period);
 
   // Coming back to the tab picks up transactions synced meanwhile; the first focus is the initial load.
   const focused = useRef(false);
@@ -50,6 +55,7 @@ export default function InsightsRoute() {
           {t('tabs.insights')}
         </AppText>
         <SegmentedTabs options={TABS} value={tab} onChange={setTab} />
+        <PeriodTabs value={period} onChange={setPeriod} />
 
         {status === 'loading' || (status === 'ready' && !data) ? (
           <ActivityIndicator color={colors.primary} style={styles.spinner} />
@@ -61,15 +67,29 @@ export default function InsightsRoute() {
             <PrimaryButton label={t('insights.retry')} onPress={retry} />
           </View>
         ) : (
-          <TabContent tab={tab} data={data} />
+          <TabContent tab={tab} data={data} period={period} />
         )}
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function TabContent({ tab, data }: { tab: Tab; data: Insights }) {
+function TabContent({ tab, data, period }: { tab: Tab; data: Insights; period: number }) {
   const { language, t } = useLanguage();
+  // The selected period: `period` months ending with the latest month of the trend (this month).
+  const now = new Date();
+  const last = data.monthly[data.monthly.length - 1] ?? { year: now.getFullYear(), month: now.getMonth() + 1 };
+  const range = monthsRange(last.year, last.month, period);
+  const periodTitle = period === 1 ? t('dashboard.thisMonth') : t('dashboard.lastMonths').replace('{count}', String(period));
+  const link = (label: string, extra: Partial<TransactionLink> = {}): TransactionLink => ({
+    ...range,
+    ...extra,
+    title: `${label} · ${periodTitle}`,
+  });
+  const categoryName = (category: string) => {
+    const key = categoryLabelKey(category);
+    return key ? t(key) : category;
+  };
 
   if (tab === 'overview') {
     return (
@@ -83,6 +103,7 @@ function TabContent({ tab, data }: { tab: Tab; data: Insights }) {
             value={formatMoney(data.savings, data.currency, language)}
             changePercent={data.savingsChangePercent}
             goodWhen="up"
+            link={link(t('insights.savings'))}
           />
           <InsightStatCard
             icon="budget"
@@ -92,9 +113,10 @@ function TabContent({ tab, data }: { tab: Tab; data: Insights }) {
             value={formatMoney(data.avgDailySpend, data.currency, language)}
             changePercent={data.avgDailyChangePercent}
             goodWhen="down"
+            link={link(t('insights.avgDailySpend'), { type: 'expenses' })}
           />
         </View>
-        <SpendingTrendCard monthly={data.monthly} currency={data.currency} />
+        <SpendingTrendCard monthly={data.monthly} currency={data.currency} period={period} />
       </>
     );
   }
@@ -107,7 +129,12 @@ function TabContent({ tab, data }: { tab: Tab; data: Insights }) {
         </AppText>
         {data.categoryTrends.length > 0 ? (
           data.categoryTrends.map((item) => (
-            <CategoryTrendRow key={item.category} item={item} currency={data.currency} />
+            <CategoryTrendRow
+              key={item.category}
+              item={item}
+              currency={data.currency}
+              link={canOpenCategory(item.category) ? link(categoryName(item.category), { type: 'expenses', category: item.category }) : null}
+            />
           ))
         ) : (
           <AppText style={styles.note}>{t('insights.noCategories')}</AppText>
@@ -125,7 +152,13 @@ function TabContent({ tab, data }: { tab: Tab; data: Insights }) {
         <AppText style={styles.note}>{t('insights.merchantsUnavailable')}</AppText>
       ) : data.merchants.length > 0 ? (
         data.merchants.map((item, i) => (
-          <MerchantRow key={item.merchant} item={item} rank={i + 1} currency={data.currency} />
+          <MerchantRow
+            key={item.merchant}
+            item={item}
+            rank={i + 1}
+            currency={data.currency}
+            link={link(item.merchant, { type: 'expenses', q: item.merchant })}
+          />
         ))
       ) : (
         <AppText style={styles.note}>{t('insights.noMerchants')}</AppText>

@@ -62,3 +62,19 @@ export async function markRefused(id: number): Promise<void> {
   const db = await getDb();
   await db.runAsync('UPDATE transactions SET sync_attempts = sync_attempts + 1 WHERE id = ?', [id]);
 }
+
+// The newest row the phone believes the server holds, to check that the signed-in account really has it.
+export async function newestSyncedRow(): Promise<{ dedupeKey: string; serverId: string } | null> {
+  const db = await getDb();
+  const row = await db.getFirstAsync<{ dedupe_key: string; server_id: string }>(
+    'SELECT dedupe_key, server_id FROM transactions WHERE server_id IS NOT NULL ORDER BY date DESC LIMIT 1',
+  );
+  return row ? { dedupeKey: row.dedupe_key, serverId: row.server_id } : null;
+}
+
+// Forgets that rows were sent anywhere, so they are all sent again. Safe to repeat: the server answers 409 for a
+// transaction it already has, and the sync then just finds that copy.
+export async function resetSyncState(): Promise<void> {
+  const db = await getDb();
+  await db.runAsync('UPDATE transactions SET server_id = NULL, synced_category = NULL, sync_attempts = 0');
+}

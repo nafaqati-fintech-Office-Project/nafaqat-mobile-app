@@ -2,12 +2,13 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { SMS_TOOLS_ENABLED } from '@/config/flags';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 
 export function SmsDevEntry() {
   const { t } = useLanguage();
-  if (!__DEV__) return null;
+  if (!SMS_TOOLS_ENABLED) return null;
 
   return (
     <Pressable

@@ -1,10 +1,26 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { expenseInstant, recentDays } from './cashExpense';
+import { daysWithReceiptDay, expenseInstant, recentDays } from './cashExpense';
 import { deleteProblem } from './transactionsService';
 
 vi.mock('@/config/flags', () => ({ AUTH_BYPASS: false }));
 vi.mock('@/api/client', () => ({ api: {} }));
+
+describe('daysWithReceiptDay', () => {
+  const now = new Date(2026, 9, 29, 15);
+  const days = recentDays(now);
+
+  it('adds an older receipt day at the end', () => {
+    const old = new Date(2026, 8, 1);
+    expect(daysWithReceiptDay(days, old, now)).toEqual([...days, old]);
+  });
+
+  it('keeps the list when the day is already there, missing or in the future', () => {
+    expect(daysWithReceiptDay(days, new Date(2026, 9, 27), now)).toEqual(days);
+    expect(daysWithReceiptDay(days, null, now)).toEqual(days);
+    expect(daysWithReceiptDay(days, new Date(2026, 9, 30), now)).toEqual(days);
+  });
+});
 
 describe('recentDays', () => {
   it('lists today and the six days before it, across a month end', () => {

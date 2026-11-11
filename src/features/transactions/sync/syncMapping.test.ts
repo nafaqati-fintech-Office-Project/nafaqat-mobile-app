@@ -26,8 +26,9 @@ describe('serverCategory', () => {
 
   it('maps the app-only labels to the closest server category', () => {
     expect(serverCategory('Income', 'CREDIT')).toBe('Other Income');
-    expect(serverCategory('Transfers', 'DEBIT')).toBe('UNCATEGORIZED');
-    expect(serverCategory('Person', 'DEBIT')).toBe('UNCATEGORIZED');
+    expect(serverCategory('Transfers', 'DEBIT')).toBe('Transfers');
+    expect(serverCategory('Transfers', 'CREDIT')).toBe('Transfers');
+    expect(serverCategory('Person', 'DEBIT')).toBe('Transfers');
     expect(serverCategory('Uncategorized', 'DEBIT')).toBe('UNCATEGORIZED');
     expect(serverCategory('Uncategorized', 'CREDIT')).toBe('UNCATEGORIZED');
     expect(serverCategory('Pets', 'DEBIT')).toBe('UNCATEGORIZED');

@@ -1,9 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 
 import { barHeight } from './barHeight';
+import { monthPeriod } from './drill';
 import { InfoCard } from './InfoCard';
 import type { DashboardData } from './types';
 import { AppText } from '@/components/AppText';
+import { DrillPressable } from '@/features/transactions/DrillPressable';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 import { monthName } from '@/utils/intl';
@@ -23,12 +25,13 @@ export function SavingsTrendCard({ data }: { data: DashboardData }) {
       <View style={styles.row}>
         {data.savingsTrend.map((m, i) => {
           const negative = values[i] < 0;
+          const month = monthPeriod(m.year, m.month, language);
           return (
-            <View
+            <DrillPressable
               key={`${m.year}-${m.month}`}
+              link={{ from: month.from, to: month.to, title: `${t('dashboard.savingsTrend')} · ${month.title}` }}
               style={styles.col}
-              accessible
-              accessibilityLabel={`${monthName(m.month, m.year, language)}, ${formatMoney(m.net, data.currency, language)}`}>
+              label={`${monthName(m.month, m.year, language)}, ${formatMoney(m.net, data.currency, language)}`}>
               <View style={styles.track}>
                 <View
                   style={[
@@ -41,7 +44,7 @@ export function SavingsTrendCard({ data }: { data: DashboardData }) {
                 />
               </View>
               <AppText style={styles.month}>{monthName(m.month, m.year, language).slice(0, 3)}</AppText>
-            </View>
+            </DrillPressable>
           );
         })}
       </View>

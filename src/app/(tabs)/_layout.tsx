@@ -4,6 +4,7 @@ import { useAuth } from '@/auth/AuthProvider';
 import { Icon, type IconName } from '@/components/Icon';
 import { AUTH_BYPASS } from '@/config/flags';
 import { useFeedbackSync } from '@/features/categorizer/feedback/useFeedbackSync';
+import { useRecategorizeOldRows } from '@/features/categorizer/useRecategorizeOldRows';
 import { useRetryPendingPredictions } from '@/features/categorizer/useRetryPendingPredictions';
 import { useAlertTaps } from '@/features/notifications/useAlertTaps';
 import { useUnreadCountPolling } from '@/features/notifications/unreadCount';
@@ -22,11 +23,13 @@ const TABS: { name: string; icon: IconName; label: TranslationKey }[] = [
 ];
 
 export default function TabsLayout() {
-  const { status } = useAuth();
+  const { status, user } = useAuth();
   const { t } = useLanguage();
   useRetryPendingPredictions(status === 'authenticated');
+  // Once per account: transactions saved before the categories improved get another look.
+  useRecategorizeOldRows(status === 'authenticated' && !AUTH_BYPASS);
   // Bypass mode has a mock user and no token, so there is no account to sync to.
-  useTransactionSync(status === 'authenticated' && !AUTH_BYPASS);
+  useTransactionSync(status === 'authenticated' && !AUTH_BYPASS, user?.id ?? null);
   useFeedbackSync(status === 'authenticated' && !AUTH_BYPASS);
   // The bell's unread badge (bypass mode counts the sample notifications).
   useUnreadCountPolling(status === 'authenticated');

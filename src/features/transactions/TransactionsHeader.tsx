@@ -5,7 +5,15 @@ import { Icon } from '@/components/Icon';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 
-export function TransactionsHeader({ onAdd }: { onAdd: () => void }) {
+export function TransactionsHeader({
+  onAdd,
+  onScan,
+  scanning,
+}: {
+  onAdd: () => void;
+  onScan: () => void;
+  scanning: boolean;
+}) {
   const { t } = useLanguage();
 
   return (
@@ -16,6 +24,17 @@ export function TransactionsHeader({ onAdd }: { onAdd: () => void }) {
       <AppText weight="bold" style={styles.title}>
         {t('tabs.transactions')}
       </AppText>
+      <Pressable
+        onPress={onScan}
+        disabled={scanning}
+        accessibilityRole="button"
+        accessibilityLabel={t('receipts.scanLabel')}
+        accessibilityState={{ disabled: scanning, busy: scanning }}
+        style={styles.scan}>
+        <AppText weight="bold" style={styles.scanText}>
+          {scanning ? t('receipts.reading') : t('receipts.scan')}
+        </AppText>
+      </Pressable>
       <Pressable
         onPress={onAdd}
         accessibilityRole="button"
@@ -41,4 +60,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   addText: { fontSize: fontSizes.sm, color: colors.white },
+  scan: {
+    minHeight: sizes.touchMin - spacing.sm,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  scanText: { fontSize: fontSizes.sm, color: colors.primary },
 });

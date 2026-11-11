@@ -24,3 +24,10 @@ export async function findByExternalId(externalTransactionId: string): Promise<s
 export async function updateCategory(id: string, category: string): Promise<void> {
   await api.patch(`/api/transactions/${encodeURIComponent(id)}`, { category });
 }
+
+// Whether the signed-in account has any transaction on the server at all (the list endpoint, which every server has).
+export async function accountHasTransactions(): Promise<boolean> {
+  const response = await api.get<unknown>('/api/transactions', { params: { size: 1, status: 'COMPLETED' } });
+  const content = (response.data as { content?: unknown } | null)?.content;
+  return Array.isArray(content) && content.length > 0;
+}

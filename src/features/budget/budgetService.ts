@@ -6,7 +6,12 @@ import { mockUsage } from './budgetMath';
 import { mockBudget } from './mock';
 import type { Budget } from './types';
 import { AUTH_BYPASS } from '@/config/flags';
+import { getPreferences } from '@/features/dashboard/dashboardApi';
+import { deviceTimeZone, todayIn } from '@/features/dashboard/dashboardBuilder';
+import { getMonthlyComparison } from '@/features/insights/insightsApi';
+import { combineComparisons, lastMonths, type Period } from '@/features/insights/insightsBuilder';
 import { categoryFromCode } from '@/features/transactions/categoryDisplay';
+import { currencyDecimals } from '@/utils/money';
 
 // The bypass session has no token, so the real endpoints would answer 401; it keeps one budget in memory.
 
@@ -19,6 +24,38 @@ export async function getCurrentBudget(): Promise<Budget | null> {
   if (!AUTH_BYPASS) return remote.fetchCurrentBudget();
   await wait();
   return mock;
+}
+
+const monthKey = ({ year, month }: { year: number; month: number }) => `${year}-${String(month).padStart(2, '0')}`;
+
+// The budget over the last `months` months: what was spent in them against the monthly limits times
+// `months`. One month is the current budget as it is.
+export async function getBudgetForPeriod(months: Period): Promise<Budget | null> {
+  const budget = await getCurrentBudget();
+  if (!budget || months === 1 || AUTH_BYPASS) return budget;
+
+  const preferences = await getPreferences().catch(() => null);
+  const timeZone = preferences?.timezone ?? deviceTimeZone();
+  const covered = lastMonths(todayIn(timeZone), months);
+  const comparisons = await Promise.all(covered.map((m) => getMonthlyComparison(monthKey(m), timeZone)));
+  const spending = combineComparisons(comparisons).find((c) => c.currency === budget.currency)?.current;
+  const spentBy = new Map((spending?.categories ?? []).map((c) => [categoryFromCode(c.code) ?? c.label, c.total]));
+
+  const decimals = currencyDecimals(budget.currency);
+  const usage = (spent: number, limit: number) => {
+    const spentText = spent.toFixed(decimals);
+    const limitText = (limit * months).toFixed(decimals);
+    return { spent: spentText, limit: limitText, ...mockUsage(spentText, limitText) };
+  };
+  return {
+    ...budget,
+    months,
+    startDate: new Date(covered[0].year, covered[0].month - 1, 1),
+    ...usage(spending?.expenses ?? 0, Number(budget.limit)),
+    categories: budget.categories
+      .map((c) => ({ category: c.category, ...usage(spentBy.get(c.category) ?? 0, Number(c.limit)) }))
+      .sort((a, b) => b.percent - a.percent),
+  };
 }
 
 // Sample spending per category, so a budget made in bypass mode is not all zero.

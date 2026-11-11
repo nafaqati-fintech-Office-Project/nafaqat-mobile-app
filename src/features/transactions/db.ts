@@ -79,6 +79,15 @@ const MIGRATIONS = [
   'ALTER TABLE transactions ADD COLUMN prediction_id TEXT',
   // synced: 0 = to send, 1 = sent, 2 = stays on the device (not a model prediction, a person, or refused).
   'ALTER TABLE category_feedback ADD COLUMN prediction_id TEXT',
+  // Retry uncategorized merchant debits saved while the AI route returned errors or unknown.
+  `UPDATE transactions SET needs_prediction = 1, prediction_attempts = 0
+    WHERE type = 'DEBIT' AND category = 'Uncategorized' AND source = 'fallback'
+      AND merchant IS NOT NULL AND TRIM(merchant) <> ''`,
+  // The server has a Transfers category now: send it for transfers that were synced as Uncategorized.
+  `UPDATE transactions SET synced_category = NULL
+    WHERE server_id IS NOT NULL AND category IN ('Transfers', 'Person')`,
+  // Those rows were refused (HTTP 400) while the server did not know Transfers yet; try them again.
+  `UPDATE transactions SET sync_attempts = 0 WHERE category IN ('Transfers', 'Person')`,
 ];
 
 let database: Promise<SQLiteDatabase> | null = null;

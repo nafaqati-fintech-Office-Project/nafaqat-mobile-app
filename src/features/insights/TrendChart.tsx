@@ -24,11 +24,12 @@ const SELECTED_RADIUS = 6;
 const MAX_X_LABELS = 6;
 const X_LABEL_WIDTH = 44;
 
-type Props = { months: MonthAmount[]; currency: string };
+// onOpenMonth: shows a link under the chart that opens the selected month's transactions.
+type Props = { months: MonthAmount[]; currency: string; onOpenMonth?: (month: MonthAmount) => void };
 
 // One series, so no legend: the card title names it. Tapping a month (the touch stand-in for hover) moves the
 // highlight and its label; it starts on the latest month.
-export function TrendChart({ months, currency }: Props) {
+export function TrendChart({ months, currency, onOpenMonth }: Props) {
   const { language, t } = useLanguage();
   const [width, setWidth] = useState(0);
   const [selected, setSelected] = useState(months.length - 1);
@@ -141,6 +142,13 @@ export function TrendChart({ months, currency }: Props) {
           </AppText>
         ))}
       </View>
+      {onOpenMonth && months[selected] && (
+        <Pressable onPress={() => onOpenMonth(months[selected])} accessibilityRole="link" hitSlop={spacing.sm} style={styles.open}>
+          <AppText weight="semibold" style={styles.openText}>
+            {t('transactions.viewMonth', { month: longMonth.format(monthDate(months[selected])) })}
+          </AppText>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -175,4 +183,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   xLabelActive: { color: colors.primary },
+  open: { alignSelf: 'flex-start', paddingTop: spacing.sm },
+  openText: { fontSize: fontSizes.sm, color: colors.primary },
 });

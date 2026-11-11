@@ -34,13 +34,17 @@ export type CreateTransactionBody = {
 };
 
 // The server's category for an app category. The user can only pick server categories, so those pass
-// through. The app's own labels map to the closest server one: Income -> Other Income; Transfers, Person
-// and anything unknown -> UNCATEGORIZED (the server has no transfer category yet). A category of the wrong
-// kind for the type (the server refuses those) also becomes UNCATEGORIZED.
+// through. The app's own labels map to the closest server one: Income -> Other Income; Transfers and
+// Person (a person's name is a transfer) -> Transfers; anything unknown -> UNCATEGORIZED. A category of
+// the wrong kind for the type (the server refuses those) also becomes UNCATEGORIZED.
 export function serverCategory(category: string, type: ParsedTxn['type']): string {
   const allowed = pickableCategories(type);
   if (allowed.includes(category)) return category;
   if (type === 'CREDIT' && category === 'Income') return 'Other Income';
+  if (category === 'Transfers' || category === 'Person') return 'Transfers';
+  // Set by the app only: money between the person's own accounts (either direction), and refunds (a credit).
+  if (category === 'Internal Transfers') return category;
+  if (type === 'CREDIT' && category === 'Refunds') return category;
   return UNCATEGORIZED;
 }
 
