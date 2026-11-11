@@ -13,7 +13,14 @@ export type Goal = {
   targetDate: Date | null;
   status: GoalStatus;
   createdAt: Date;
+  // Auto-save: transfers to the user's own savings account (read from bank SMS) whose text contains the keyword
+  // fund this goal without anything being typed.
+  autoSave: boolean;
+  autoSaveKeyword: string | null;
 };
+
+// MANUAL: added by the user. AUTO: a saving transfer read from bank SMS; it follows that transaction.
+export type ContributionSource = 'MANUAL' | 'AUTO';
 
 export type Contribution = {
   id: string;
@@ -21,6 +28,7 @@ export type Contribution = {
   amount: string;
   note: string | null;
   createdAt: Date;
+  source: ContributionSource;
 };
 
 // What the create and edit form sends. targetDate is yyyy-MM-dd.
@@ -30,4 +38,6 @@ export type GoalInput = {
   targetAmount: string;
   currency: string;
   targetDate: string | null;
+  autoSave: boolean;
+  autoSaveKeyword: string | null;
 };

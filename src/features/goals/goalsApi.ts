@@ -39,6 +39,9 @@ export function parseGoal(raw: unknown): Goal {
     targetDate: optionalDate(body.targetDate),
     status: statusOf(body.status),
     createdAt: utcDate(body.createdAt),
+    // Absent from an older goal service: auto-save is then off
+    autoSave: body.autoSave === true,
+    autoSaveKeyword: optionalText(body.autoSaveKeyword),
   };
 }
 
@@ -50,6 +53,7 @@ export function parseContribution(raw: unknown): Contribution {
     amount: decimal(body.amount),
     note: optionalText(body.note),
     createdAt: utcDate(body.createdAt),
+    source: body.source === 'AUTO' ? 'AUTO' : 'MANUAL',
   };
 }
 

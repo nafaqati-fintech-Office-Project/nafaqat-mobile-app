@@ -14,6 +14,8 @@ const goal = (overrides: Partial<Goal> = {}): Goal => ({
   targetDate: null,
   status: 'ACTIVE',
   createdAt: new Date(2026, 0, 1),
+  autoSave: false,
+  autoSaveKeyword: null,
   ...overrides,
 });
 

@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -33,6 +33,9 @@ export default function GoalEditRoute() {
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState<string>('SAR');
   const [dateChoice, setDateChoice] = useState<DateChoice>(12);
+  // New goals save automatically from bank SMS by default (no manual data entry)
+  const [autoSave, setAutoSave] = useState(true);
+  const [keyword, setKeyword] = useState('');
   const [showErrors, setShowErrors] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -48,6 +51,8 @@ export default function GoalEditRoute() {
         setAmount(goal.targetAmount);
         setCurrency(goal.currency);
         setDateChoice(goal.targetDate ? 'keep' : null);
+        setAutoSave(goal.autoSave);
+        setKeyword(goal.autoSaveKeyword ?? '');
       })
       .catch(() => {
         showToast(t('goals.loadError'));
@@ -70,6 +75,7 @@ export default function GoalEditRoute() {
         ? t('goals.form.amountBelowSaved', { amount: formatMoney(existing.savedAmount, currency, language) })
         : undefined;
   const currencyLocked = existing !== null && !can.changeCurrency(existing);
+  const keywordError = showErrors && autoSave && !keyword.trim() ? t('goals.form.autoSaveKeywordRequired') : undefined;
 
   const targetDate = (): string | null => {
     if (dateChoice === 'keep') return existing?.targetDate ? isoDay(existing.targetDate) : null;
@@ -78,7 +84,7 @@ export default function GoalEditRoute() {
 
   const save = async () => {
     setShowErrors(true);
-    if (!name.trim() || target.kind !== 'ok' || belowSaved) return;
+    if (!name.trim() || target.kind !== 'ok' || belowSaved || (autoSave && !keyword.trim())) return;
     setSaving(true);
     const input = {
       name: name.trim().slice(0, 100),
@@ -86,6 +92,8 @@ export default function GoalEditRoute() {
       targetAmount: target.amount,
       currency,
       targetDate: targetDate(),
+      autoSave,
+      autoSaveKeyword: keyword.trim().slice(0, 60) || null,
     };
     try {
       if (existing) await updateGoal(existing.id, input);
@@ -179,6 +187,35 @@ export default function GoalEditRoute() {
               </AppText>
               {chips(dateChoices, dateChoice, setDateChoice, dateLabel)}
             </View>
+            <View style={styles.autoSave}>
+              <View style={styles.autoSaveRow}>
+                <View style={styles.autoSaveTexts}>
+                  <AppText weight="semibold" style={styles.label}>
+                    {t('goals.form.autoSave')}
+                  </AppText>
+                  <AppText style={styles.hint}>{t('goals.form.autoSaveHelp')}</AppText>
+                </View>
+                <Switch
+                  value={autoSave}
+                  onValueChange={setAutoSave}
+                  trackColor={{ true: colors.primary, false: colors.border }}
+                  accessibilityLabel={t('goals.form.autoSave')}
+                />
+              </View>
+              {autoSave && (
+                <>
+                  <AuthInput
+                    label={t('goals.form.autoSaveKeyword')}
+                    value={keyword}
+                    onChangeText={setKeyword}
+                    placeholder={t('goals.form.autoSaveKeywordPlaceholder')}
+                    maxLength={60}
+                    error={keywordError}
+                  />
+                  <AppText style={styles.hint}>{t('goals.form.autoSaveKeywordHelp')}</AppText>
+                </>
+              )}
+            </View>
             <AuthInput
               label={t('goals.form.description')}
               value={description}
@@ -212,6 +249,16 @@ const styles = StyleSheet.create({
   field: { gap: spacing.sm },
   label: { fontSize: fontSizes.sm, color: colors.textPrimary },
   hint: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  autoSave: {
+    gap: spacing.sm,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.white,
+  },
+  autoSaveRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  autoSaveTexts: { flex: 1, gap: 2 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: {
     minHeight: sizes.touchMin,

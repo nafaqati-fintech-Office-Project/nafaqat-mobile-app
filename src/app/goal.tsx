@@ -200,7 +200,9 @@ export default function GoalRoute() {
                   <AppText weight="medium" style={styles.entryNote} numberOfLines={1}>
                     {c.note ?? t('goals.contribution')}
                   </AppText>
-                  <AppText style={styles.meta}>{date(c.createdAt)}</AppText>
+                  <AppText style={styles.meta}>
+                    {c.source === 'AUTO' ? `${t('goals.fromBankSms')} · ${date(c.createdAt)}` : date(c.createdAt)}
+                  </AppText>
                 </View>
                 <AppText weight="bold" style={styles.entryAmount}>
                   {`+ ${money(c.amount)}`}

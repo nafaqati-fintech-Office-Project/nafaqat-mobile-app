@@ -45,7 +45,15 @@ const rawContribution = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
-const input = { name: 'Hajj', description: null, targetAmount: '20000.50', currency: 'SAR', targetDate: '2028-05-01' };
+const input = {
+  name: 'Hajj',
+  description: null,
+  targetAmount: '20000.50',
+  currency: 'SAR',
+  targetDate: '2028-05-01',
+  autoSave: true,
+  autoSaveKeyword: '1234',
+};
 
 beforeEach(() => {
   vi.resetAllMocks();
@@ -63,7 +71,13 @@ describe('parseGoal', () => {
       targetDate: new Date(2027, 7, 16),
       status: 'ACTIVE',
       createdAt: new Date('2026-10-14T01:00:00.123Z'),
+      autoSave: false,
+      autoSaveKeyword: null,
     });
+  });
+
+  it('reads the auto-save setting', () => {
+    expect(parseGoal(raw({ autoSave: true, autoSaveKeyword: '1234' }))).toMatchObject({ autoSave: true, autoSaveKeyword: '1234' });
   });
 
   it('accepts a goal with no description or date', () => {
@@ -101,7 +115,7 @@ describe('goal service calls', () => {
     const { goal, contributions } = await getGoalWithHistory('g1');
     expect(goal.name).toBe('Dubai Vacation');
     expect(contributions).toEqual([
-      { id: 'c1', goalId: 'g1', amount: '125.5', note: 'salary', createdAt: new Date('2026-10-14T01:00:00.500Z') },
+      { id: 'c1', goalId: 'g1', amount: '125.5', note: 'salary', createdAt: new Date('2026-10-14T01:00:00.500Z'), source: 'MANUAL' },
     ]);
   });
 

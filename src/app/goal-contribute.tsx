@@ -64,6 +64,7 @@ export default function GoalContributeRoute() {
       <AppText style={styles.meta}>
         {t('goals.stillNeeded', { amount: formatMoney(remainingOf(goal), goal.currency, language), name: goal.name })}
       </AppText>
+      {goal.autoSave && <AppText style={styles.meta}>{t('goals.autoSaveContributeHint')}</AppText>}
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
         <AuthInput
           label={t('goals.form.contribution', { currency: goal.currency })}
