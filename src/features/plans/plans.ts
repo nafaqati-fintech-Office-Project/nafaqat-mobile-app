@@ -52,7 +52,7 @@ export const FEATURES: FeatureRow[] = [
 // from the server. A currency not listed here falls back to SAR.
 const PRICES: Record<string, Record<Billing, string>> = {
   SAR: { monthly: '19', yearly: '190' },
-  PKR: { monthly: '999', yearly: '9999' },
+  PKR: { monthly: '499', yearly: '4990' },
 };
 const DEFAULT_CURRENCY = 'SAR';
 

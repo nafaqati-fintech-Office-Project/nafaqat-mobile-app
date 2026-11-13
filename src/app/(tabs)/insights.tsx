@@ -8,6 +8,7 @@ import { AppText } from '@/components/AppText';
 import { PeriodTabs } from '@/components/PeriodTabs';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { SegmentedTabs, type SegmentedOption } from '@/components/SegmentedTabs';
+import { showUpgradePrompt } from '@/components/UpgradePrompt';
 import { CategoryTrendRow } from '@/features/insights/CategoryTrendRow';
 import { InsightStatCard } from '@/features/insights/InsightStatCard';
 import type { Period } from '@/features/insights/insightsBuilder';
@@ -15,6 +16,7 @@ import { MerchantRow } from '@/features/insights/MerchantRow';
 import { SpendingTrendCard } from '@/features/insights/SpendingTrendCard';
 import type { Insights } from '@/features/insights/types';
 import { useInsights } from '@/features/insights/useInsights';
+import { usePlan } from '@/features/plans/usePlan';
 import { categoryLabelKey } from '@/features/transactions/categoryDisplay';
 import { canOpenCategory, monthsRange, type TransactionLink } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -33,7 +35,10 @@ export default function InsightsRoute() {
   const { t } = useLanguage();
   const [tab, setTab] = useState<Tab>('overview');
   const [period, setPeriod] = useState<Period>(1);
-  const { data, status, refreshing, refresh, retry, reload } = useInsights(period);
+  // Free: this month and 3 months, with a 3-month trend. Premium: 6 and 12 months and the 12-month trend.
+  const { plan, can } = usePlan();
+  const extended = can('advancedReports') === true;
+  const { data, status, refreshing, refresh, retry, reload } = useInsights(period, extended, plan !== null);
 
   // Coming back to the tab picks up transactions synced meanwhile; the first focus is the initial load.
   const focused = useRef(false);
@@ -55,9 +60,14 @@ export default function InsightsRoute() {
           {t('tabs.insights')}
         </AppText>
         <SegmentedTabs options={TABS} value={tab} onChange={setTab} />
-        <PeriodTabs value={period} onChange={setPeriod} />
+        <PeriodTabs
+          value={period}
+          onChange={setPeriod}
+          limited={plan !== null && !extended}
+          onLocked={() => showUpgradePrompt('advancedReports', 'plans.insightsLocked')}
+        />
 
-        {status === 'loading' || (status === 'ready' && !data) ? (
+        {plan === null || status === 'loading' || (status === 'ready' && !data) ? (
           <ActivityIndicator color={colors.primary} style={styles.spinner} />
         ) : status === 'error' || !data ? (
           <View style={styles.error}>

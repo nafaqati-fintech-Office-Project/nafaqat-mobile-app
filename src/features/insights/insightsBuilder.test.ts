@@ -124,6 +124,13 @@ describe('buildInsights', () => {
     expect(insights.monthly[0].amount).toBe('0.00');
   });
 
+  it('keeps the trend to the months the plan allows (Free: 3)', () => {
+    const { monthly } = buildInsights({ today, preferredCurrency: 'SAR', trend, comparison: [comparison], spending: null, trendMonths: 3 });
+    expect(monthly).toHaveLength(3);
+    expect(monthly.map((m) => m.month)).toEqual([8, 9, 10]);
+    expect(monthly[2].amount).toBe('1500.00');
+  });
+
   it('names categories the app way with their change', () => {
     const { categoryTrends } = buildInsights({ today, preferredCurrency: 'SAR', trend, comparison: [comparison], spending: null });
     expect(categoryTrends).toEqual([

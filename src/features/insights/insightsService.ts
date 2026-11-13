@@ -1,5 +1,5 @@
 import { getMonthlyComparison, getMonthlyTrend, getSpendingRows } from './insightsApi';
-import { buildInsights, combineComparisons, lastMonths, TREND_MONTHS, type Period } from './insightsBuilder';
+import { buildInsights, combineComparisons, FREE_INSIGHT_MONTHS, lastMonths, TREND_MONTHS, type Period } from './insightsBuilder';
 import { mockInsights } from './mock';
 import type { Insights } from './types';
 import { AUTH_BYPASS } from '@/config/flags';
@@ -10,8 +10,11 @@ const MOCK_DELAY_MS = 400;
 
 const monthKey = ({ year, month }: { year: number; month: number }) => `${year}-${String(month).padStart(2, '0')}`;
 
-// The numbers cover the last `months` months, ending with the current one.
-export async function getInsights(months: Period = 1): Promise<Insights> {
+// The numbers cover the last `months` months, ending with the current one. `extended` (Premium) allows every period and
+// the 12-month trend; on the Free plan both stop at FREE_INSIGHT_MONTHS.
+export async function getInsights(requested: Period = 1, extended = true): Promise<Insights> {
+  const months = (extended ? requested : Math.min(requested, FREE_INSIGHT_MONTHS)) as Period;
+  const trendMonths = extended ? TREND_MONTHS : FREE_INSIGHT_MONTHS;
   // The bypass session has no token, so the real endpoints would answer 401.
   if (AUTH_BYPASS) {
     await new Promise<void>((resolve) => setTimeout(resolve, MOCK_DELAY_MS));
@@ -30,7 +33,7 @@ export async function getInsights(months: Period = 1): Promise<Insights> {
 
   // The reports are the screen: if either fails it shows its error state. Merchants are a bonus.
   const [trend, comparisons, spending] = await Promise.all([
-    getMonthlyTrend(monthKey(today), TREND_MONTHS, timeZone),
+    getMonthlyTrend(monthKey(today), trendMonths, timeZone),
     Promise.all(period.map((m) => getMonthlyComparison(monthKey(m), timeZone))),
     getSpendingRows(range, timeZone).catch(() => null),
   ]);
@@ -42,5 +45,6 @@ export async function getInsights(months: Period = 1): Promise<Insights> {
     comparison: combineComparisons(comparisons),
     spending,
     months,
+    trendMonths,
   });
 }

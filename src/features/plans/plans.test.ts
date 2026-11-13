@@ -30,7 +30,7 @@ describe('plans', () => {
   });
 
   it('prices in the user currency and falls back to SAR', () => {
-    expect(premiumPrice('PKR')).toEqual({ currency: 'PKR', monthly: '999', yearly: '9999' });
+    expect(premiumPrice('PKR')).toEqual({ currency: 'PKR', monthly: '499', yearly: '4990' });
     expect(premiumPrice('USD').currency).toBe('SAR');
     expect(premiumPrice(null).currency).toBe('SAR');
   });

@@ -8,6 +8,7 @@ import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
+import { showUpgradePrompt } from '@/components/UpgradePrompt';
 import { usePlan } from '@/features/plans/usePlan';
 import { isAxiosError } from 'axios';
 
@@ -44,9 +45,9 @@ export default function ReportsRoute() {
 
   const onExport = async (kind: 'pdf' | 'csv') => {
     if (!data || plan === null) return;
-    // Exports are a Premium feature: free users see the plans with it highlighted.
+    // Exports are a Premium feature: free users get the Premium message, which leads to the plans.
     if (can('pdfExport') !== true) {
-      router.push({ pathname: '/plans', params: { feature: 'pdfExport' } });
+      showUpgradePrompt('pdfExport');
       return;
     }
     setExporting(true);
@@ -56,7 +57,7 @@ export default function ReportsRoute() {
       else await exportReportCsv(data);
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 403) {
-        router.push({ pathname: '/plans', params: { feature: 'pdfExport' } });
+        showUpgradePrompt('pdfExport');
         return;
       }
       // In development the real reason is shown and logged; users only see the general message.
