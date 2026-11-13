@@ -1,4 +1,5 @@
 import { pickableCategories } from '../categoryDisplay';
+import { smsFingerprint } from '@/features/sms/importClaim';
 import type { ParsedTxn } from '@/features/sms/parser/types';
 
 // The currencies the transaction service accepts (its Currency enum). Others stay on the phone only.
@@ -9,6 +10,7 @@ const UNCATEGORIZED = 'UNCATEGORIZED';
 // A stored transaction as the sync reads it.
 export type SyncRow = {
   id: number;
+  smsId: string;
   dedupeKey: string;
   bank: string;
   type: ParsedTxn['type'];
@@ -31,6 +33,8 @@ export type CreateTransactionBody = {
   transactionDate: string;
   externalTransactionId: string;
   category: string;
+  // Which initial-import message this came from; the server requires it for SMS older than about a month.
+  importClaim: string;
 };
 
 // The server's category for an app category. The user can only pick server categories, so those pass
@@ -71,5 +75,6 @@ export function toCreateBody(row: SyncRow): CreateTransactionBody | null {
     transactionDate: new Date(row.txnDate ?? row.date).toISOString(),
     externalTransactionId: externalId(row),
     category: serverCategory(row.category, row.type),
+    importClaim: smsFingerprint(row.smsId, row.date),
   };
 }

@@ -4,6 +4,7 @@ import { description, externalId, serverCategory, toCreateBody, type SyncRow } f
 
 const row = (overrides: Partial<SyncRow> = {}): SyncRow => ({
   id: 1,
+  smsId: '77',
   dedupeKey: '1761650000000|DEBIT|1250.00|PKR|1234',
   bank: 'HBL',
   type: 'DEBIT',
@@ -52,6 +53,7 @@ describe('toCreateBody', () => {
       transactionDate: '2026-10-28T12:00:00.000Z',
       externalTransactionId: 'sms:1761650000000|DEBIT|1250.00|PKR|1234',
       category: 'Food & Beverage',
+      importClaim: 'sms-77-1793188800000',
     });
   });
 

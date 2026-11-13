@@ -5,22 +5,28 @@ import { canAddMore, canUse, isPlanFeature, limitOf, monthsFreeYearly, premiumPr
 describe('plans', () => {
   it('keeps paid features off the free plan', () => {
     expect(canUse('free', 'pdfExport')).toBe(false);
-    expect(canUse('free', 'assistant')).toBe(false);
-    expect(canUse('premium', 'assistant')).toBe(true);
-    expect(canUse('free', 'alerts')).toBe(true);
+    expect(canUse('free', 'receiptOcr')).toBe(false);
+    expect(canUse('free', 'cardFilter')).toBe(false);
+    expect(canUse('free', 'advancedReports')).toBe(false);
+    expect(canUse('free', 'family')).toBe(false);
+    expect(canUse('premium', 'receiptOcr')).toBe(true);
+    expect(canUse('free', 'budgets')).toBe(true);
   });
 
   it('counts a limited feature as included', () => {
-    expect(canUse('free', 'budgets')).toBe(true);
-    expect(limitOf('free', 'budgets')).toBe(3);
-    expect(limitOf('premium', 'budgets')).toBeNull();
+    expect(canUse('free', 'history')).toBe(true);
+    expect(limitOf('free', 'history')).toBe(90);
+    expect(limitOf('premium', 'history')).toBeNull();
+    expect(limitOf('free', 'smsImport')).toBe(50);
     expect(limitOf('free', 'family')).toBe(0);
   });
 
   it('allows adding up to the limit', () => {
-    expect(canAddMore('free', 'goals', 1)).toBe(true);
-    expect(canAddMore('free', 'goals', 2)).toBe(false);
-    expect(canAddMore('premium', 'goals', 50)).toBe(true);
+    expect(canAddMore('free', 'smsImport', 49)).toBe(true);
+    expect(canAddMore('free', 'smsImport', 50)).toBe(false);
+    expect(canAddMore('premium', 'smsImport', 5000)).toBe(true);
+    // budgets and goals are not limited on the free plan
+    expect(canAddMore('free', 'goals', 500)).toBe(true);
   });
 
   it('prices in the user currency and falls back to SAR', () => {

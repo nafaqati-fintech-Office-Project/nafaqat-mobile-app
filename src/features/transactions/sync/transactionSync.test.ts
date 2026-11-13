@@ -17,6 +17,7 @@ const offline = () => Object.assign(new Error('Network Error'), { isAxiosError: 
 
 const row = (id: number, overrides: Partial<PendingSync> = {}): PendingSync => ({
   id,
+  smsId: `sms-${id}`,
   dedupeKey: `key-${id}`,
   bank: 'HBL',
   type: 'DEBIT',
@@ -54,7 +55,7 @@ describe('syncTransactions', () => {
     expect(repo.listPendingSync).toHaveBeenCalledWith(MAX_SYNC_ATTEMPTS, expect.any(Number));
     expect(api.createTransaction.mock.calls[1][0]).toMatchObject({
       externalTransactionId: 'sms:key-2',
-      category: 'UNCATEGORIZED',
+      category: 'Transfers',
     });
     expect(repo.markSynced.mock.calls).toEqual([
       [1, 'srv-1', 'Food & Beverage'],

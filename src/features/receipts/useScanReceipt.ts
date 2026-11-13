@@ -22,6 +22,7 @@ export function useScanReceipt() {
         if (file === 'unsupported') return showToast(t('receipts.needsUpdate'));
         if (file === 'canceled') return;
         const result = await readReceipt(file);
+        if (result === 'premium') return void router.push({ pathname: '/plans', params: { feature: 'receiptOcr' } });
         if (typeof result === 'string') return showToast(t(result === 'unreadable' ? 'receipts.unreadable' : 'receipts.unavailable'));
         router.push({
           pathname: '/transaction-add',

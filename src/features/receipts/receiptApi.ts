@@ -17,7 +17,8 @@ const PATH = AUTH_BYPASS ? '/extract-receipt' : '/api/ai-service/extract-receipt
 export type ReceiptFile = { base64: string; mimeType: string };
 
 // unreadable: the server answered but found no total, or refused the file. unavailable: no reply or the model is busy.
-export type ReceiptResult = ScannedReceipt | 'unreadable' | 'unavailable';
+// premium: the plan does not include receipt scanning (the server answered 403).
+export type ReceiptResult = ScannedReceipt | 'unreadable' | 'unavailable' | 'premium';
 
 // Sends the photo or PDF to the model server and reads back the fields. Never throws; the file is not kept.
 export async function readReceipt(file: ReceiptFile): Promise<ReceiptResult> {
@@ -30,6 +31,7 @@ export async function readReceipt(file: ReceiptFile): Promise<ReceiptResult> {
     return parseReceipt(data) ?? 'unreadable';
   } catch (error) {
     const status = (error as { response?: { status?: number } }).response?.status;
+    if (status === 403 && !AUTH_BYPASS) return 'premium';
     devLog(`[receipt] failed: ${status ? `HTTP ${status}` : String(error)}`);
     // A refused file (too large, wrong type) will not work on a retry; a 401, 429 or 5xx might.
     return status !== undefined && status >= 400 && status < 500 && status !== 401 && status !== 429

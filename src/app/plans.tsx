@@ -1,3 +1,4 @@
+import { isAxiosError } from 'axios';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -10,6 +11,14 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import { SegmentedTabs, type SegmentedOption } from '@/components/SegmentedTabs';
 import { showToast } from '@/components/Toast';
 import { AUTH_BYPASS } from '@/config/flags';
+import {
+  cancelSubscription,
+  checkout,
+  completeMockPayment,
+  getPremiumPrices,
+  resumeSubscription,
+  type PlanPrice,
+} from '@/features/billing/billingApi';
 import { PlanComparison } from '@/features/plans/PlanComparison';
 import { FEATURES, isPlanFeature, monthsFreeYearly, premiumPrice, type Billing } from '@/features/plans/plans';
 import { usePlan } from '@/features/plans/usePlan';
@@ -29,7 +38,8 @@ export default function PlansRoute() {
   const params = useLocalSearchParams<{ feature?: string }>();
   const locked = isPlanFeature(params.feature) ? params.feature : null;
   const lockedLabel = FEATURES.find((row) => row.feature === locked)?.label;
-  const { plan, setPlan } = usePlan();
+  const { plan, me, setPlan, refresh } = usePlan();
+  const [serverPrices, setServerPrices] = useState<PlanPrice[]>([]);
   const [billing, setBilling] = useState<Billing>('yearly');
   const [currency, setCurrency] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -48,23 +58,70 @@ export default function PlansRoute() {
     };
   }, []);
 
-  const price = premiumPrice(currency);
+  useEffect(() => {
+    if (AUTH_BYPASS) return;
+    let active = true;
+    getPremiumPrices()
+      .then((prices) => {
+        if (active) setServerPrices(prices);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Signed in, the price is the server's (billing-service plan data); the local table is the demo and fallback.
+  const price = (() => {
+    const fallback = premiumPrice(currency);
+    const code = serverPrices.some((p) => p.currency === fallback.currency) ? fallback.currency : serverPrices[0]?.currency;
+    const monthly = serverPrices.find((p) => p.currency === code && p.interval === 'MONTHLY');
+    const yearly = serverPrices.find((p) => p.currency === code && p.interval === 'YEARLY');
+    return code && monthly && yearly
+      ? { currency: code, monthly: String(monthly.amount), yearly: String(yearly.amount) }
+      : fallback;
+  })();
   const saved = monthsFreeYearly(price);
   const amount = formatMoney(price[billing], price.currency, language);
   const isPremium = plan === 'premium';
 
-  // No payment flow yet. In bypass mode upgrading switches the mock plan so the paid features can be tried.
+  // Demo mode switches the plan on the phone. Signed in, the server starts the purchase and only the server's answer
+  // (the payment provider confirming it) makes the user Premium: the phone never decides that itself.
   const upgrade = async () => {
-    if (!AUTH_BYPASS) {
-      Alert.alert(t('plans.comingSoonTitle'), t('plans.comingSoonBody'));
-      return;
-    }
     setBusy(true);
-    await setPlan('premium');
-    setBusy(false);
-    showToast(t('plans.upgraded'));
-    if (locked && router.canGoBack()) router.back();
+    try {
+      if (AUTH_BYPASS) {
+        await setPlan('premium');
+      } else {
+        const { paymentId } = await checkout(billing === 'yearly' ? 'YEARLY' : 'MONTHLY', price.currency);
+        // Until a real payment gateway is connected the mock provider confirms it (development servers only).
+        if (paymentId) await completeMockPayment(paymentId);
+        await refresh();
+      }
+      showToast(t('plans.upgraded'));
+      if (locked && router.canGoBack()) router.back();
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 403) {
+        Alert.alert(t('plans.comingSoonTitle'), t('plans.comingSoonBody'));
+      } else {
+        Alert.alert(t('plans.payError'));
+      }
+    } finally {
+      setBusy(false);
+    }
   };
+
+  const changeRenewal = async (cancel: boolean) => {
+    try {
+      await (cancel ? cancelSubscription() : resumeSubscription());
+      await refresh();
+      showToast(t(cancel ? 'plans.cancelled' : 'plans.resumed'));
+    } catch {
+      Alert.alert(t('plans.payError'));
+    }
+  };
+
+  const periodEnd = me?.periodEnd ? new Date(me.periodEnd).toLocaleDateString(language === 'ar' ? 'ar' : 'en-GB') : null;
 
   const downgrade = async () => {
     await setPlan('free');
@@ -113,6 +170,8 @@ export default function PlansRoute() {
 
         <PlanComparison highlight={locked} />
 
+        {me && me.status === 'PAST_DUE' && <AppText style={styles.note}>{t('plans.pastDue')}</AppText>}
+
         {plan === 'free' && (
           <View style={styles.offer}>
             <SegmentedTabs options={BILLING} value={billing} onChange={setBilling} />
@@ -129,6 +188,20 @@ export default function PlansRoute() {
             )}
             <PrimaryButton label={t('plans.upgrade')} onPress={() => void upgrade()} loading={busy} />
             <AppText style={styles.note}>{t(AUTH_BYPASS ? 'plans.demoNote' : 'plans.paymentNote')}</AppText>
+          </View>
+        )}
+
+        {isPremium && !AUTH_BYPASS && me && (
+          <View style={styles.offer}>
+            {periodEnd && (
+              <AppText style={styles.note}>
+                {t(me.cancelAtPeriodEnd ? 'plans.endsOn' : 'plans.renewsOn', { date: periodEnd })}
+              </AppText>
+            )}
+            <PrimaryButton
+              label={t(me.cancelAtPeriodEnd ? 'plans.resume' : 'plans.cancel')}
+              onPress={() => void changeRenewal(!me.cancelAtPeriodEnd)}
+            />
           </View>
         )}
 

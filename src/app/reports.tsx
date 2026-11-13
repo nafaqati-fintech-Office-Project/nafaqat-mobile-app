@@ -8,9 +8,12 @@ import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
-import { canUse } from '@/features/plans/plans';
 import { usePlan } from '@/features/plans/usePlan';
+import { isAxiosError } from 'axios';
+
+import { AUTH_BYPASS } from '@/config/flags';
 import { exportReportCsv, exportReportPdf } from '@/features/reports/exportReport';
+import { exportReportFromServer } from '@/features/reports/exportServer';
 import {
   CategorySection,
   ComparisonSection,
@@ -36,20 +39,26 @@ export default function ReportsRoute() {
   // Only a fully loaded report is exported, so the PDF never has half the data.
   const canExport = status === 'ready' && !!data && !refreshing && !exporting;
 
-  const { plan } = usePlan();
+  const { plan, can } = usePlan();
+  const advanced = can('advancedReports') === true;
 
   const onExport = async (kind: 'pdf' | 'csv') => {
     if (!data || plan === null) return;
     // Exports are a Premium feature: free users see the plans with it highlighted.
-    if (!canUse(plan, 'pdfExport')) {
+    if (can('pdfExport') !== true) {
       router.push({ pathname: '/plans', params: { feature: 'pdfExport' } });
       return;
     }
     setExporting(true);
     try {
-      if (kind === 'pdf') await exportReportPdf(data, language);
+      if (!AUTH_BYPASS) await exportReportFromServer(kind === 'pdf' ? 'pdf' : 'xlsx', data.period);
+      else if (kind === 'pdf') await exportReportPdf(data, language);
       else await exportReportCsv(data);
     } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 403) {
+        router.push({ pathname: '/plans', params: { feature: 'pdfExport' } });
+        return;
+      }
       // In development the real reason is shown and logged; users only see the general message.
       if (__DEV__) console.warn(`[reports] ${kind} export failed`, error);
       const reason = __DEV__ && error instanceof Error ? `: ${error.message}` : '';
@@ -98,7 +107,7 @@ export default function ReportsRoute() {
           accessibilityState={{ disabled: !canExport, busy: exporting }}
           style={[styles.export, !canExport && styles.disabled]}>
           <AppText weight="bold" style={styles.exportText}>
-            {t('reports.exportCsv')}
+            {t(AUTH_BYPASS ? 'reports.exportCsv' : 'reports.exportExcel')}
           </AppText>
         </Pressable>
         <Pressable
@@ -141,15 +150,31 @@ export default function ReportsRoute() {
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}>
           <SummarySection report={data} />
-          <CategorySection report={data} />
-          <MerchantSection report={data} />
-          <WeeklySection report={data} />
-          <PaymentMethodsSection report={data} />
-          <MovementSection report={data} />
-          <LifestyleSection report={data} />
-          <SavingsSection report={data} />
-          <DebtSection report={data} />
-          <ComparisonSection report={data} />
+          {advanced ? (
+            <>
+              <CategorySection report={data} />
+              <MerchantSection report={data} />
+              <WeeklySection report={data} />
+              <PaymentMethodsSection report={data} />
+              <MovementSection report={data} />
+              <LifestyleSection report={data} />
+              <SavingsSection report={data} />
+              <DebtSection report={data} />
+              <ComparisonSection report={data} />
+            </>
+          ) : (
+            // The Free plan has the basic report; the analytics are Premium.
+            <Pressable
+              onPress={() => router.push({ pathname: '/plans', params: { feature: 'advancedReports' } })}
+              accessibilityRole="button"
+              accessibilityLabel={t('reports.premiumTitle')}
+              style={styles.upsell}>
+              <AppText weight="bold" style={styles.upsellTitle}>
+                {t('reports.premiumTitle')}
+              </AppText>
+              <AppText style={styles.upsellBody}>{t('reports.premiumBody')}</AppText>
+            </Pressable>
+          )}
         </ScrollView>
       )}
     </SafeAreaView>
@@ -176,6 +201,9 @@ const styles = StyleSheet.create({
   },
   exportText: { fontSize: fontSizes.sm, color: colors.white },
   spinner: { marginTop: spacing.xxxl },
+  upsell: { gap: spacing.xs, padding: spacing.lg, borderRadius: radius.xl, backgroundColor: colors.white },
+  upsellTitle: { fontSize: fontSizes.md, color: colors.textPrimary },
+  upsellBody: { fontSize: fontSizes.sm, color: colors.textSecondary },
   message: { gap: spacing.lg, alignItems: 'center', padding: spacing.xl, paddingVertical: spacing.xxxl },
   messageText: { fontSize: fontSizes.md, color: colors.textPrimary, textAlign: 'center' },
   content: { padding: spacing.xl, paddingTop: spacing.md, gap: spacing.lg, paddingBottom: spacing.xxl },

@@ -80,7 +80,8 @@ describe('transactionKey', () => {
 
 describe('saveTransaction', () => {
   it('returns true when a row was inserted and false for a duplicate', async () => {
-    db.runAsync.mockResolvedValueOnce({ changes: 1 }).mockResolvedValueOnce({ changes: 0 });
+    // a duplicate also tries to upgrade the stored category (a second statement), which changes nothing here
+    db.runAsync.mockResolvedValueOnce({ changes: 1 }).mockResolvedValueOnce({ changes: 0 }).mockResolvedValueOnce({ changes: 0 });
     expect(await saveTransaction(processed)).toBe(true);
     expect(await saveTransaction(processed)).toBe(false);
   });

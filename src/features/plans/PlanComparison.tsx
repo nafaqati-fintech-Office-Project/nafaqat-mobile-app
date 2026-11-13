@@ -12,11 +12,19 @@ type Props = { highlight?: PlanFeature | null };
 export function PlanComparison({ highlight }: Props) {
   const { t } = useLanguage();
 
-  const cell = (plan: PlanId, feature: PlanFeature) => {
-    const limit = limitOf(plan, feature);
+  // What a limited row says: "Last 90 days", "50 messages", or just "Up to 3".
+  const limitText = (unit: 'days' | 'messages' | undefined, limit: number) =>
+    unit === 'days'
+      ? t('plans.upToDays', { count: String(limit) })
+      : unit === 'messages'
+        ? t('plans.upToMessages', { count: String(limit) })
+        : t('plans.upTo', { count: String(limit) });
+
+  const cell = (plan: PlanId, row: (typeof FEATURES)[number]) => {
+    const limit = limitOf(plan, row.feature);
     if (limit === null) {
-      const counted = feature === 'budgets' || feature === 'goals';
-      return counted ? (
+      // A row that counts something shows "Unlimited" on the plan with no limit; the others a tick.
+      return row.unit ? (
         <AppText weight="medium" style={styles.limit}>
           {t('plans.unlimited')}
         </AppText>
@@ -27,7 +35,7 @@ export function PlanComparison({ highlight }: Props) {
     if (limit > 0) {
       return (
         <AppText weight="medium" style={styles.limit}>
-          {t('plans.upTo', { count: String(limit) })}
+          {limitText(row.unit, limit)}
         </AppText>
       );
     }
@@ -52,7 +60,7 @@ export function PlanComparison({ highlight }: Props) {
         const included = (plan: PlanId) => {
           const limit = limitOf(plan, row.feature);
           if (limit === null) return t('plans.included');
-          return limit > 0 ? t('plans.upTo', { count: String(limit) }) : t('plans.notIncluded');
+          return limit > 0 ? limitText(row.unit, limit) : t('plans.notIncluded');
         };
         return (
           <View
@@ -61,8 +69,8 @@ export function PlanComparison({ highlight }: Props) {
             accessibilityLabel={`${label}. ${t('plans.free')}: ${included('free')}. ${t('plans.premium')}: ${included('premium')}`}
             style={[styles.row, styles.divider, row.feature === highlight && styles.highlight]}>
             <AppText style={styles.label}>{label}</AppText>
-            <View style={styles.column}>{cell('free', row.feature)}</View>
-            <View style={styles.column}>{cell('premium', row.feature)}</View>
+            <View style={styles.column}>{cell('free', row)}</View>
+            <View style={styles.column}>{cell('premium', row)}</View>
           </View>
         );
       })}
