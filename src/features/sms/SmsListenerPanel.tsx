@@ -47,6 +47,9 @@ export function SmsListenerPanel() {
           {`${t('sms.debug.imported')} ${imported.scanned} / ${imported.saved} / ${imported.skipped} / ${imported.unparsed}`}
         </AppText>
       )}
+      {imported && imported.limited > 0 && (
+        <AppText style={styles.entry}>{t('sms.import.limited', { count: String(imported.scanned) })}</AppText>
+      )}
       {log.length > 0 && (
         <ScrollView style={styles.log} nestedScrollEnabled>
           {log.map((item) => (

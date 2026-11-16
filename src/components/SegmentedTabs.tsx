@@ -1,12 +1,13 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from './AppText';
+import { Icon } from './Icon';
 import type { TranslationKey } from '@/i18n';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, spacing } from '@/theme';
 
-// count, when given, shows after the label: "Active (6)".
-export type SegmentedOption<T extends string> = { value: T; label: TranslationKey; count?: number };
+// count, when given, shows after the label: "Active (6)". locked shows a padlock (the pill still reacts to a tap).
+export type SegmentedOption<T extends string> = { value: T; label: TranslationKey; count?: number; locked?: boolean };
 
 type Props<T extends string> = {
   options: SegmentedOption<T>[];
@@ -29,9 +30,12 @@ export function SegmentedTabs<T extends string>({ options, value, onChange }: Pr
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
             style={[styles.tab, active && styles.tabActive]}>
-            <AppText weight="medium" style={[styles.label, active && styles.labelActive]}>
-              {option.count === undefined ? t(option.label) : `${t(option.label)} (${option.count})`}
-            </AppText>
+            <View style={styles.content}>
+              <AppText weight="medium" style={[styles.label, active && styles.labelActive]}>
+                {option.count === undefined ? t(option.label) : `${t(option.label)} (${option.count})`}
+              </AppText>
+              {option.locked && <Icon name="lock" size={12} color={active ? colors.white : colors.textSecondary} />}
+            </View>
           </Pressable>
         );
       })}
@@ -51,6 +55,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   tabActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  content: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   label: { fontSize: fontSizes.sm, color: colors.textPrimary },
   labelActive: { color: colors.white },
 });

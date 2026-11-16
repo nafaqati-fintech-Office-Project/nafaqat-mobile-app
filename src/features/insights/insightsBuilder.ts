@@ -5,6 +5,8 @@ import { categoryFromCode } from '@/features/transactions/categoryDisplay';
 import { currencyDecimals } from '@/utils/money';
 
 export const TREND_MONTHS = 12;
+// Free plan: the trend and the periods reach back this many months; Premium has all of TREND_MONTHS.
+export const FREE_INSIGHT_MONTHS = 3;
 // How many months the Insights numbers cover, ending with the current one.
 export type Period = 1 | 3 | 6 | 12;
 const TOP_MERCHANTS = 10;
@@ -18,6 +20,8 @@ export type BuildInput = {
   spending: SpendingRows | null;
   // comparison and spending already cover this many months.
   months?: Period;
+  // how many months the trend response covers (TREND_MONTHS, or FREE_INSIGHT_MONTHS on the Free plan).
+  trendMonths?: number;
 };
 
 const amount = (value: number, currency: string) => value.toFixed(currencyDecimals(currency));
@@ -40,9 +44,9 @@ export function lastMonths(today: DateParts, count: number = TREND_MONTHS): { ye
 const monthKey = ({ year, month }: { year: number; month: number }) => `${year}-${String(month).padStart(2, '0')}`;
 
 // Spending per month in the currency; months the service did not return count as 0.
-function monthly(today: DateParts, trend: CurrencyTrend | undefined, currency: string): MonthAmount[] {
+function monthly(today: DateParts, trend: CurrencyTrend | undefined, currency: string, count: number): MonthAmount[] {
   const byMonth = new Map((trend?.months ?? []).map((m) => [m.month, m.expenses]));
-  return lastMonths(today).map((m) => ({ ...m, amount: amount(byMonth.get(monthKey(m)) ?? 0, currency) }));
+  return lastMonths(today, count).map((m) => ({ ...m, amount: amount(byMonth.get(monthKey(m)) ?? 0, currency) }));
 }
 
 const appCategory = (code: string | null, label: string) => categoryFromCode(code) ?? label;
@@ -109,7 +113,7 @@ const asIncomeExpenses = (rows: CurrencyComparison[], pick: (c: CurrencyComparis
     return { currency: c.currency, totalIncome: totals.income, totalExpenses: totals.expenses, net: totals.net };
   });
 
-export function buildInsights({ today, preferredCurrency, trend, comparison, spending, months = 1 }: BuildInput): Insights {
+export function buildInsights({ today, preferredCurrency, trend, comparison, spending, months = 1, trendMonths = TREND_MONTHS }: BuildInput): Insights {
   const currency = pickCurrency(
     preferredCurrency,
     asIncomeExpenses(comparison, (c) => c.current),
@@ -131,7 +135,7 @@ export function buildInsights({ today, preferredCurrency, trend, comparison, spe
     savingsChangePercent: roundPercent(compared?.netChangePercent ?? null),
     avgDailySpend: amount(avgNow, currency),
     avgDailyChangePercent: changeOf(avgNow, avgBefore),
-    monthly: monthly(today, trend.find((t) => t.currency === currency), currency),
+    monthly: monthly(today, trend.find((t) => t.currency === currency), currency, trendMonths),
     categoryTrends: (current?.categories ?? []).map((c) => ({
       category: appCategory(c.code, c.label),
       amount: amount(c.total, currency),

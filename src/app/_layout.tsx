@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 
 import { AuthProvider } from '@/auth/AuthProvider';
 import { ToastHost } from '@/components/Toast';
+import { UpgradePromptHost } from '@/components/UpgradePrompt';
 import { LanguageProvider } from '@/i18n/LanguageProvider';
 
 SplashScreen.preventAutoHideAsync();
@@ -54,6 +55,7 @@ function Shell() {
         />
       </Stack>
       <ToastHost />
+      <UpgradePromptHost />
     </AuthProvider>
   );
 }

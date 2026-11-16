@@ -5,6 +5,7 @@ export type PendingSync = SyncRow & { serverId: string | null };
 
 type Row = {
   id: number;
+  sms_id: string;
   dedupe_key: string;
   bank: string;
   type: SyncRow['type'];
@@ -25,15 +26,16 @@ export async function listPendingSync(maxAttempts: number, limit: number): Promi
   const db = await getDb();
   const currencies = SERVER_CURRENCIES.map(() => '?').join(', ');
   const rows = await db.getAllAsync<Row>(
-    `SELECT id, dedupe_key, bank, type, amount, currency, merchant, card_last4, date, txn_date, category, server_id
+    `SELECT id, sms_id, dedupe_key, bank, type, amount, currency, merchant, card_last4, date, txn_date, category, server_id
      FROM transactions
      WHERE (server_id IS NULL OR synced_category IS NOT category)
        AND sync_attempts < ? AND currency IN (${currencies})
      ORDER BY date ASC LIMIT ?`,
     [maxAttempts, ...SERVER_CURRENCIES, limit],
   );
-  return rows.map(({ dedupe_key, card_last4, txn_date, server_id, ...row }) => ({
+  return rows.map(({ sms_id, dedupe_key, card_last4, txn_date, server_id, ...row }) => ({
     ...row,
+    smsId: sms_id,
     dedupeKey: dedupe_key,
     cardLast4: card_last4,
     txnDate: txn_date,

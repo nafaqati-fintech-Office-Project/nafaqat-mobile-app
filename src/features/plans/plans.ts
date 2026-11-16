@@ -5,38 +5,54 @@ export type Billing = 'monthly' | 'yearly';
 
 export type PlanFeature =
   | 'transactions'
-  | 'reports'
-  | 'alerts'
-  | 'subscriptions'
+  | 'history'
   | 'budgets'
   | 'goals'
+  | 'reports'
+  | 'advancedReports'
+  | 'smsImport'
+  | 'receiptOcr'
+  | 'cardFilter'
   | 'pdfExport'
   | 'assistant'
   | 'family';
 
-// true: included; false: not included; a number: included up to that many.
+// true: included; false: not included; a number: included up to that many (days or messages, see unit).
 type Allowance = boolean | number;
 
-type FeatureRow = { feature: PlanFeature; label: TranslationKey; free: Allowance; premium: Allowance };
+type FeatureRow = {
+  feature: PlanFeature;
+  label: TranslationKey;
+  free: Allowance;
+  premium: Allowance;
+  // The server's entitlement key, when the server decides this feature (billing-service).
+  key?: string;
+  // What a number counts; a limited row shows e.g. "Last 90 days" and Premium shows "Unlimited".
+  unit?: 'days' | 'messages';
+};
 
-// The comparison table, in display order. Prices and limits are placeholders until the product
-// decides; change them here and the screen follows.
+// The comparison table, in display order. It mirrors the plan data on the server (billing-service), which is the source of
+// truth: signed in, the phone asks the server what the user may do, and this table is only what the plans screen shows.
 export const FEATURES: FeatureRow[] = [
   { feature: 'transactions', label: 'plans.feature.transactions', free: true, premium: true },
+  { feature: 'history', label: 'plans.feature.history', free: 90, premium: true, key: 'history.days', unit: 'days' },
+  { feature: 'budgets', label: 'plans.feature.budgets', free: true, premium: true },
+  { feature: 'goals', label: 'plans.feature.goals', free: true, premium: true },
   { feature: 'reports', label: 'plans.feature.reports', free: true, premium: true },
-  { feature: 'alerts', label: 'plans.feature.alerts', free: true, premium: true },
-  { feature: 'subscriptions', label: 'plans.feature.subscriptions', free: true, premium: true },
-  { feature: 'budgets', label: 'plans.feature.budgets', free: 3, premium: true },
-  { feature: 'goals', label: 'plans.feature.goals', free: 2, premium: true },
-  { feature: 'pdfExport', label: 'plans.feature.pdfExport', free: false, premium: true },
-  { feature: 'assistant', label: 'plans.feature.assistant', free: false, premium: true },
-  { feature: 'family', label: 'plans.feature.family', free: false, premium: true },
+  { feature: 'advancedReports', label: 'plans.feature.advancedReports', free: false, premium: true, key: 'reports.advanced' },
+  { feature: 'smsImport', label: 'plans.feature.smsImport', free: 50, premium: true, key: 'sms.initial_import.limit', unit: 'messages' },
+  { feature: 'receiptOcr', label: 'plans.feature.receiptOcr', free: false, premium: true, key: 'receipt.ocr' },
+  { feature: 'cardFilter', label: 'plans.feature.cardFilter', free: false, premium: true, key: 'transactions.card_filter' },
+  { feature: 'pdfExport', label: 'plans.feature.pdfExport', free: false, premium: true, key: 'reports.export' },
+  { feature: 'assistant', label: 'plans.feature.assistant', free: true, premium: true },
+  { feature: 'family', label: 'plans.feature.family', free: false, premium: true, key: 'family.module' },
 ];
 
-// Decimal strings, like every other amount in the app. A currency not listed here falls back to SAR.
+// Decimal strings, like every other amount in the app. Only used in demo mode and as a fallback: signed in, the prices come
+// from the server. A currency not listed here falls back to SAR.
 const PRICES: Record<string, Record<Billing, string>> = {
   SAR: { monthly: '19', yearly: '190' },
-  PKR: { monthly: '999', yearly: '9999' },
+  PKR: { monthly: '499', yearly: '4990' },
 };
 const DEFAULT_CURRENCY = 'SAR';
 
@@ -75,3 +91,7 @@ export function canAddMore(plan: PlanId, feature: PlanFeature, count: number): b
 
 export const isPlanFeature = (value: unknown): value is PlanFeature =>
   typeof value === 'string' && FEATURES.some((item) => item.feature === value);
+
+// The server's entitlement key for a feature, or null when the server does not decide it.
+export const entitlementKey = (feature: PlanFeature): string | null =>
+  FEATURES.find((item) => item.feature === feature)?.key ?? null;

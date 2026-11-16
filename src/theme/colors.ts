@@ -11,6 +11,7 @@ export const colors = {
   logoStart: '#2F7BFF',
   logoEnd: '#7B4DFF',
   violet: '#8B5CF6',
+  gold: '#FBBF24',
   white: '#FFFFFF',
   textPrimary: '#0F172A',
   textSecondary: '#64748B',

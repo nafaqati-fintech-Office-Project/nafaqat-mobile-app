@@ -1,5 +1,5 @@
 import { SegmentedTabs, type SegmentedOption } from './SegmentedTabs';
-import type { Period } from '@/features/insights/insightsBuilder';
+import { FREE_INSIGHT_MONTHS, type Period } from '@/features/insights/insightsBuilder';
 
 // The months a screen's numbers cover, ending with the current one.
 const OPTIONS: SegmentedOption<`${Period}`>[] = [
@@ -9,6 +9,25 @@ const OPTIONS: SegmentedOption<`${Period}`>[] = [
   { value: '12', label: 'insights.range.12' },
 ];
 
-export function PeriodTabs({ value, onChange }: { value: Period; onChange: (period: Period) => void }) {
-  return <SegmentedTabs options={OPTIONS} value={`${value}`} onChange={(next) => onChange(Number(next) as Period)} />;
+type Props = {
+  value: Period;
+  onChange: (period: Period) => void;
+  // Free plan: the periods longer than FREE_INSIGHT_MONTHS show a padlock and call onLocked instead of onChange.
+  limited?: boolean;
+  onLocked?: () => void;
+};
+
+export function PeriodTabs({ value, onChange, limited = false, onLocked }: Props) {
+  const options = OPTIONS.map((option) => ({ ...option, locked: limited && Number(option.value) > FREE_INSIGHT_MONTHS }));
+  return (
+    <SegmentedTabs
+      options={options}
+      value={`${value}`}
+      onChange={(next) => {
+        const period = Number(next) as Period;
+        if (limited && period > FREE_INSIGHT_MONTHS) onLocked?.();
+        else onChange(period);
+      }}
+    />
+  );
 }

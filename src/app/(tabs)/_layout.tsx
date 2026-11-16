@@ -3,6 +3,7 @@ import { Redirect, Tabs } from 'expo-router';
 import { useAuth } from '@/auth/AuthProvider';
 import { Icon, type IconName } from '@/components/Icon';
 import { AUTH_BYPASS } from '@/config/flags';
+import { usePendingDeletion } from '@/features/account/usePendingDeletion';
 import { useFeedbackSync } from '@/features/categorizer/feedback/useFeedbackSync';
 import { useRecategorizeOldRows } from '@/features/categorizer/useRecategorizeOldRows';
 import { useRetryPendingPredictions } from '@/features/categorizer/useRetryPendingPredictions';
@@ -36,6 +37,8 @@ export default function TabsLayout() {
   useAlertTaps(status === 'authenticated');
   // Bypass mode fetches the push token but has no account to send it to (see registerForPush).
   usePushRegistration(status === 'authenticated');
+  // An account scheduled for deletion shows the restore screen first.
+  usePendingDeletion(status === 'authenticated' && !AUTH_BYPASS, user?.id ?? null);
 
   if (status !== 'authenticated') return <Redirect href="/login" />;
 

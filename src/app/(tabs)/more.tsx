@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/AuthProvider';
@@ -22,8 +22,9 @@ export default function MoreRoute() {
   };
 
   return (
-    <SafeAreaView edges={['top']} style={styles.screen}>
+    <SafeAreaView edges={['top']} style={styles.safe}>
       <StatusBar style="dark" />
+      <ScrollView contentContainerStyle={styles.screen} showsVerticalScrollIndicator={false}>
       <AppText weight="bold" style={styles.title}>
         {t('tabs.more')}
       </AppText>
@@ -105,6 +106,21 @@ export default function MoreRoute() {
           <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
         </View>
       </Pressable>
+      {(Platform.OS === 'ios' || __DEV__) && (
+        <Pressable
+          onPress={() => router.push('/ios-sms-setup')}
+          accessibilityRole="button"
+          accessibilityLabel={t('iosSetup.more')}
+          style={styles.row}>
+          <Icon name="sms" color={colors.primary} size={sizes.icon} />
+          <AppText weight="medium" style={styles.rowLabel}>
+            {t('iosSetup.more')}
+          </AppText>
+          <View style={isRTL && styles.flip}>
+            <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
+          </View>
+        </Pressable>
+      )}
       <Pressable
         onPress={() => router.push('/notification-settings')}
         accessibilityRole="button"
@@ -118,14 +134,25 @@ export default function MoreRoute() {
         </View>
       </Pressable>
       <View style={styles.footer}>
+        <Pressable
+          onPress={() => router.push('/delete-account')}
+          accessibilityRole="button"
+          accessibilityLabel={t('more.deleteAccount')}
+          style={styles.deleteRow}>
+          <AppText weight="semibold" style={styles.deleteText}>
+            {t('more.deleteAccount')}
+          </AppText>
+        </Pressable>
         <PrimaryButton label={t('more.signOut')} onPress={onSignOut} />
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, padding: spacing.xl, gap: spacing.lg, backgroundColor: colors.bgLight },
+  safe: { flex: 1, backgroundColor: colors.bgLight },
+  screen: { flexGrow: 1, padding: spacing.xl, gap: spacing.lg },
   title: { fontSize: fontSizes.xl, color: colors.textPrimary },
   row: {
     flexDirection: 'row',
@@ -139,5 +166,7 @@ const styles = StyleSheet.create({
   rowLabel: { flex: 1, fontSize: fontSizes.md, color: colors.textPrimary },
   rowValue: { fontSize: fontSizes.sm, color: colors.textSecondary },
   flip: { transform: [{ scaleX: -1 }] },
-  footer: { marginTop: 'auto' },
+  footer: { marginTop: 'auto', gap: spacing.sm },
+  deleteRow: { minHeight: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
+  deleteText: { fontSize: fontSizes.sm, color: colors.danger },
 });

@@ -2,7 +2,8 @@ import { buildReport, TREND_MONTHS } from './reportBuilder';
 import { mockReport } from './mock';
 import type { Report } from './types';
 import { AUTH_BYPASS } from '@/config/flags';
-import { getPreferences } from '@/features/dashboard/dashboardApi';
+import { getMe } from '@/features/billing/billingApi';
+import { getIncomeVsExpenses, getPreferences } from '@/features/dashboard/dashboardApi';
 import { deviceTimeZone, monthRange, todayIn } from '@/features/dashboard/dashboardBuilder';
 import { getMonthlyComparison, getMonthlyTrend, getSpendingRows } from '@/features/insights/insightsApi';
 
@@ -36,6 +37,28 @@ export async function getReport(period: Period): Promise<Report> {
   const today = todayIn(timeZone);
   const month = `${period.year}-${String(period.month).padStart(2, '0')}`;
   const isCurrent = period.year === today.year && period.month === today.month;
+
+  // The Free plan gets the basic report: this month's income, expenses and balance. The comparison, trend and
+  // spending analytics are Premium (the server refuses them to a Free user, so they are not even requested).
+  const advanced = (await getMe().catch(() => null))?.entitlements['reports.advanced'] === true;
+  if (!advanced) {
+    const rows = await getIncomeVsExpenses(monthRange(period.year, period.month), timeZone);
+    const zero = { income: 0, expenses: 0, net: 0, categories: [] };
+    return buildReport({
+      period,
+      preferredCurrency: preferences?.currency ?? null,
+      comparison: rows.map((r) => ({
+        currency: r.currency,
+        current: { income: r.totalIncome, expenses: r.totalExpenses, net: r.net, categories: [] },
+        previous: zero,
+        netChangePercent: null,
+        categoryChanges: [],
+      })),
+      trend: null,
+      spending: null,
+      daysCounted: isCurrent ? today.day : daysIn(period.year, period.month),
+    });
+  }
 
   // The comparison is the report: if it fails the screen shows its error state. The rest is a bonus.
   const [comparison, trend, spending] = await Promise.all([

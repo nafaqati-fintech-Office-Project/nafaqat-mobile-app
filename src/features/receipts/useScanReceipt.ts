@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { Alert, Platform } from 'react-native';
 
 import { showToast } from '@/components/Toast';
+import { showUpgradePrompt } from '@/components/UpgradePrompt';
 import { useLanguage } from '@/i18n/LanguageProvider';
 
 import { chooseReceiptPdf, chooseReceiptPhoto, takeReceiptPhoto, type PickResult } from './pickReceipt';
@@ -22,6 +23,7 @@ export function useScanReceipt() {
         if (file === 'unsupported') return showToast(t('receipts.needsUpdate'));
         if (file === 'canceled') return;
         const result = await readReceipt(file);
+        if (result === 'premium') return void showUpgradePrompt('receiptOcr');
         if (typeof result === 'string') return showToast(t(result === 'unreadable' ? 'receipts.unreadable' : 'receipts.unavailable'));
         router.push({
           pathname: '/transaction-add',

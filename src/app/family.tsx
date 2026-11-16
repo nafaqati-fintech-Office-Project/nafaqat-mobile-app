@@ -8,6 +8,7 @@ import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
+import { showUpgradePrompt } from '@/components/UpgradePrompt';
 import { InfoCard } from '@/features/dashboard/InfoCard';
 import { acceptInvitation, declineInvitation, familyProblem } from '@/features/family/familyApi';
 import { FamilyHeader } from '@/features/family/FamilyHeader';
@@ -44,9 +45,9 @@ export default function FamilyRoute() {
   };
 
   const newFamily = () => {
-    // Family accounts are a Premium feature: free users see the plans with it highlighted.
+    // Family accounts are a Premium feature: free users get the Premium message, which leads to the plans.
     if (plan !== null && !canUse(plan, 'family')) {
-      router.push({ pathname: '/plans', params: { feature: 'family' } });
+      showUpgradePrompt('family');
       return;
     }
     router.push('/family-create');
