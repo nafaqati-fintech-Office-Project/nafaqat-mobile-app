@@ -25,6 +25,35 @@
         "EXPO_PUBLIC_SMS_TOOLS": "true",
         "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "404671155668-itgdd1chld7be7umbjgtm92471cl1ung.apps.googleusercontent.com"
       }
+    },
+    "production": {
+      "environment": "production",
+      "distribution": "internal",
+      "channel": "production",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "APP_VARIANT": "production",
+        "EXPO_PUBLIC_AUTH_BYPASS": "false",
+        "EXPO_PUBLIC_MERCHANT_FALLBACK": "false",
+        "EXPO_PUBLIC_LLM_ONLY": "false",
+        "EXPO_PUBLIC_SMS_TOOLS": "true"
+      }
+    },
+    "production-store": {
+      "extends": "production",
+      "distribution": "store",
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  },
+  "submit": {
+    "production-store": {
+      "android": {
+        "track": "internal"
+      }
     }
   }
 }

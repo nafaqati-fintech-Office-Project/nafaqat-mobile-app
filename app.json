@@ -25,6 +25,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.intellivex.nafaqati",
+      "versionCode": 1,
       "permissions": [
         "android.permission.READ_SMS",
         "android.permission.RECEIVE_SMS",

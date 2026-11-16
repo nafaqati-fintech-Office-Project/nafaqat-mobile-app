@@ -1,5 +1,6 @@
-// TEMP: remove when dashboard is connected to backend (AUTH_BYPASS).
-export const AUTH_BYPASS: boolean = process.env.EXPO_PUBLIC_AUTH_BYPASS !== 'false';
+// Demo mode: no login, mock data. Off unless EXPO_PUBLIC_AUTH_BYPASS=true is set on purpose, so a build that forgets the
+// variable can never ship with the mock session. (Production builds also refuse to build with it on, see app.config.ts.)
+export const AUTH_BYPASS: boolean = process.env.EXPO_PUBLIC_AUTH_BYPASS === 'true';
 
 // The bank SMS reader entry and its screens: on for everyone. Set EXPO_PUBLIC_SMS_TOOLS=false to hide them
 // (READ_SMS is a restricted permission, so a Play Store release needs a Play Console declaration first).
