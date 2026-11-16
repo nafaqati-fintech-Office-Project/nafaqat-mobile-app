@@ -1,6 +1,7 @@
 import { isAxiosError } from 'axios';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,6 +16,7 @@ import {
   cancelSubscription,
   checkout,
   completeMockPayment,
+  getMe,
   getPremiumPrices,
   resumeSubscription,
   type PlanPrice,
@@ -26,6 +28,19 @@ import { getUserPreferences } from '@/features/profile/profileApi';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, shadows, sizes, spacing } from '@/theme';
 import { formatMoney } from '@/utils/money';
+
+// The gateway's confirmation can arrive a few seconds after the customer closes the payment page.
+async function waitForPremium(): Promise<boolean> {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    try {
+      if ((await getMe()).premium) return true;
+    } catch {
+      // Try again; the server may be busy.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+  return false;
+}
 
 const BILLING: SegmentedOption<Billing>[] = [
   { value: 'monthly', label: 'plans.monthly' },
@@ -93,10 +108,18 @@ export default function PlansRoute() {
       if (AUTH_BYPASS) {
         await setPlan('premium');
       } else {
-        const { paymentId } = await checkout(billing === 'yearly' ? 'YEARLY' : 'MONTHLY', price.currency);
-        // Until a real payment gateway is connected the mock provider confirms it (development servers only).
-        if (paymentId) await completeMockPayment(paymentId);
-        await refresh();
+        const { paymentId, checkoutUrl } = await checkout(billing === 'yearly' ? 'YEARLY' : 'MONTHLY', price.currency);
+        if (checkoutUrl) {
+          // The customer pays on the gateway's page; the gateway tells the server, and the server makes them Premium.
+          await WebBrowser.openBrowserAsync(checkoutUrl);
+          const confirmed = await waitForPremium();
+          await refresh();
+          if (!confirmed) return void showToast(t('plans.paymentPending'));
+        } else {
+          // The development mock provider confirms it (development servers only).
+          if (paymentId) await completeMockPayment(paymentId);
+          await refresh();
+        }
       }
       showToast(t('plans.upgraded'));
       if (locked && router.canGoBack()) router.back();
