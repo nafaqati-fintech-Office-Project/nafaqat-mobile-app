@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
+import { SMS_TOOLS_ENABLED } from '@/config/flags';
 import { screenTitle, screenTitleRow } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -109,6 +110,21 @@ export default function MoreRoute() {
           <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
         </View>
       </Pressable>
+      {Platform.OS === 'android' && SMS_TOOLS_ENABLED && (
+        <Pressable
+          onPress={() => router.push('/sms-debug')}
+          accessibilityRole="button"
+          accessibilityLabel={t('sms.debug.title')}
+          style={styles.row}>
+          <Icon name="sms" color={colors.primary} size={sizes.icon} />
+          <AppText weight="medium" style={styles.rowLabel}>
+            {t('sms.debug.title')}
+          </AppText>
+          <View style={isRTL && styles.flip}>
+            <Icon name="chevron" color={colors.textSecondary} size={sizes.icon} />
+          </View>
+        </Pressable>
+      )}
       {(Platform.OS === 'ios' || __DEV__) && (
         <Pressable
           onPress={() => router.push('/ios-sms-setup')}

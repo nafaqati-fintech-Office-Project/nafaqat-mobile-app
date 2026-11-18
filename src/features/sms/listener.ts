@@ -50,6 +50,8 @@ export function startSmsListener(callback: OnSms): void {
   timer = setInterval(() => void scanInbox(), POLL_MS);
 }
 
+export const isSmsListening = (): boolean => timer !== null;
+
 export function stopSmsListener(): void {
   if (timer) clearInterval(timer);
   timer = null;

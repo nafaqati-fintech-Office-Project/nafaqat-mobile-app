@@ -1,37 +1,45 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Linking, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './SmsPermissionScreen.styles';
 import { checkSmsPermission, requestSmsPermission, type SmsPermissionStatus } from './smsPermission';
+import { ensureSmsSync, setSmsAutoOff } from './smsSync';
+import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, gradients, sizes } from '@/theme';
 
-const openDebug = () => router.replace('/sms-debug');
 
 export function SmsPermissionScreen() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [status, setStatus] = useState<SmsPermissionStatus | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // Allowing SMS access starts the automatic import and watching (see smsSync), then returns to the app.
+  const done = useCallback(() => {
+    if (user) void setSmsAutoOff(false).then(() => ensureSmsSync(user.id));
+    router.replace('/home');
+  }, [user]);
+
   useEffect(() => {
     checkSmsPermission().then((result) => {
-      if (result === 'granted') openDebug();
+      if (result === 'granted') done();
     });
-  }, []);
+  }, [done]);
 
   const allow = async () => {
     setBusy(true);
     const result = await requestSmsPermission();
     setBusy(false);
     setStatus(result);
-    if (result === 'granted') openDebug();
+    if (result === 'granted') done();
   };
 
   const notice =

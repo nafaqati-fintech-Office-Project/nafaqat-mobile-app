@@ -19,6 +19,7 @@ import { AuthProvider } from '@/auth/AuthProvider';
 import { ToastHost } from '@/components/Toast';
 import { CreditPromptHost } from '@/components/CreditPrompt';
 import { UpgradePromptHost } from '@/components/UpgradePrompt';
+import { SmsAutoSync } from '@/features/sms/SmsAutoSync';
 import { LanguageProvider } from '@/i18n/LanguageProvider';
 
 SplashScreen.preventAutoHideAsync();
@@ -55,6 +56,7 @@ function Shell() {
           options={{ presentation: 'formSheet', sheetAllowedDetents: [0.6], sheetCornerRadius: 24 }}
         />
       </Stack>
+      <SmsAutoSync />
       <ToastHost />
       <UpgradePromptHost />
       <CreditPromptHost />
