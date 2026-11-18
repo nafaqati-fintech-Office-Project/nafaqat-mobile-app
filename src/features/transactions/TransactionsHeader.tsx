@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { Icon } from '@/components/Icon';
+import { screenTitle } from '@/components/screenTitle';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 
@@ -18,9 +18,6 @@ export function TransactionsHeader({
 
   return (
     <View style={styles.row}>
-      <Pressable accessibilityRole="button" accessibilityLabel={t('transactions.menu')} style={styles.button}>
-        <Icon name="menu" color={colors.textPrimary} size={sizes.iconLg} />
-      </Pressable>
       <AppText weight="bold" style={styles.title}>
         {t('tabs.transactions')}
       </AppText>
@@ -49,9 +46,8 @@ export function TransactionsHeader({
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
-  button: { width: sizes.touchMin, height: sizes.touchMin, justifyContent: 'center' },
-  title: { flex: 1, fontSize: fontSizes.lg, color: colors.textPrimary },
+  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, minHeight: sizes.touchMin },
+  title: { flex: 1, ...screenTitle },
   add: {
     minHeight: sizes.touchMin - spacing.sm,
     justifyContent: 'center',

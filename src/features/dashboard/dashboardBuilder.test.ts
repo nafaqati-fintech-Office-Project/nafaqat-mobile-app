@@ -8,7 +8,7 @@ import {
   pickCurrency,
   previousMonth,
   todayIn,
-  weekDates,
+  weekdayIndex,
   type BuildInput,
 } from './dashboardBuilder';
 
@@ -34,7 +34,6 @@ const base: BuildInput = {
       ],
     },
   ],
-  week: weekDates({ year: 2026, month: 10, day: 27 }),
   monthDaily: { state: 'ready', rows: [] },
   trend: { state: 'ready', months: [] },
   budget: { state: 'ready', percent: 64.6 },
@@ -70,12 +69,10 @@ const txn = (id: number) => ({
 });
 
 describe('dates', () => {
-  it('gives the Monday-to-Sunday week that contains today', () => {
-    expect(weekDates({ year: 2026, month: 10, day: 27 })).toEqual([
-      '2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29', '2026-10-30', '2026-10-31', '2026-11-01',
-    ]);
-    // A Sunday belongs to the week that started the Monday before.
-    expect(weekDates({ year: 2026, month: 11, day: 1 })[0]).toBe('2026-10-26');
+  it('names the day of the week, Monday first', () => {
+    expect(weekdayIndex('2026-10-26')).toBe(0); // a Monday
+    expect(weekdayIndex('2026-11-01')).toBe(6); // a Sunday
+    expect(weekdayIndex('nonsense')).toBeNull();
   });
 
   it('gives month ranges, including February and the year boundary', () => {
@@ -169,6 +166,24 @@ describe('buildDashboard', () => {
       savings: '0.00',
     });
     expect(data.weekly.every((w) => w.amount === '0.00')).toBe(true);
+  });
+
+  it('adds spending up per day of the week over the whole period', () => {
+    const data = buildDashboard({
+      ...base,
+      daily: [
+        {
+          currency: 'PKR',
+          days: [
+            { date: '2026-08-03', total: 50 }, // Monday
+            { date: '2026-09-07', total: 25.5 }, // Monday
+            { date: '2026-10-28', total: 300 }, // Wednesday
+            { date: '2026-10-31', total: 10 }, // Saturday
+          ],
+        },
+      ],
+    });
+    expect(data.weekly.map((w) => w.amount)).toEqual(['75.50', '0.00', '300.00', '0.00', '0.00', '10.00', '0.00']);
   });
 
   it('keeps "no budget" (null) apart from an unavailable budget', () => {

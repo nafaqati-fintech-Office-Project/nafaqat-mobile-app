@@ -5,9 +5,12 @@ import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { screenTitle, screenTitleRow } from '@/components/screenTitle';
 import { PeriodTabs } from '@/components/PeriodTabs';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { SegmentedTabs, type SegmentedOption } from '@/components/SegmentedTabs';
+import { AUTH_BYPASS } from '@/config/flags';
+import { showCreditPrompt } from '@/components/CreditPrompt';
 import { showUpgradePrompt } from '@/components/UpgradePrompt';
 import { CategoryTrendRow } from '@/features/insights/CategoryTrendRow';
 import { InsightStatCard } from '@/features/insights/InsightStatCard';
@@ -36,7 +39,7 @@ export default function InsightsRoute() {
   const [tab, setTab] = useState<Tab>('overview');
   const [period, setPeriod] = useState<Period>(1);
   // Free: this month and 3 months, with a 3-month trend. Premium: 6 and 12 months and the 12-month trend.
-  const { plan, can } = usePlan();
+  const { plan, can, refresh: refreshPlan } = usePlan();
   const extended = can('advancedReports') === true;
   const { data, status, failure, refreshing, refresh, retry, reload } = useInsights(period, extended, plan !== null);
 
@@ -56,15 +59,23 @@ export default function InsightsRoute() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}>
-        <AppText weight="bold" style={styles.title}>
-          {t('tabs.insights')}
-        </AppText>
+        <View style={styles.titleRow}>
+          <AppText weight="bold" style={styles.title} numberOfLines={1} adjustsFontSizeToFit>
+            {t('tabs.insights')}
+          </AppText>
+        </View>
         <SegmentedTabs options={TABS} value={tab} onChange={setTab} />
         <PeriodTabs
           value={period}
           onChange={setPeriod}
           limited={plan !== null && !extended}
-          onLocked={() => showUpgradePrompt('advancedReports', 'plans.insightsLocked')}
+          onLocked={(wanted) =>
+            // Signed in: unlock the longer periods for 24 hours with credits (or watch an ad / go Premium), then open the
+            // period that was tapped. Demo mode has no server, so it shows the Premium message.
+            AUTH_BYPASS
+              ? showUpgradePrompt('advancedReports', 'plans.insightsLocked')
+              : showCreditPrompt('insights', 'advancedReports', () => void refreshPlan().then(() => setPeriod(wanted)))
+          }
         />
 
         {plan === null || status === 'loading' || (status === 'ready' && !data) ? (
@@ -181,8 +192,9 @@ function TabContent({ tab, data, period }: { tab: Tab; data: Insights; period: n
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bgLight },
-  content: { padding: spacing.xl, gap: spacing.lg, paddingBottom: spacing.xxl },
-  title: { fontSize: fontSizes.xl, color: colors.textPrimary },
+  content: { padding: spacing.xl, paddingTop: 0, gap: spacing.lg, paddingBottom: spacing.xxl },
+  titleRow: { ...screenTitleRow },
+  title: { ...screenTitle },
   spinner: { marginTop: spacing.xxxl },
   error: { gap: spacing.lg, paddingVertical: spacing.xxl },
   debug: { fontSize: fontSizes.xs, color: colors.textSecondary, textAlign: 'center' },

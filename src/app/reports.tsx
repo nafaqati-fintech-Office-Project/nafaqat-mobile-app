@@ -5,9 +5,11 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, V
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
+import { showCreditPrompt } from '@/components/CreditPrompt';
 import { showUpgradePrompt } from '@/components/UpgradePrompt';
 import { usePlan } from '@/features/plans/usePlan';
 import { isAxiosError } from 'axios';
@@ -40,14 +42,16 @@ export default function ReportsRoute() {
   // Only a fully loaded report is exported, so the PDF never has half the data.
   const canExport = status === 'ready' && !!data && !refreshing && !exporting;
 
-  const { plan, can } = usePlan();
+  const { plan, can, refresh: refreshPlan } = usePlan();
   const advanced = can('advancedReports') === true;
 
-  const onExport = async (kind: 'pdf' | 'csv') => {
+  const onExport = async (kind: 'pdf' | 'csv', unlocked = false): Promise<void> => {
     if (!data || plan === null) return;
-    // Exports are a Premium feature: free users get the Premium message, which leads to the plans.
-    if (can('pdfExport') !== true) {
-      showUpgradePrompt('pdfExport');
+    // Exports are a Premium feature. A free user can pay with credits (or watch an ad to earn them) or go to the plans;
+    // after paying, the export carries on at once. In demo mode there is no server, so the Premium message is shown.
+    if (!unlocked && can('pdfExport') !== true) {
+      if (AUTH_BYPASS) showUpgradePrompt('pdfExport');
+      else showCreditPrompt('report_export', 'pdfExport', () => void refreshPlan().then(() => onExport(kind, true)));
       return;
     }
     setExporting(true);
@@ -57,7 +61,7 @@ export default function ReportsRoute() {
       else await exportReportCsv(data);
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 403) {
-        showUpgradePrompt('pdfExport');
+        showCreditPrompt('report_export', 'pdfExport', () => void refreshPlan().then(() => onExport(kind, true)));
         return;
       }
       // In development the real reason is shown and logged; users only see the general message.
@@ -97,7 +101,7 @@ export default function ReportsRoute() {
             <Icon name="chevron" color={colors.textPrimary} size={sizes.iconLg} />
           </View>
         </Pressable>
-        <AppText weight="bold" style={styles.title} accessibilityRole="header">
+        <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
           {t('reports.title')}
         </AppText>
         <Pressable
@@ -166,7 +170,12 @@ export default function ReportsRoute() {
           ) : (
             // The Free plan has the basic report; the analytics are Premium.
             <Pressable
-              onPress={() => router.push({ pathname: '/plans', params: { feature: 'advancedReports' } })}
+              onPress={() =>
+                // Free users can unlock the analytics for 24 hours with credits; demo mode has no server, so it goes to the plans.
+                AUTH_BYPASS
+                  ? router.push({ pathname: '/plans', params: { feature: 'advancedReports' } })
+                  : showCreditPrompt('insights', 'advancedReports', () => void refreshPlan())
+              }
               accessibilityRole="button"
               accessibilityLabel={t('reports.premiumTitle')}
               style={styles.upsell}>
@@ -188,7 +197,7 @@ const styles = StyleSheet.create({
   side: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   disabled: { opacity: 0.3 },
   flip: { transform: [{ scaleX: -1 }] },
-  title: { flex: 1, fontSize: fontSizes.lg, color: colors.textPrimary },
+  title: { flex: 1, ...screenTitle },
   picker: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.lg },
   month: { fontSize: fontSizes.md, color: colors.textPrimary },
   export: {

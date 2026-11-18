@@ -14,7 +14,7 @@ type Props = {
   onChange: (period: Period) => void;
   // Free plan: the periods longer than FREE_INSIGHT_MONTHS show a padlock and call onLocked instead of onChange.
   limited?: boolean;
-  onLocked?: () => void;
+  onLocked?: (period: Period) => void;
 };
 
 export function PeriodTabs({ value, onChange, limited = false, onLocked }: Props) {
@@ -25,7 +25,7 @@ export function PeriodTabs({ value, onChange, limited = false, onLocked }: Props
       value={`${value}`}
       onChange={(next) => {
         const period = Number(next) as Period;
-        if (limited && period > FREE_INSIGHT_MONTHS) onLocked?.();
+        if (limited && period > FREE_INSIGHT_MONTHS) onLocked?.(period);
         else onChange(period);
       }}
     />

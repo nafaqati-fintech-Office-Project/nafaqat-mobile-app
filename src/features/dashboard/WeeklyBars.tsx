@@ -9,7 +9,7 @@ import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 import { weekdayShort } from '@/utils/intl';
 
-// linkFor: a weekday's bar opens that day's transactions.
+// One bar per day of the week; linkFor (optional) makes a bar open that day's transactions.
 export function WeeklyBars({ weekly, linkFor }: { weekly: WeeklyAmount[]; linkFor?: (day: number) => TransactionLink }) {
   const { t, language } = useLanguage();
   const values = weekly.map((w) => Number(w.amount)); // chart scale only, not money math
@@ -36,7 +36,7 @@ export function WeeklyBars({ weekly, linkFor }: { weekly: WeeklyAmount[]; linkFo
           </DrillPressable>
         ))}
       </View>
-      {highest <= 0 && <AppText style={styles.empty}>{t('dashboard.noSpendingWeek')}</AppText>}
+      {highest <= 0 && <AppText style={styles.empty}>{t('dashboard.noSpendingPeriod')}</AppText>}
     </View>
   );
 }

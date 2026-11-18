@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { showToast } from '@/components/Toast';
 import { AUTH_BYPASS } from '@/config/flags';
@@ -62,10 +63,9 @@ export default function DeleteAccountRoute() {
             <Icon name="chevron" color={colors.textPrimary} size={sizes.iconLg} />
           </View>
         </Pressable>
-        <AppText weight="bold" style={styles.title} accessibilityRole="header">
+        <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
           {t('deleteAccount.title')}
         </AppText>
-        <View style={styles.back} />
       </View>
       <ScrollView
         contentContainerStyle={styles.content}
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg },
   back: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   flip: { transform: [{ scaleX: -1 }] },
-  title: { flex: 1, textAlign: 'center', fontSize: fontSizes.lg, color: colors.textPrimary },
+  title: { flex: 1, ...screenTitle },
   content: { padding: spacing.xl, paddingTop: spacing.sm, gap: spacing.lg, paddingBottom: spacing.xxl },
   warning: {
     gap: spacing.sm,

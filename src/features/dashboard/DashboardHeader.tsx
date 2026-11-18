@@ -43,7 +43,7 @@ export function DashboardHeader() {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: sizes.touchMin },
   brand: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   name: { fontSize: fontSizes.lg, color: colors.textPrimary },
   bell: { width: sizes.bell, height: sizes.bell, alignItems: 'center', justifyContent: 'center' },

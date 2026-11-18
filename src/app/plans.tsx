@@ -7,6 +7,7 @@ import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { SegmentedTabs, type SegmentedOption } from '@/components/SegmentedTabs';
@@ -166,12 +167,12 @@ export default function PlansRoute() {
           </View>
         </Pressable>
         <View style={styles.titles}>
-          <AppText weight="bold" style={styles.title} accessibilityRole="header">
+          <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
             {t('plans.title')}
           </AppText>
-          <AppText style={styles.subtitle}>{t('plans.subtitle')}</AppText>
         </View>
       </View>
+      <AppText style={styles.subtitle}>{t('plans.subtitle')}</AppText>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {lockedLabel && !isPremium && (
@@ -250,8 +251,8 @@ const styles = StyleSheet.create({
   side: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   flip: { transform: [{ scaleX: -1 }] },
   titles: { flex: 1 },
-  title: { fontSize: fontSizes.lg, color: colors.textPrimary },
-  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  title: { ...screenTitle },
+  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary, paddingHorizontal: spacing.xl },
   content: { padding: spacing.xl, paddingTop: spacing.md, gap: spacing.lg, paddingBottom: spacing.xxl },
   lockedNote: {
     flexDirection: 'row',

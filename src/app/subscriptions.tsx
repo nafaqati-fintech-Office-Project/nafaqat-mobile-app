@@ -5,6 +5,7 @@ import { ActivityIndicator, Alert, Platform, Pressable, RefreshControl, ScrollVi
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { SegmentedTabs, type SegmentedOption } from '@/components/SegmentedTabs';
@@ -111,10 +112,9 @@ export default function SubscriptionsRoute() {
           </View>
         </Pressable>
         <View style={styles.titles}>
-          <AppText weight="bold" style={styles.title} accessibilityRole="header">
+          <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
             {t('subscriptions.title')}
           </AppText>
-          <AppText style={styles.subtitle}>{t('subscriptions.subtitle')}</AppText>
         </View>
         <Pressable
           onPress={() => router.push({ pathname: '/subscription-add', params: { currency: view?.currency ?? '' } })}
@@ -126,6 +126,7 @@ export default function SubscriptionsRoute() {
           </AppText>
         </Pressable>
       </View>
+      <AppText style={styles.subtitle}>{t('subscriptions.subtitle')}</AppText>
 
       {status === 'loading' ? (
         <View style={styles.message}>
@@ -210,8 +211,8 @@ const styles = StyleSheet.create({
   side: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   flip: { transform: [{ scaleX: -1 }] },
   titles: { flex: 1 },
-  title: { fontSize: fontSizes.lg, color: colors.textPrimary },
-  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  title: { ...screenTitle },
+  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary, paddingHorizontal: spacing.xl },
   add: {
     minHeight: sizes.touchMin - spacing.sm,
     justifyContent: 'center',

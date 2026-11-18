@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, View } fr
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
@@ -51,10 +52,9 @@ export default function NotificationSettingsRoute() {
             <Icon name="chevron" color={colors.textPrimary} size={sizes.iconLg} />
           </View>
         </Pressable>
-        <AppText weight="bold" style={styles.title} accessibilityRole="header">
+        <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
           {t('notifications.settings')}
         </AppText>
-        <View style={styles.back} />
       </View>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {status === 'loading' ? (
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg },
   back: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   flip: { transform: [{ scaleX: -1 }] },
-  title: { flex: 1, textAlign: 'center', fontSize: fontSizes.lg, color: colors.textPrimary },
+  title: { flex: 1, ...screenTitle },
   content: { padding: spacing.xl, paddingTop: spacing.sm, gap: spacing.sm, paddingBottom: spacing.xxl },
   spinner: { marginTop: spacing.xxxl },
   error: { gap: spacing.lg, paddingVertical: spacing.xxl },

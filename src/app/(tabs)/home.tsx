@@ -102,7 +102,7 @@ export default function DashboardRoute() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bgLight },
-  content: { padding: spacing.xl, gap: spacing.xl, paddingBottom: spacing.xxl },
+  content: { padding: spacing.xl, paddingTop: 0, gap: spacing.xl, paddingBottom: spacing.xxl },
   widened: { fontSize: fontSizes.xs, color: colors.textSecondary, textAlign: 'center' },
   error: { gap: spacing.lg, paddingVertical: spacing.xxl },
   errorText: { fontSize: fontSizes.md, color: colors.textPrimary, textAlign: 'center' },

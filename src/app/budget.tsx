@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, V
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PeriodTabs } from '@/components/PeriodTabs';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -87,7 +88,7 @@ export default function BudgetRoute() {
             <Icon name="chevron" color={colors.textPrimary} size={sizes.iconLg} />
           </View>
         </Pressable>
-        <AppText weight="bold" style={styles.title}>
+        <AppText weight="bold" style={styles.title} numberOfLines={1} adjustsFontSizeToFit>
           {t('budget.title')}
         </AppText>
         {budget ? (
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg },
   back: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   flip: { transform: [{ scaleX: -1 }] },
-  title: { flex: 1, textAlign: 'center', fontSize: fontSizes.lg, color: colors.textPrimary },
+  title: { flex: 1, ...screenTitle },
   content: { flexGrow: 1, padding: spacing.xl, paddingTop: spacing.sm, gap: spacing.xl, paddingBottom: spacing.xxl },
   spinner: { marginTop: spacing.xxxl },
   card: { padding: spacing.xl, borderRadius: radius.lg, backgroundColor: colors.white, ...shadows.card },

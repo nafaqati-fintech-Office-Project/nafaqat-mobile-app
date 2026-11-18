@@ -61,14 +61,11 @@ export function previousMonth(year: number, month: number): { year: number; mont
   return month === 1 ? { year: year - 1, month: 12 } : { year, month: month - 1 };
 }
 
-// The seven dates of the Monday-to-Sunday week that contains `today`.
-export function weekDates(today: DateParts): string[] {
-  const base = Date.UTC(today.year, today.month - 1, today.day);
-  const sinceMonday = (new Date(base).getUTCDay() + 6) % 7;
-  return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(base + (i - sinceMonday) * 86_400_000);
-    return isoDate({ year: d.getUTCFullYear(), month: d.getUTCMonth() + 1, day: d.getUTCDate() });
-  });
+// 0 = Monday ... 6 = Sunday for a YYYY-MM-DD date; null when the text is not a date.
+export function weekdayIndex(date: string): number | null {
+  const [year, month, day] = date.split('-').map(Number);
+  if (!year || !month || !day) return null;
+  return (new Date(Date.UTC(year, month - 1, day)).getUTCDay() + 6) % 7;
 }
 
 // The user's own currency if the reports have it; otherwise the one they spent most in.
@@ -98,8 +95,8 @@ export type BuildInput = {
   current: IncomeExpenses[];
   previous: IncomeExpenses[];
   summary: SpendingEntry[];
+  // Daily spending over the whole selected period (the same months as the totals).
   daily: DailyEntry[];
-  week: string[];
   monthDaily: { state: SectionState; rows: DailyEntry[] };
   trend: { state: SectionState; months: { year: number; month: number; rows: IncomeExpenses[] }[] };
   budget: { state: SectionState; percent: number | null };
@@ -172,11 +169,16 @@ export function buildDashboard(input: BuildInput): DashboardData {
   const current = inCurrency(input.current);
   const previous = inCurrency(input.previous);
   const spent = inCurrency(input.summary);
-  const days = new Map(inCurrency(input.daily)?.days.map((d) => [d.date, d.total]));
 
-  const weekly: WeeklyAmount[] = input.week.map((date, index) => ({
+  // Spending added up for each day of the week (Monday to Sunday) over the selected period.
+  const perWeekday = [0, 0, 0, 0, 0, 0, 0];
+  for (const entry of inCurrency(input.daily)?.days ?? []) {
+    const index = weekdayIndex(entry.date);
+    if (index !== null) perWeekday[index] += entry.total;
+  }
+  const weekly: WeeklyAmount[] = perWeekday.map((total, index) => ({
     day: index as WeeklyAmount['day'],
-    amount: amount(days.get(date) ?? 0, currency),
+    amount: amount(total, currency),
   }));
 
   return {

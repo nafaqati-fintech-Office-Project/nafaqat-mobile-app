@@ -27,8 +27,3 @@ export function dayPeriod(date: Date, language: Language) {
   return { title, from: key, to: key };
 }
 
-// The current Monday-to-Sunday week's day (0 = Monday), as the dashboard's weekly bars count it.
-export function dayOfThisWeek(day: number, today: Date = new Date()): Date {
-  const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - ((today.getDay() + 6) % 7));
-  return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + day);
-}

@@ -14,7 +14,6 @@ import {
   previousMonth,
   RECENT_COUNT,
   todayIn,
-  weekDates,
 } from './dashboardBuilder';
 import { lastMonths } from './heatmapMath';
 import { mockDashboard } from './mock';
@@ -38,7 +37,7 @@ const optionalPreferences = (): Promise<Preferences | null> => getPreferences().
 const monthKey = ({ year, month }: { year: number; month: number }) => `${year}-${String(month).padStart(2, '0')}`;
 
 // Spending, income, savings, the transaction count and the categories cover the last `months` months,
-// ending with the current one; the change is against the same number of months before. The week, the
+// ending with the current one; the change is against the same number of months before. The weekday bars cover the same months. The
 // month heatmap and the savings trend keep their own time frames.
 export async function getDashboard(months: Period = 1): Promise<DashboardData> {
   // The bypass session has no token, so the real endpoints would answer 401.
@@ -50,7 +49,6 @@ export async function getDashboard(months: Period = 1): Promise<DashboardData> {
   const today = todayIn(timeZone);
   const period = { year: today.year, month: today.month };
   const before = previousMonth(today.year, today.month);
-  const week = weekDates(today);
 
   const covered = periodMonths(today, months);
   const range = {
@@ -68,7 +66,7 @@ export async function getDashboard(months: Period = 1): Promise<DashboardData> {
     getIncomeVsExpenses(range, timeZone),
     getIncomeVsExpenses(previousRange, timeZone),
     getSpendingSummary(range, timeZone),
-    getDailySpending({ startDate: week[0], endDate: week[6] }, timeZone),
+    getDailySpending(range, timeZone),
   ]);
 
   // Optional sections: each one falls back on its own ("Coming soon" tiles, a note in the card).
@@ -104,7 +102,6 @@ export async function getDashboard(months: Period = 1): Promise<DashboardData> {
     previous,
     summary,
     daily,
-    week,
     monthDaily: {
       state: state(monthDailyResult),
       rows: monthDailyResult.status === 'fulfilled' ? monthDailyResult.value : [],

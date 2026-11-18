@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
+import { screenTitle, screenTitleRow } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { usePlan } from '@/features/plans/usePlan';
@@ -25,9 +26,11 @@ export default function MoreRoute() {
     <SafeAreaView edges={['top']} style={styles.safe}>
       <StatusBar style="dark" />
       <ScrollView contentContainerStyle={styles.screen} showsVerticalScrollIndicator={false}>
-      <AppText weight="bold" style={styles.title}>
-        {t('tabs.more')}
-      </AppText>
+      <View style={styles.titleRow}>
+        <AppText weight="bold" style={styles.title} numberOfLines={1} adjustsFontSizeToFit>
+          {t('tabs.more')}
+        </AppText>
+      </View>
       <Pressable
         onPress={() => router.push('/profile')}
         accessibilityRole="button"
@@ -152,8 +155,9 @@ export default function MoreRoute() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bgLight },
-  screen: { flexGrow: 1, padding: spacing.xl, gap: spacing.lg },
-  title: { fontSize: fontSizes.xl, color: colors.textPrimary },
+  screen: { flexGrow: 1, padding: spacing.xl, paddingTop: 0, gap: spacing.lg },
+  titleRow: { ...screenTitleRow },
+  title: { ...screenTitle },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

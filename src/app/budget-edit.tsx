@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { getCurrentUserId } from '@/auth/currentUser';
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
@@ -154,10 +155,9 @@ export default function BudgetEditRoute() {
             <Icon name="chevron" color={colors.textPrimary} size={sizes.iconLg} />
           </View>
         </Pressable>
-        <AppText weight="bold" style={styles.title} accessibilityRole="header">
+        <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
           {t(editing ? 'budgetEdit.editTitle' : 'budgetEdit.createTitle')}
         </AppText>
-        <View style={styles.back} />
       </View>
 
       {failed ? (
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg },
   back: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   flip: { transform: [{ scaleX: -1 }] },
-  title: { flex: 1, textAlign: 'center', fontSize: fontSizes.lg, color: colors.textPrimary },
+  title: { flex: 1, ...screenTitle },
   spinner: { marginTop: spacing.xxxl },
   message: { padding: spacing.xl, paddingVertical: spacing.xxl },
   messageText: { fontSize: fontSizes.md, color: colors.textPrimary, textAlign: 'center' },

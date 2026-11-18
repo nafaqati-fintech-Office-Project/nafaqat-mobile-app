@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, V
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { SegmentedTabs, type SegmentedOption } from '@/components/SegmentedTabs';
@@ -65,10 +66,9 @@ export default function GoalsRoute() {
           </View>
         </Pressable>
         <View style={styles.titles}>
-          <AppText weight="bold" style={styles.title} accessibilityRole="header">
+          <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
             {t('goals.title')}
           </AppText>
-          <AppText style={styles.subtitle}>{t('goals.subtitle')}</AppText>
         </View>
         <Pressable
           onPress={() => router.push('/goal-edit')}
@@ -80,6 +80,7 @@ export default function GoalsRoute() {
           </AppText>
         </Pressable>
       </View>
+      <AppText style={styles.subtitle}>{t('goals.subtitle')}</AppText>
 
       {status === 'loading' ? (
         <ActivityIndicator color={colors.primary} style={styles.spinner} />
@@ -132,8 +133,8 @@ const styles = StyleSheet.create({
   side: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   flip: { transform: [{ scaleX: -1 }] },
   titles: { flex: 1 },
-  title: { fontSize: fontSizes.lg, color: colors.textPrimary },
-  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  title: { ...screenTitle },
+  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary, paddingHorizontal: spacing.xl },
   add: {
     minHeight: sizes.touchMin - spacing.sm,
     justifyContent: 'center',

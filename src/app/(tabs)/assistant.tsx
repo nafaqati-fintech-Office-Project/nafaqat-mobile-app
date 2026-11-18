@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { screenTitle } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { showToast } from '@/components/Toast';
@@ -94,14 +95,10 @@ export default function AssistantRoute() {
     <SafeAreaView edges={['top']} style={styles.screen}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <View style={styles.badge}>
-          <Icon name="assistant" color={colors.white} size={sizes.iconLg} />
-        </View>
         <View style={styles.titles}>
-          <AppText weight="bold" style={styles.title} accessibilityRole="header">
+          <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
             {t('assistant.title')}
           </AppText>
-          <AppText style={styles.subtitle}>{t('assistant.subtitle')}</AppText>
         </View>
         {messages.length > 0 ? (
           <Pressable onPress={confirmClear} accessibilityRole="button" accessibilityLabel={t('assistant.clear')} style={styles.clear}>
@@ -109,6 +106,7 @@ export default function AssistantRoute() {
           </Pressable>
         ) : null}
       </View>
+      <AppText style={styles.subtitle}>{t('assistant.subtitle')}</AppText>
 
       {consent === null ? (
         <View style={styles.center}>
@@ -214,22 +212,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    minHeight: sizes.touchMin,
+    backgroundColor: colors.white,
+  },
+  titles: { flex: 1 },
+  title: { ...screenTitle },
+  subtitle: {
+    fontSize: fontSizes.xs,
+    color: colors.textSecondary,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.sm,
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  badge: {
-    width: sizes.iconTile,
-    height: sizes.iconTile,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.violet,
-  },
-  titles: { flex: 1 },
-  title: { fontSize: fontSizes.md, color: colors.textPrimary },
-  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary },
   clear: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   consentWrap: { padding: spacing.lg },
   consentCard: {

@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 
 import { AuthProvider } from '@/auth/AuthProvider';
 import { ToastHost } from '@/components/Toast';
+import { CreditPromptHost } from '@/components/CreditPrompt';
 import { UpgradePromptHost } from '@/components/UpgradePrompt';
 import { LanguageProvider } from '@/i18n/LanguageProvider';
 
@@ -56,6 +57,7 @@ function Shell() {
       </Stack>
       <ToastHost />
       <UpgradePromptHost />
+      <CreditPromptHost />
     </AuthProvider>
   );
 }

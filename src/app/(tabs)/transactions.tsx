@@ -292,7 +292,7 @@ export default function TransactionsRoute() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.white },
-  top: { gap: spacing.md, paddingHorizontal: spacing.xl, paddingTop: spacing.sm, paddingBottom: spacing.xs },
+  top: { gap: spacing.md, paddingHorizontal: spacing.xl, paddingTop: 0, paddingBottom: spacing.xs },
   list: { flexGrow: 1, paddingHorizontal: spacing.xl, paddingBottom: spacing.xxl },
   section: { fontSize: fontSizes.md, color: colors.textPrimary, marginTop: spacing.lg, marginBottom: spacing.xs },
   spinner: { marginTop: spacing.xxxl },

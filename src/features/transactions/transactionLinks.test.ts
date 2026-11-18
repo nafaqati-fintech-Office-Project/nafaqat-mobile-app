@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { canOpenCategory, dayKey, monthsRange, openTransactions } from './transactionLinks';
-import { dayOfThisWeek } from '@/features/dashboard/drill';
+import { canOpenCategory, monthsRange, openTransactions } from './transactionLinks';
 
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }));
 vi.mock('expo-router', () => ({ router: { navigate } }));
@@ -14,16 +13,6 @@ describe('monthsRange', () => {
 
   it('covers several months ending with the given one, across a year', () => {
     expect(monthsRange(2027, 2, 3)).toEqual({ from: '2026-12-01', to: '2027-02-28' });
-  });
-});
-
-describe('dayOfThisWeek', () => {
-  it('counts the week from Monday, as the dashboard bars do', () => {
-    const wednesday = new Date(2026, 10, 11); // Wed 11 Nov 2026
-    expect(dayKey(dayOfThisWeek(0, wednesday))).toBe('2026-11-09');
-    expect(dayKey(dayOfThisWeek(6, wednesday))).toBe('2026-11-15');
-    const sunday = new Date(2026, 10, 15);
-    expect(dayKey(dayOfThisWeek(0, sunday))).toBe('2026-11-09');
   });
 });
 

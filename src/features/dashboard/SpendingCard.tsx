@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import { dashboardPeriod, dayOfThisWeek, dayPeriod } from './drill';
+import { dashboardPeriod } from './drill';
 import type { DashboardData } from './types';
 import { WeeklyBars } from './WeeklyBars';
 import { AppText } from '@/components/AppText';
@@ -52,13 +52,8 @@ export function SpendingCard({ data }: { data: DashboardData }) {
         </View>
       </View>
       </DrillPressable>
-      <WeeklyBars
-        weekly={data.weekly}
-        linkFor={(day) => {
-          const date = dayPeriod(dayOfThisWeek(day), language);
-          return { type: 'expenses', ...date, title: `${spending} · ${date.title}` };
-        }}
-      />
+      <AppText style={styles.caption}>{t('dashboard.byWeekday')}</AppText>
+      <WeeklyBars weekly={data.weekly} />
     </View>
   );
 }
@@ -73,6 +68,7 @@ const styles = StyleSheet.create({
   },
   head: { gap: spacing.md },
   label: { fontSize: fontSizes.sm, color: colors.textSecondary },
+  caption: { fontSize: fontSizes.xs, color: colors.textSecondary },
   amountRow: {
     flexDirection: 'row',
     alignItems: 'center',

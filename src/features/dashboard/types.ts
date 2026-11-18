@@ -31,7 +31,7 @@ export type DashboardData = {
   currency: string;
   totalSpending: string;
   changePercent: number; // signed, vs previous period
-  weekly: WeeklyAmount[]; // the current Monday-to-Sunday week
+  weekly: WeeklyAmount[]; // spending per day of the week over the selected period
   transactionCount: number;
   budgetUsedPercent: number | null; // null = no active budget
   budgetState: SectionState;

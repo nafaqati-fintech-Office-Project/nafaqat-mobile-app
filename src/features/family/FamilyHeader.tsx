@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
+import { screenTitle } from '@/components/screenTitle';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
 
@@ -17,6 +18,7 @@ type Props = {
 export function FamilyHeader({ title, subtitle, fallback, action }: Props) {
   const { t, isRTL } = useLanguage();
   return (
+    <>
     <View style={styles.header}>
       <Pressable
         onPress={() => (router.canGoBack() ? router.back() : router.replace(fallback))}
@@ -29,10 +31,9 @@ export function FamilyHeader({ title, subtitle, fallback, action }: Props) {
         </View>
       </Pressable>
       <View style={styles.titles}>
-        <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1}>
+        <AppText weight="bold" style={styles.title} accessibilityRole="header" numberOfLines={1} adjustsFontSizeToFit>
           {title}
         </AppText>
-        {subtitle ? <AppText style={styles.subtitle}>{subtitle}</AppText> : null}
       </View>
       {action && (
         <Pressable onPress={action.onPress} accessibilityRole="button" accessibilityLabel={action.label} style={styles.action}>
@@ -42,6 +43,8 @@ export function FamilyHeader({ title, subtitle, fallback, action }: Props) {
         </Pressable>
       )}
     </View>
+      {subtitle ? <AppText style={styles.subtitle}>{subtitle}</AppText> : null}
+    </>
   );
 }
 
@@ -50,8 +53,8 @@ const styles = StyleSheet.create({
   side: { width: sizes.touchMin, height: sizes.touchMin, alignItems: 'center', justifyContent: 'center' },
   flip: { transform: [{ scaleX: -1 }] },
   titles: { flex: 1 },
-  title: { fontSize: fontSizes.lg, color: colors.textPrimary },
-  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  title: { ...screenTitle },
+  subtitle: { fontSize: fontSizes.xs, color: colors.textSecondary, paddingHorizontal: spacing.xl },
   action: {
     minHeight: sizes.touchMin - spacing.sm,
     justifyContent: 'center',
