@@ -60,8 +60,21 @@ export type Variant = {
   flows: Record<FlowId, FlowDef>;
 };
 
+/** Timings the backend can change without an app release (the app ships sensible defaults). */
+export type CaptureConfig = {
+  /** SMS and Wallet describing the same purchase must be this close in time to be merged. */
+  matchWindowMs: number;
+  /** A complete Wallet payment waits this long for its SMS before it is saved on its own. */
+  walletHoldMs: number;
+  /** How long a held, incomplete Wallet item waits for its SMS before the user is asked to complete it. */
+  incompleteWaitMs: number;
+  /** No message for this many days: one banner and one push notification (at most once a week). */
+  reminderDays: number;
+};
+
 export type SetupConfig = {
   version: number;
+  capture?: Partial<CaptureConfig>;
   /** Words a bank message is matched on. The first is the main one, the second is for banks that also send Arabic. */
   keywords: string[];
   /** False until the wording has been compared with a real iPhone in that language. */

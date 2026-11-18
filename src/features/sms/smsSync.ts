@@ -3,7 +3,7 @@ import { AppState, Platform } from 'react-native';
 
 import { importHistory } from './importHistory';
 import { isSmsListening, scanInbox, startSmsListener, stopSmsListener } from './listener';
-import { processSms } from './processSms';
+import { processSms, type ProcessedSms } from './processSms';
 import { checkSmsPermission } from './smsPermission';
 import type { SmsMessage } from './smsReader';
 import { checkBudgetOnPhone } from '@/features/notifications/budgetAlertService';
@@ -28,16 +28,22 @@ export type LogItem = {
   source?: string;
 };
 
-// One incoming message: parse it, save it, tell the user, and check the budget. Used by the always-on watcher and by the
-// Bank SMS screen (which also shows the result in its log).
-export async function handleIncomingSms(sms: SmsMessage): Promise<LogItem> {
-  const result = await processSms(sms);
-  const isNew = result ? await saveTransaction(result).catch(() => true) : false;
-  if (result && isNew) {
+// A parsed and categorized transaction: save it, and when it is new tell the user and check the budget.
+export async function saveProcessed(result: ProcessedSms): Promise<boolean> {
+  const isNew = await saveTransaction(result).catch(() => true);
+  if (isNew) {
     emitTransactionsChanged();
     await notifyTransaction(result);
     if (result.txn.type === 'DEBIT') await checkBudgetOnPhone();
   }
+  return isNew;
+}
+
+// One incoming message: parse it, save it, tell the user, and check the budget. Used by the always-on watcher and by the
+// Bank SMS screen (which also shows the result in its log).
+export async function handleIncomingSms(sms: SmsMessage): Promise<LogItem> {
+  const result = await processSms(sms);
+  const isNew = result ? await saveProcessed(result) : false;
   const unparsed = result ? false : await saveIfMissed(sms).catch(() => false);
   return {
     id: sms.id,

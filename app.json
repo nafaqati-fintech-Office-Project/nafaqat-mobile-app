@@ -14,7 +14,16 @@
       "url": "https://u.expo.dev/d04820ad-5757-4f0a-acd8-9cee9e223e33"
     },
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.intellivex.nafaqati",
+      "supportsTablet": false,
+      "infoPlist": {
+        "CFBundleLocalizations": [
+          "en",
+          "ar"
+        ],
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -58,6 +67,9 @@
         {
           "android": {
             "usesCleartextTraffic": true
+          },
+          "ios": {
+            "deploymentTarget": "17.0"
           }
         }
       ],
@@ -84,7 +96,8 @@
           ]
         }
       ],
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      "./plugins/withNafaqatiShortcuts"
     ],
     "experiments": {
       "typedRoutes": true,

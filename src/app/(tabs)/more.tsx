@@ -9,6 +9,7 @@ import { SMS_TOOLS_ENABLED } from '@/config/flags';
 import { screenTitle, screenTitleRow } from '@/components/screenTitle';
 import { Icon } from '@/components/Icon';
 import { PrimaryButton } from '@/components/PrimaryButton';
+import { CaptureStatusCard } from '@/features/iosCapture/CaptureStatusCard';
 import { usePlan } from '@/features/plans/usePlan';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
@@ -140,6 +141,7 @@ export default function MoreRoute() {
           </View>
         </Pressable>
       )}
+      {Platform.OS === 'ios' && <CaptureStatusCard />}
       <Pressable
         onPress={() => router.push('/notification-settings')}
         accessibilityRole="button"

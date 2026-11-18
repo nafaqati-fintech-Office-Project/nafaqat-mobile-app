@@ -6,6 +6,8 @@ import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { loadSetupConfig, resolveFlow } from './config';
+import { clearRetest } from '@/features/iosCapture/status';
+import { ConnectionCheck } from './ConnectionCheck';
 import { RealSetup } from './RealSetup';
 import { SimPractice } from './SimPractice';
 import { getConsent, markSetupDone, setConsent } from './storage';
@@ -23,7 +25,7 @@ type Stage =
   | { kind: 'practice'; flow: FlowId }
   | { kind: 'real'; flow: FlowId }
   | { kind: 'back'; flow: FlowId }
-  | { kind: 'done'; flow: FlowId };
+  | { kind: 'done'; flow: FlowId; connected: boolean };
 
 const iosMajor = () => (Platform.OS === 'ios' ? Number.parseInt(String(Platform.Version), 10) || 17 : 17);
 
@@ -49,10 +51,11 @@ export function IosSetupScreen() {
     setStage({ kind: 'practice', flow: 'bank' });
   };
 
-  const confirmDone = (flow: FlowId) => {
+  const confirmDone = (flow: FlowId, connected: boolean) => {
     trackSetup('setup_confirmed', { flow });
     void markSetupDone(flow);
-    setStage({ kind: 'done', flow });
+    void clearRetest();
+    setStage({ kind: 'done', flow, connected });
   };
 
   const preview = Platform.OS !== 'ios';
@@ -109,22 +112,12 @@ export function IosSetupScreen() {
     );
   } else if (stage.kind === 'back') {
     content = (
-      <View style={styles.centerBody}>
-        <AppText weight="bold" style={styles.title}>
-          {t('iosSetup.back.title')}
-        </AppText>
-        <AppText style={styles.text}>{t('iosSetup.back.body')}</AppText>
-        <PrimaryButton label={t('iosSetup.back.yes')} onPress={() => confirmDone(stage.flow)} />
-        <Pressable
-          onPress={() => setStage({ kind: 'real', flow: stage.flow })}
-          accessibilityRole="button"
-          accessibilityLabel={t('iosSetup.back.no')}
-          style={styles.link}>
-          <AppText weight="semibold" style={styles.linkText}>
-            {t('iosSetup.back.no')}
-          </AppText>
-        </Pressable>
-      </View>
+      <ConnectionCheck
+        key={stage.flow}
+        flow={stage.flow}
+        onFinished={(connected) => confirmDone(stage.flow, connected)}
+        onPracticeAgain={() => setStage({ kind: 'practice', flow: stage.flow })}
+      />
     );
   } else if (stage.kind === 'done') {
     content = (
@@ -135,7 +128,7 @@ export function IosSetupScreen() {
         <AppText weight="bold" style={styles.title}>
           {t('iosSetup.done.title')}
         </AppText>
-        <AppText style={styles.text}>{t('iosSetup.done.body')}</AppText>
+        <AppText style={styles.text}>{t(stage.connected ? 'iosSetup.done.bodyConnected' : 'iosSetup.done.body')}</AppText>
         {stage.flow !== 'wallet' && (
           <>
             <PrimaryButton label={t('iosSetup.done.wallet')} onPress={() => setStage({ kind: 'practice', flow: 'wallet' })} />

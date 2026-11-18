@@ -7,3 +7,7 @@ export const AUTH_BYPASS: boolean = process.env.EXPO_PUBLIC_AUTH_BYPASS === 'tru
 export const SMS_TOOLS_ENABLED: boolean = process.env.EXPO_PUBLIC_SMS_TOOLS !== 'false';
 
 export const DASHBOARD_MOCK_FAIL: boolean = process.env.EXPO_PUBLIC_DASHBOARD_MOCK_FAIL === 'true';
+
+// The connection check's test SMS (iPhone). Needs the backend endpoint that texts the user's verified number; until then
+// the app shows "Setup saved" and connects on the first real bank message.
+export const IOS_TEST_SMS_ENABLED: boolean = process.env.EXPO_PUBLIC_IOS_TEST_SMS === 'true';

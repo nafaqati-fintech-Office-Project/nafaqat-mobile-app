@@ -19,6 +19,7 @@ import { Greeting } from '@/features/dashboard/Greeting';
 import { RecentTransactionsCard } from '@/features/dashboard/RecentTransactionsCard';
 import { SpendingCard } from '@/features/dashboard/SpendingCard';
 import { StatGrid } from '@/features/dashboard/StatGrid';
+import { CaptureReminderBanner } from '@/features/iosCapture/CaptureReminderBanner';
 import { SmsDevEntry } from '@/features/sms/SmsDevEntry';
 import { isEmptyDashboard, WIDER_RANGE } from '@/features/dashboard/dashboardRange';
 import { useDashboard } from '@/features/dashboard/useDashboard';
@@ -70,6 +71,7 @@ export default function DashboardRoute() {
         <DashboardHeader />
         <Greeting name={user?.firstName ?? user?.username ?? ''} />
         <SmsDevEntry />
+        <CaptureReminderBanner />
         <BudgetAlertStrip />
         <PeriodTabs value={period} onChange={pick} />
         {data && auto && period > 1 && !isEmptyDashboard(data) && (

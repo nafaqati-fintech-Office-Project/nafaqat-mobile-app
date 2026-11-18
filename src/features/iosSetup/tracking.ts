@@ -13,7 +13,11 @@ export type SetupEvent =
   | 'keyword_copied'
   | 'shortcuts_opened'
   | 'returned_from_shortcuts'
-  | 'setup_confirmed';
+  | 'setup_confirmed'
+  | 'test_sent'
+  | 'connected'
+  | 'test_timeout'
+  | 'first_message_received';
 
 export function trackSetup(event: SetupEvent, props: { flow: FlowId; step?: string; number?: number }): void {
   void appendEvent({ event, at: new Date().toISOString(), ...props });
