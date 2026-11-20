@@ -140,6 +140,24 @@ const FEE_RE = new RegExp(
 const ZERO_AMOUNT_RE = new RegExp(`(?<![A-Za-z])(?:${CURRENCY_SRC})\\s*0+(?:\\.0+)?(?![\\d.,]*[1-9])`, 'gi');
 const stripFees = (body: string) => body.replace(FEE_RE, ' ').replace(ZERO_AMOUNT_RE, ' ');
 
+// A card alert for a purchase in another currency ("Amount 52.57 AED ... Conv. rate 1.02 ... FX Fee 1.23 SAR"):
+// the account is in SAR, so the amount is converted with the rate the message gives (a USD alert without a rate
+// uses the 3.75 peg) and the fee, which is not part of the purchase, is dropped. Returns the body as if the bank
+// had written the SAR amount.
+const FOREIGN_AMOUNT_RE = new RegExp(`\\bAmount[: ]+(${AMOUNT_SRC})\\s+([A-Z]{3})\\b`);
+const CONV_RATE_RE = /\bConv\.?\s*rate\s+(\d+(?:\.\d+)?)/i;
+const FX_FEE_RE = /\bFX\s+Fee\s+[\d.,]+\s+SAR/gi;
+const USD_PEG = 3.75;
+
+function inSar(body: string): string {
+  const foreign = FOREIGN_AMOUNT_RE.exec(body);
+  if (!foreign || foreign[2] === 'SAR') return body;
+  const value = Number(normalizeAmount(foreign[1]!));
+  const rate = Number(CONV_RATE_RE.exec(body)?.[1] ?? (foreign[2] === 'USD' ? USD_PEG : NaN));
+  if (!(value > 0) || !(rate > 0)) return body;
+  return body.replace(foreign[0], `Amount ${(value * rate).toFixed(2)} SAR`).replace(FX_FEE_RE, ' ');
+}
+
 function matchRules(sms: SmsInput) {
   const candidates = rules.filter((rule) => rule.senderMatch.test(sms.address));
   for (const rule of candidates) {
@@ -156,7 +174,7 @@ function matchRules(sms: SmsInput) {
 export function parseSms(input: SmsInput): ParsedTxn | null {
   try {
     // Alerts arrive wrapped across lines (emails, long SMS); every pattern assumes one line of text.
-    const sms = { ...input, body: stripFees(input.body.replace(/\s+/g, ' ')).replace(/\s+/g, ' ').trim() };
+    const sms = { ...input, body: stripFees(inSar(input.body.replace(/\s+/g, ' '))).replace(/\s+/g, ' ').trim() };
     if (!isTransactional(sms.body)) return null;
     const matched = matchRules(sms);
     const type = detectType(sms.body);

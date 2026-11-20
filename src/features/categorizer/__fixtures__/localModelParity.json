@@ -1,0 +1,5157 @@
+{
+"version": "v20261120-123258",
+"cases": [
+{
+"text": "Mtg Pmt Freedom Mortgage",
+"cleaned": "Mtg Pmt Freedom Mortgage",
+"category": "Housing",
+"confidence": 0.9196783646922958,
+"runner_up": 0.00923941849006181
+},
+{
+"text": "GREEN VALLEY RESTAURANT QTA",
+"cleaned": "GREEN VALLEY RESTAURANT QTA",
+"category": "Food & Beverage",
+"confidence": 0.8069919288861425,
+"runner_up": 0.05383839249935733
+},
+{
+"text": "PAYPAL INST XFER X CORP",
+"cleaned": "PAYPAL INST XFER X CORP",
+"category": "Subscriptions",
+"confidence": 0.6132087102179733,
+"runner_up": 0.11125544504145062
+},
+{
+"text": "Water bill cadb",
+"cleaned": "Water bill cadb",
+"category": "Utilities",
+"confidence": 0.9617439785433485,
+"runner_up": 0.013012327520631266
+},
+{
+"text": "Pharmacy Mall",
+"cleaned": "Pharmacy Mall",
+"category": "Health",
+"confidence": 0.9892697946344005,
+"runner_up": 0.001491946984027997
+},
+{
+"text": "IFIXIT",
+"cleaned": "IFIXIT",
+"category": "Subscriptions",
+"confidence": 0.1674242015764053,
+"runner_up": 0.10309984025382136
+},
+{
+"text": "NBP Money Market Fund",
+"cleaned": "NBP Money Market Fund",
+"category": "Investments",
+"confidence": 0.6419344824921017,
+"runner_up": 0.12765870080820252
+},
+{
+"text": "Youth Organization Store Airport",
+"cleaned": "Youth Organization Store Airport",
+"category": "Charity",
+"confidence": 0.9155152229022935,
+"runner_up": 0.01840203859798004
+},
+{
+"text": "Ufone Mobile Billing",
+"cleaned": "Ufone Mobile Billing",
+"category": "Utilities",
+"confidence": 0.7793773122413559,
+"runner_up": 0.06743377578155345
+},
+{
+"text": "Baja Fresh Store Business District",
+"cleaned": "Baja Fresh Store Business District",
+"category": "Food & Beverage",
+"confidence": 0.7861809363035034,
+"runner_up": 0.05076511148927708
+},
+{
+"text": "YOUTUBE PREMIUM* YOUTUBE PREMIUM Premium",
+"cleaned": "YOUTUBE PREMIUM YOUTUBE PREMIUM Premium",
+"category": "Subscriptions",
+"confidence": 0.9004679144217023,
+"runner_up": 0.06638832899903589
+},
+{
+"text": "LOLC MICROLOAN HYDERABAD",
+"cleaned": "LOLC MICROLOAN",
+"category": "Loans/EMI",
+"confidence": 0.7849110804354662,
+"runner_up": 0.03479979444930513
+},
+{
+"text": "Water Company Mall",
+"cleaned": "Water Company Mall",
+"category": "Utilities",
+"confidence": 0.9521560019074952,
+"runner_up": 0.013274799124641865
+},
+{
+"text": "SYLVAN LEARNING CO",
+"cleaned": "SYLVAN LEARNING CO",
+"category": "Education",
+"confidence": 0.8072070404517451,
+"runner_up": 0.022430970636754876
+},
+{
+"text": "PAYPAL *KHAN ACADEMY C7HE0HBUZH",
+"cleaned": "PAYPAL KHAN ACADEMY C7HE0HBUZH",
+"category": "Education",
+"confidence": 0.9278731094903858,
+"runner_up": 0.010366874262925272
+},
+{
+"text": "Shareide",
+"cleaned": "Shareide",
+"category": "Transportation",
+"confidence": 0.25213454537525737,
+"runner_up": 0.11853949039041556
+},
+{
+"text": "CRICKET ONLINE PMT",
+"cleaned": "CRICKET ONLINE PMT",
+"category": "Utilities",
+"confidence": 0.2512702477409771,
+"runner_up": 0.1392386199007734
+},
+{
+"text": "Sephora Center Residential",
+"cleaned": "Sephora Center Residential",
+"category": "Clothing & Shopping",
+"confidence": 0.7266557315612532,
+"runner_up": 0.05379161874287294
+},
+{
+"text": "university of atlanta tuition",
+"cleaned": "university of atlanta tuition",
+"category": "Education",
+"confidence": 0.9790981715059589,
+"runner_up": 0.0032367310361480816
+},
+{
+"text": "Brigham and Women's - Evening",
+"cleaned": "Brigham and Women's - Evening",
+"category": "Health",
+"confidence": 0.8184815969793233,
+"runner_up": 0.029286091587126032
+},
+{
+"text": "Theme Park Store Airport",
+"cleaned": "Theme Park Store Airport",
+"category": "Entertainment",
+"confidence": 0.9045777519060787,
+"runner_up": 0.016775633022927484
+},
+{
+"text": "Servaid Pharmacy Rawalpindi",
+"cleaned": "Servaid Pharmacy",
+"category": "Health",
+"confidence": 0.947880254441398,
+"runner_up": 0.007134629702952094
+},
+{
+"text": "Viasat Hospital",
+"cleaned": "Viasat Hospital",
+"category": "Utilities",
+"confidence": 0.7338611590574212,
+"runner_up": 0.10129493879721851
+},
+{
+"text": "SEPTA Store Strip Mall",
+"cleaned": "SEPTA Store Strip Mall",
+"category": "Transportation",
+"confidence": 0.869490316405196,
+"runner_up": 0.03247836494036603
+},
+{
+"text": "D WATSON I10 MARKAZ",
+"cleaned": "D WATSON I10 MARKAZ",
+"category": "Groceries",
+"confidence": 0.5855875135375028,
+"runner_up": 0.12469477558445784
+},
+{
+"text": "Five Guys Downtown",
+"cleaned": "Five Guys Downtown",
+"category": "Food & Beverage",
+"confidence": 0.7825161596287915,
+"runner_up": 0.04028191846919764
+},
+{
+"text": "mcgraw hill; subscription",
+"cleaned": "mcgraw hill; subscription",
+"category": "Education",
+"confidence": 0.7064733607140521,
+"runner_up": 0.1301716211544772
+},
+{
+"text": "SPIRIT AIRLINES",
+"cleaned": "SPIRIT AIRLINES",
+"category": "Travel",
+"confidence": 0.7475573746021109,
+"runner_up": 0.23612431035318793
+},
+{
+"text": "METRO Cash & Carry",
+"cleaned": "METRO Cash & Carry",
+"category": "Groceries",
+"confidence": 0.8223198197757586,
+"runner_up": 0.09476310355631103
+},
+{
+"text": "GameStop Store Online - Evening",
+"cleaned": "GameStop Store Online - Evening",
+"category": "Clothing & Shopping",
+"confidence": 0.7035087847923875,
+"runner_up": 0.1106918653463844
+},
+{
+"text": "TJ Maxx Downtown",
+"cleaned": "TJ Maxx Downtown",
+"category": "Clothing & Shopping",
+"confidence": 0.7965395779340448,
+"runner_up": 0.03733438842853337
+},
+{
+"text": "McDonald's Branch - Evening",
+"cleaned": "McDonald's Branch - Evening",
+"category": "Food & Beverage",
+"confidence": 0.8768053468358404,
+"runner_up": 0.018992364961842326
+},
+{
+"text": "Cane's Downtown",
+"cleaned": "Cane's Downtown",
+"category": "Food & Beverage",
+"confidence": 0.9088309883446672,
+"runner_up": 0.01720107545754687
+},
+{
+"text": "Car2Go Center Mall",
+"cleaned": "Car2Go Center Mall",
+"category": "Transportation",
+"confidence": 0.8472597469424391,
+"runner_up": 0.025753392151369
+},
+{
+"text": "Jimmy John's Branch Strip Mall",
+"cleaned": "Jimmy John's Branch Strip Mall",
+"category": "Food & Beverage",
+"confidence": 0.8279984973866846,
+"runner_up": 0.04034285093765392
+},
+{
+"text": "Goodwill Campus",
+"cleaned": "Goodwill Campus",
+"category": "Charity",
+"confidence": 0.7716226809010754,
+"runner_up": 0.03331268892911274
+},
+{
+"text": "Mosque Campus",
+"cleaned": "Mosque Campus",
+"category": "Charity",
+"confidence": 0.8137685580296429,
+"runner_up": 0.02824911203060021
+},
+{
+"text": "STAEZY HOSTEL BOOKINGS",
+"cleaned": "STAEZY HOSTEL BOOKINGS",
+"category": "Housing",
+"confidence": 0.5499822100902325,
+"runner_up": 0.14565043140762737
+},
+{
+"text": "MYHOSTEL PK BOOKINGS",
+"cleaned": "MYHOSTEL PK BOOKINGS",
+"category": "Housing",
+"confidence": 0.5160180470873009,
+"runner_up": 0.19637093860052246
+},
+{
+"text": "Baskin Robbins",
+"cleaned": "Baskin Robbins",
+"category": "Food & Beverage",
+"confidence": 0.7432754033703418,
+"runner_up": 0.03840158408510356
+},
+{
+"text": "Primary Care - Dinner Time",
+"cleaned": "Primary Care - Dinner Time",
+"category": "Health",
+"confidence": 0.8614715196103278,
+"runner_up": 0.029225415484543375
+},
+{
+"text": "PreApproved Payment Bill User Payment: EXPRESSVPN",
+"cleaned": "PreApproved Payment Bill User Payment: EXPRESSVPN",
+"category": "Subscriptions",
+"confidence": 0.7097895354248086,
+"runner_up": 0.07143101258035484
+},
+{
+"text": "24 Hour Fitness Center Campus",
+"cleaned": "Hour Fitness Center Campus",
+"category": "Entertainment",
+"confidence": 0.8736466461184208,
+"runner_up": 0.041431822774856665
+},
+{
+"text": "QUETTA CITY BUS",
+"cleaned": "QUETTA CITY BUS",
+"category": "Transportation",
+"confidence": 0.7812403318649943,
+"runner_up": 0.044008581226419353
+},
+{
+"text": "TST* BURGER JOINT",
+"cleaned": "TST BURGER JOINT",
+"category": "Food & Beverage",
+"confidence": 0.856592776720498,
+"runner_up": 0.021849526392263556
+},
+{
+"text": "Museum Branch Campus",
+"cleaned": "Museum Branch Campus",
+"category": "Entertainment",
+"confidence": 0.822952268175248,
+"runner_up": 0.033024175966688725
+},
+{
+"text": "Goodwill Online Downtown",
+"cleaned": "Goodwill Online Downtown",
+"category": "Charity",
+"confidence": 0.7521355521422107,
+"runner_up": 0.04721691179468208
+},
+{
+"text": "Viasat Online Center Residential",
+"cleaned": "Viasat Online Center Residential",
+"category": "Utilities",
+"confidence": 0.7685611188140604,
+"runner_up": 0.04386508832312742
+},
+{
+"text": "Panda Ret",
+"cleaned": "Panda Ret",
+"category": "Groceries",
+"confidence": 0.4587486726341322,
+"runner_up": 0.29304811740597364
+},
+{
+"text": "Burger King Online Airport",
+"cleaned": "Burger King Online Airport",
+"category": "Food & Beverage",
+"confidence": 0.8499204238328621,
+"runner_up": 0.03950435583740188
+},
+{
+"text": "WITHDRAWAL FROM SPIRIT AIRLINES",
+"cleaned": "WITHDRAWAL FROM SPIRIT AIRLINES",
+"category": "Travel",
+"confidence": 0.846386784524708,
+"runner_up": 0.11788205850662059
+},
+{
+"text": "Religious Organization Branch - Evening",
+"cleaned": "Religious Organization Branch - Evening",
+"category": "Charity",
+"confidence": 0.9366117084326154,
+"runner_up": 0.01091837807561231
+},
+{
+"text": "Hertz Store Residential",
+"cleaned": "Hertz Store Residential",
+"category": "Transportation",
+"confidence": 0.7255763766303144,
+"runner_up": 0.04320738791383029
+},
+{
+"text": "BATA BAHAWALPUR",
+"cleaned": "BATA",
+"category": "Clothing & Shopping",
+"confidence": 0.35797457999816606,
+"runner_up": 0.1522301469267871
+},
+{
+"text": "Express Checkout Payment: Mcdonald's",
+"cleaned": "Express Checkout Payment: Mcdonald's",
+"category": "Food & Beverage",
+"confidence": 0.6948959040111857,
+"runner_up": 0.06894420766838175
+},
+{
+"text": "LUCKYONE MALL KARACHI",
+"cleaned": "LUCKYONE MALL",
+"category": "Clothing & Shopping",
+"confidence": 0.7361931384904642,
+"runner_up": 0.051404453882328054
+},
+{
+"text": "Hulu Center - Dinner Time",
+"cleaned": "Hulu Center - Dinner Time",
+"category": "Entertainment",
+"confidence": 0.7270946653029347,
+"runner_up": 0.05374324757497907
+},
+{
+"text": "Veterans Organization Center (Bank Transfer)",
+"cleaned": "Veterans Organization Center (Bank Transfer)",
+"category": "Charity",
+"confidence": 0.9134528909637967,
+"runner_up": 0.01783386359147587
+},
+{
+"text": "Atlantic Broadband Branch - Evening",
+"cleaned": "Atlantic Broadband Branch - Evening",
+"category": "Utilities",
+"confidence": 0.8881405747049322,
+"runner_up": 0.01753155040060527
+},
+{
+"text": "PP*TRIPADVISOR",
+"cleaned": "PP TRIPADVISOR",
+"category": "Travel",
+"confidence": 0.8516879973798586,
+"runner_up": 0.021101313892052904
+},
+{
+"text": "Alamo Store Business District",
+"cleaned": "Alamo Store Business District",
+"category": "Transportation",
+"confidence": 0.7499533613001678,
+"runner_up": 0.05430100485665009
+},
+{
+"text": "Psychiatrist Station",
+"cleaned": "Psychiatrist Station",
+"category": "Health",
+"confidence": 0.8875598450384548,
+"runner_up": 0.016533189103623606
+},
+{
+"text": "Travel Line Travel & Tours",
+"cleaned": "Travel Line Travel & Tours",
+"category": "Travel",
+"confidence": 0.9951488018452657,
+"runner_up": 0.001201643602328054
+},
+{
+"text": "Leopards COD",
+"cleaned": "Leopards COD",
+"category": "Transportation",
+"confidence": 0.2857124001029264,
+"runner_up": 0.07967878813964444
+},
+{
+"text": "CENTURION LOUNGE SACRAMENTO",
+"cleaned": "CENTURION LOUNGE SACRAMENTO",
+"category": "Travel",
+"confidence": 0.7460894127079581,
+"runner_up": 0.04468824637862843
+},
+{
+"text": "Uber *trip San Diego Y1cgy9",
+"cleaned": "Uber trip San Diego Y1cgy9",
+"category": "Transportation",
+"confidence": 0.7074730458395404,
+"runner_up": 0.11607317346687286
+},
+{
+"text": "SINDH BANK HOME FINANCE",
+"cleaned": "SINDH BANK HOME FINANCE",
+"category": "Loans/EMI",
+"confidence": 0.9813712119376323,
+"runner_up": 0.0057146705984660534
+},
+{
+"text": "Gift Online Downtown",
+"cleaned": "Gift Online Downtown",
+"category": "Charity",
+"confidence": 0.6946476429749945,
+"runner_up": 0.0730591272038322
+},
+{
+"text": "Disney+ Airport",
+"cleaned": "Disney+ Airport",
+"category": "Entertainment",
+"confidence": 0.7509448269992942,
+"runner_up": 0.06487726931467039
+},
+{
+"text": "Subway Downtown",
+"cleaned": "Subway Downtown",
+"category": "Food & Beverage",
+"confidence": 0.8554820532991508,
+"runner_up": 0.02209564070445326
+},
+{
+"text": "Equinox Airport",
+"cleaned": "Equinox Airport",
+"category": "Entertainment",
+"confidence": 0.7243911926542381,
+"runner_up": 0.08987601422284282
+},
+{
+"text": "SHAWS POR",
+"cleaned": "SHAWS POR",
+"category": "Groceries",
+"confidence": 0.40096693874427175,
+"runner_up": 0.109801331632135
+},
+{
+"text": "HughesNet Store Mall",
+"cleaned": "HughesNet Store Mall",
+"category": "Utilities",
+"confidence": 0.8278607399727795,
+"runner_up": 0.03319346209188337
+},
+{
+"text": "Electric Company Airport",
+"cleaned": "Electric Company Airport",
+"category": "Utilities",
+"confidence": 0.9766228428027941,
+"runner_up": 0.005177907348840066
+},
+{
+"text": "priceline houston",
+"cleaned": "priceline houston",
+"category": "Travel",
+"confidence": 0.7581485110828597,
+"runner_up": 0.04020331826461063
+},
+{
+"text": "LINKEDIN RWP",
+"cleaned": "LINKEDIN RWP",
+"category": "Subscriptions",
+"confidence": 0.8447243946163362,
+"runner_up": 0.03223085006398468
+},
+{
+"text": "FLORIDA POWER CABLE SVC",
+"cleaned": "FLORIDA POWER CABLE SVC",
+"category": "Utilities",
+"confidence": 0.8225492245950086,
+"runner_up": 0.021933983657235367
+},
+{
+"text": "CenturyLink Online Strip Mall",
+"cleaned": "CenturyLink Online Strip Mall",
+"category": "Utilities",
+"confidence": 0.8331352861639048,
+"runner_up": 0.037504315489362734
+},
+{
+"text": "PMA METROBUS MULTAN",
+"cleaned": "PMA METROBUS",
+"category": "Transportation",
+"confidence": 0.8129230145596529,
+"runner_up": 0.04476907843119483
+},
+{
+"text": "Cox Store (Bank Transfer)",
+"cleaned": "Cox Store (Bank Transfer)",
+"category": "Utilities",
+"confidence": 0.5939794030736958,
+"runner_up": 0.08029625017251615
+},
+{
+"text": "Trader Joe's Online - Evening",
+"cleaned": "Trader Joe's Online - Evening",
+"category": "Food & Beverage",
+"confidence": 0.7557536606393226,
+"runner_up": 0.06364510463476374
+},
+{
+"text": "EVERSOURCE EBILL",
+"cleaned": "EVERSOURCE EBILL",
+"category": "Utilities",
+"confidence": 0.5691791804051791,
+"runner_up": 0.057441228506175876
+},
+{
+"text": "Shake Shack",
+"cleaned": "Shake Shack",
+"category": "Food & Beverage",
+"confidence": 0.9035666477616308,
+"runner_up": 0.018347844393644192
+},
+{
+"text": "PAYMENT TO: CRUNCH FITNESS",
+"cleaned": "CRUNCH FITNESS",
+"category": "Entertainment",
+"confidence": 0.7509745938500391,
+"runner_up": 0.1116824088247206
+},
+{
+"text": "NATIONAL SAVINGS ACCOUNT",
+"cleaned": "NATIONAL SAVINGS ACCOUNT",
+"category": "Investments",
+"confidence": 0.8323959681348919,
+"runner_up": 0.03243423252018545
+},
+{
+"text": "Panda Express Online Airport",
+"cleaned": "Panda Express Online Airport",
+"category": "Food & Beverage",
+"confidence": 0.5651588255447564,
+"runner_up": 0.1766047254227192
+},
+{
+"text": "Suddenlink Strip Mall",
+"cleaned": "Suddenlink Strip Mall",
+"category": "Utilities",
+"confidence": 0.8635962376238795,
+"runner_up": 0.023873314876954953
+},
+{
+"text": "Withdrawal From Wells Fargo Mortgage Mtg Pymt",
+"cleaned": "Withdrawal From Wells Fargo Mortgage Mtg Pymt",
+"category": "Housing",
+"confidence": 0.8800872250307518,
+"runner_up": 0.02289994294010031
+},
+{
+"text": "99 Ranch 1227 Minneapolis",
+"cleaned": "Ranch Minneapolis",
+"category": "Groceries",
+"confidence": 0.6019559994602618,
+"runner_up": 0.05732411659074392
+},
+{
+"text": "ALLIED AUTO SIALKOT",
+"cleaned": "ALLIED AUTO",
+"category": "Loans/EMI",
+"confidence": 0.34934347670231186,
+"runner_up": 0.20361794527288554
+},
+{
+"text": "CANTT MARKET PARKING",
+"cleaned": "CANTT MARKET PARKING",
+"category": "Transportation",
+"confidence": 0.42368261469899143,
+"runner_up": 0.2025453640530959
+},
+{
+"text": "CARNIVAL CRUISE BOOKING",
+"cleaned": "CARNIVAL CRUISE BOOKING",
+"category": "Travel",
+"confidence": 0.8865096082842089,
+"runner_up": 0.06405961425936835
+},
+{
+"text": "Marshalls Mall",
+"cleaned": "Marshalls Mall",
+"category": "Clothing & Shopping",
+"confidence": 0.8848090417574033,
+"runner_up": 0.016092809551687192
+},
+{
+"text": "KAYAK INC.",
+"cleaned": "KAYAK INC",
+"category": "Travel",
+"confidence": 0.8579044996713586,
+"runner_up": 0.020324552275699445
+},
+{
+"text": "GIANTEA",
+"cleaned": "GIANTEA",
+"category": "Groceries",
+"confidence": 0.5518486633708748,
+"runner_up": 0.07440045110614488
+},
+{
+"text": "VRBO*WQKRKNWB",
+"cleaned": "VRBO WQKRKNWB",
+"category": "Travel",
+"confidence": 0.8068390550026918,
+"runner_up": 0.022574528039426892
+},
+{
+"text": "SAEED GHANI LUCKYONE",
+"cleaned": "SAEED GHANI LUCKYONE",
+"category": "Clothing & Shopping",
+"confidence": 0.5340957833033882,
+"runner_up": 0.1257576734570476
+},
+{
+"text": "CHUGHTAI LAB MARDAN",
+"cleaned": "CHUGHTAI LAB MARDAN",
+"category": "Health",
+"confidence": 0.887776680312766,
+"runner_up": 0.016839938994569315
+},
+{
+"text": "CHEWY - COLUMBUS",
+"cleaned": "CHEWY - COLUMBUS",
+"category": "Clothing & Shopping",
+"confidence": 0.23832047600660317,
+"runner_up": 0.14047751904837139
+},
+{
+"text": "FITNESS TIMEMEMBERSHIP",
+"cleaned": "FITNESS TIMEMEMBERSHIP",
+"category": "Subscriptions",
+"confidence": 0.36219602970863046,
+"runner_up": 0.21651074868649345
+},
+{
+"text": "Disney+ Downtown",
+"cleaned": "Disney+ Downtown",
+"category": "Entertainment",
+"confidence": 0.7463069706381801,
+"runner_up": 0.05449906419403096
+},
+{
+"text": "HELP.MONDAY.COM.COM",
+"cleaned": "HELP.MONDAY.COM.COM",
+"category": "Subscriptions",
+"confidence": 0.8919835551817035,
+"runner_up": 0.015814078606703055
+},
+{
+"text": "Total PARCO Hi-Perf",
+"cleaned": "Total PARCO Hi-Perf",
+"category": "Fuel",
+"confidence": 0.44124112491416784,
+"runner_up": 0.07413763689190252
+},
+{
+"text": "PAYPAL *Hyatt",
+"cleaned": "PAYPAL Hyatt",
+"category": "Travel",
+"confidence": 0.6626467878224841,
+"runner_up": 0.06392464230782591
+},
+{
+"text": "GOLD CITY MALL QUETTA",
+"cleaned": "GOLD CITY MALL",
+"category": "Entertainment",
+"confidence": 0.2197693111418159,
+"runner_up": 0.17521879117651648
+},
+{
+"text": "Lord & Taylor Online Strip Mall",
+"cleaned": "Lord & Taylor Online Strip Mall",
+"category": "Clothing & Shopping",
+"confidence": 0.8564650698592032,
+"runner_up": 0.027918538236770114
+},
+{
+"text": "Mobile Hotspot Store - Dinner Time",
+"cleaned": "Mobile Hotspot Store - Dinner Time",
+"category": "Utilities",
+"confidence": 0.8881151613180898,
+"runner_up": 0.04089461416315046
+},
+{
+"text": "Chiropractor Store Downtown",
+"cleaned": "Chiropractor Store Downtown",
+"category": "Health",
+"confidence": 0.8456320658085457,
+"runner_up": 0.02721529664531921
+},
+{
+"text": "PMEX Currency Futures",
+"cleaned": "PMEX Currency Futures",
+"category": "Travel",
+"confidence": 0.12404729191648757,
+"runner_up": 0.11457291163708222
+},
+{
+"text": "Gift - Evening",
+"cleaned": "Gift - Evening",
+"category": "Charity",
+"confidence": 0.7949041292540509,
+"runner_up": 0.03800652755959798
+},
+{
+"text": "KHAADI UNIVERSITY RD PEW",
+"cleaned": "KHAADI UNIVERSITY RD PEW",
+"category": "Education",
+"confidence": 0.6078480174733101,
+"runner_up": 0.22477476081566947
+},
+{
+"text": "F1 TRAXX LAKE VIEW",
+"cleaned": "F1 TRAXX LAKE VIEW",
+"category": "Housing",
+"confidence": 0.15178698892764514,
+"runner_up": 0.11634559324157177
+},
+{
+"text": "PAYPAL *UNITED AIRLINES 42D3A5P2BZ",
+"cleaned": "PAYPAL UNITED AIRLINES 42D3A5P2BZ",
+"category": "Travel",
+"confidence": 0.9055527887142812,
+"runner_up": 0.0669028319621208
+},
+{
+"text": "Avis Airport",
+"cleaned": "Avis Airport",
+"category": "Transportation",
+"confidence": 0.4741316394112052,
+"runner_up": 0.3634351838735701
+},
+{
+"text": "GIANTEAGLE",
+"cleaned": "GIANTEAGLE",
+"category": "Groceries",
+"confidence": 0.7670974137643416,
+"runner_up": 0.03717321076754116
+},
+{
+"text": "Saks Off 5th Store Online Station",
+"cleaned": "Saks Off 5th Store Online Station",
+"category": "Clothing & Shopping",
+"confidence": 0.8935782431456525,
+"runner_up": 0.02411604637570374
+},
+{
+"text": "Amnesty International Store Center (Bank Transfer)",
+"cleaned": "Amnesty International Store Center (Bank Transfer)",
+"category": "Charity",
+"confidence": 0.8153926622015465,
+"runner_up": 0.06207078977278358
+},
+{
+"text": "VARSITY TUTORS*SDK5YY000T5",
+"cleaned": "VARSITY TUTORS SDK5YY000T5",
+"category": "Education",
+"confidence": 0.8403647105402257,
+"runner_up": 0.01776464428799708
+},
+{
+"text": "Belk Store Strip Mall",
+"cleaned": "Belk Store Strip Mall",
+"category": "Clothing & Shopping",
+"confidence": 0.8021158525196482,
+"runner_up": 0.04427524263991467
+},
+{
+"text": "H&M - Dinner Time",
+"cleaned": "H&M - Dinner Time",
+"category": "Clothing & Shopping",
+"confidence": 0.7554999051316493,
+"runner_up": 0.04940905355931639
+},
+{
+"text": "Mobile Center Residential",
+"cleaned": "Mobile Center Residential",
+"category": "Utilities",
+"confidence": 0.720216081340655,
+"runner_up": 0.08075462762242692
+},
+{
+"text": "Target Campus",
+"cleaned": "Target Campus",
+"category": "Clothing & Shopping",
+"confidence": 0.7994410501151473,
+"runner_up": 0.11310287325059515
+},
+{
+"text": "Cinema Center Mall",
+"cleaned": "Cinema Center Mall",
+"category": "Entertainment",
+"confidence": 0.9519049618360785,
+"runner_up": 0.010233459836435197
+},
+{
+"text": "MASTERCLASS*MEF775QQH9G",
+"cleaned": "MASTERCLASS MEF775QQH9G",
+"category": "Education",
+"confidence": 0.8787209294368927,
+"runner_up": 0.02769769935418877
+},
+{
+"text": "Bloomingdale's Store Campus",
+"cleaned": "Bloomingdale's Store Campus",
+"category": "Clothing & Shopping",
+"confidence": 0.8586576000194932,
+"runner_up": 0.038412201122373445
+},
+{
+"text": "Amazon Mall",
+"cleaned": "Amazon Mall",
+"category": "Clothing & Shopping",
+"confidence": 0.7526071052412013,
+"runner_up": 0.09210997901833648
+},
+{
+"text": "FAYSAL EDUCATION FINANCE",
+"cleaned": "FAYSAL EDUCATION FINANCE",
+"category": "Loans/EMI",
+"confidence": 0.8676728596676253,
+"runner_up": 0.029780965987382627
+},
+{
+"text": "HAZECO Abbottabad",
+"cleaned": "HAZECO Abbottabad",
+"category": "Utilities",
+"confidence": 0.15857341327289246,
+"runner_up": 0.15589385568686623
+},
+{
+"text": "Crimson Online",
+"cleaned": "Crimson Online",
+"category": "Clothing & Shopping",
+"confidence": 0.3797968425430545,
+"runner_up": 0.08170920396714905
+},
+{
+"text": "Temple Mall",
+"cleaned": "Temple Mall",
+"category": "Charity",
+"confidence": 0.8890824784933034,
+"runner_up": 0.028487539028613125
+},
+{
+"text": "Fly Jinnah Online",
+"cleaned": "Fly Jinnah Online",
+"category": "Transportation",
+"confidence": 0.2364300517941219,
+"runner_up": 0.2304679217192411
+},
+{
+"text": "CHICK-FIL-A SAN FRANCISCO",
+"cleaned": "CHICK-FIL-A SAN FRANCISCO",
+"category": "Food & Beverage",
+"confidence": 0.7186524589916591,
+"runner_up": 0.07089473198393358
+},
+{
+"text": "GoFundMe Branch Downtown",
+"cleaned": "GoFundMe Branch Downtown",
+"category": "Charity",
+"confidence": 0.8121599671874622,
+"runner_up": 0.031391624175154335
+},
+{
+"text": "Zipcar Online (Bank Transfer)",
+"cleaned": "Zipcar Online (Bank Transfer)",
+"category": "Transportation",
+"confidence": 0.8009245509697484,
+"runner_up": 0.043693029935879014
+},
+{
+"text": "Kickstarter Online Downtown",
+"cleaned": "Kickstarter Online Downtown",
+"category": "Charity",
+"confidence": 0.7923781610474298,
+"runner_up": 0.05030566565424594
+},
+{
+"text": "Chevron (Bank Transfer)",
+"cleaned": "Chevron (Bank Transfer)",
+"category": "Transportation",
+"confidence": 0.7834674470970773,
+"runner_up": 0.0387799194493946
+},
+{
+"text": "NETFLIX.COM LHR DHA",
+"cleaned": "NETFLIX.COM LHR DHA",
+"category": "Subscriptions",
+"confidence": 0.923656675441185,
+"runner_up": 0.02359448378412928
+},
+{
+"text": "CenturyLink Station",
+"cleaned": "CenturyLink Station",
+"category": "Utilities",
+"confidence": 0.8179183856936149,
+"runner_up": 0.02815370521750961
+},
+{
+"text": "RADISSON PHILADELPHIA",
+"cleaned": "RADISSON PHILADELPHIA",
+"category": "Travel",
+"confidence": 0.6651667967118217,
+"runner_up": 0.11196468483301057
+},
+{
+"text": "Noodles & Company Residential",
+"cleaned": "Noodles & Company Residential",
+"category": "Food & Beverage",
+"confidence": 0.7358170970523162,
+"runner_up": 0.0832668753612269
+},
+{
+"text": "GITHUB* Subscription",
+"cleaned": "GITHUB Subscription",
+"category": "Subscriptions",
+"confidence": 0.8718878368565054,
+"runner_up": 0.02162387902452312
+},
+{
+"text": "Chegg*l1gnxzbckx",
+"cleaned": "Chegg l1gnxzbckx",
+"category": "Education",
+"confidence": 0.8218236902822383,
+"runner_up": 0.030249761828254177
+},
+{
+"text": "Museum - Dinner Time",
+"cleaned": "Museum - Dinner Time",
+"category": "Entertainment",
+"confidence": 0.8126783248341272,
+"runner_up": 0.03388614877239537
+},
+{
+"text": "Wendy's Campus",
+"cleaned": "Wendy's Campus",
+"category": "Food & Beverage",
+"confidence": 0.8769451770471519,
+"runner_up": 0.020420309966967466
+},
+{
+"text": "Nike Shopping",
+"cleaned": "Nike Shopping",
+"category": "Clothing & Shopping",
+"confidence": 0.8670523585725347,
+"runner_up": 0.028724416816389195
+},
+{
+"text": "Primary Care Store Branch Mall",
+"cleaned": "Primary Care Store Branch Mall",
+"category": "Health",
+"confidence": 0.8612235661790291,
+"runner_up": 0.03251031039141361
+},
+{
+"text": "SEPCO Sukkur",
+"cleaned": "SEPCO Sukkur",
+"category": "Utilities",
+"confidence": 0.4891952599848095,
+"runner_up": 0.059084360093447995
+},
+{
+"text": "DUOLINGO HAF",
+"cleaned": "DUOLINGO HAF",
+"category": "Subscriptions",
+"confidence": 0.7806963001336452,
+"runner_up": 0.026316361051612915
+},
+{
+"text": "ARAIN CLOTH MARKET KHI",
+"cleaned": "ARAIN CLOTH MARKET",
+"category": "Clothing & Shopping",
+"confidence": 0.6302543691315418,
+"runner_up": 0.21290853078686972
+},
+{
+"text": "Water Company Center Campus",
+"cleaned": "Water Company Center Campus",
+"category": "Utilities",
+"confidence": 0.9207991681362051,
+"runner_up": 0.026745927979087335
+},
+{
+"text": "GOLDEN CRUST BAKERY F8 ISB",
+"cleaned": "GOLDEN CRUST BAKERY F8",
+"category": "Food & Beverage",
+"confidence": 0.6103306383247384,
+"runner_up": 0.046089858817458335
+},
+{
+"text": "PAYPAL INST XFER PROTONVPN",
+"cleaned": "PAYPAL INST XFER PROTONVPN",
+"category": "Subscriptions",
+"confidence": 0.7092115469205776,
+"runner_up": 0.050953360117570914
+},
+{
+"text": "Cinemark Store Business District",
+"cleaned": "Cinemark Store Business District",
+"category": "Entertainment",
+"confidence": 0.9055293111881803,
+"runner_up": 0.02308309165442687
+},
+{
+"text": "MRI Store Strip Mall",
+"cleaned": "MRI Store Strip Mall",
+"category": "Health",
+"confidence": 0.718039275205365,
+"runner_up": 0.06256747755416726
+},
+{
+"text": "Sparklight Airport",
+"cleaned": "Sparklight Airport",
+"category": "Utilities",
+"confidence": 0.7911612197749148,
+"runner_up": 0.0303210486806062
+},
+{
+"text": "JS INVESTMENTS FSD",
+"cleaned": "JS INVESTMENTS FSD",
+"category": "Investments",
+"confidence": 0.8592367508928456,
+"runner_up": 0.02529732807234688
+},
+{
+"text": "WOW Online Branch Strip Mall",
+"cleaned": "WOW Online Branch Strip Mall",
+"category": "Utilities",
+"confidence": 0.7052165000501428,
+"runner_up": 0.08239772684322892
+},
+{
+"text": "Cinemark Atlanta",
+"cleaned": "Cinemark Atlanta",
+"category": "Entertainment",
+"confidence": 0.6953887925426296,
+"runner_up": 0.10503405893297403
+},
+{
+"text": "Ross Store Residential",
+"cleaned": "Ross Store Residential",
+"category": "Clothing & Shopping",
+"confidence": 0.6940281329831971,
+"runner_up": 0.07210006278476036
+},
+{
+"text": "CVS Center Mall",
+"cleaned": "CVS Center Mall",
+"category": "Clothing & Shopping",
+"confidence": 0.5844684197152967,
+"runner_up": 0.2660038739080892
+},
+{
+"text": "GIANT EAGLE 7186 SACRAMENTO",
+"cleaned": "GIANT EAGLE SACRAMENTO",
+"category": "Groceries",
+"confidence": 0.7661610191148431,
+"runner_up": 0.034375957394836
+},
+{
+"text": "MOBILINK MICROLOAN RAWALPINDI",
+"cleaned": "MOBILINK MICROLOAN",
+"category": "Loans/EMI",
+"confidence": 0.7240607226299531,
+"runner_up": 0.09088825697659991
+},
+{
+"text": "NEW LITTLE CHINA KHI",
+"cleaned": "NEW LITTLE CHINA",
+"category": "Food & Beverage",
+"confidence": 0.3777071885851279,
+"runner_up": 0.13324946271066374
+},
+{
+"text": "Walmart Pharmacy Store - Evening",
+"cleaned": "Walmart Pharmacy Store - Evening",
+"category": "Health",
+"confidence": 0.8618534949275833,
+"runner_up": 0.08353719647623847
+},
+{
+"text": "Nordstrom Rack - Dinner Time",
+"cleaned": "Nordstrom Rack - Dinner Time",
+"category": "Clothing & Shopping",
+"confidence": 0.8832868708372368,
+"runner_up": 0.022477157104691513
+},
+{
+"text": "Alaska Airlines Strip Mall",
+"cleaned": "Alaska Airlines Strip Mall",
+"category": "Transportation",
+"confidence": 0.7383725713092144,
+"runner_up": 0.17353835527500025
+},
+{
+"text": "SANGTANI WOMEN RURAL DEV",
+"cleaned": "SANGTANI WOMEN RURAL DEV",
+"category": "Charity",
+"confidence": 0.2341479581079525,
+"runner_up": 0.152000652760404
+},
+{
+"text": "Zara Center Business District",
+"cleaned": "Zara Center Business District",
+"category": "Clothing & Shopping",
+"confidence": 0.6054377184874241,
+"runner_up": 0.07992983543923513
+},
+{
+"text": "northgate bos",
+"cleaned": "northgate bos",
+"category": "Groceries",
+"confidence": 0.6697183045987386,
+"runner_up": 0.045660893856944315
+},
+{
+"text": "Express Checkout Payment: AIRBNB",
+"cleaned": "Express Checkout Payment: AIRBNB",
+"category": "Travel",
+"confidence": 0.7698094005457117,
+"runner_up": 0.04567280340480221
+},
+{
+"text": "HBL ISLAMIC AUTO LHR",
+"cleaned": "HBL ISLAMIC AUTO",
+"category": "Loans/EMI",
+"confidence": 0.6694459235072766,
+"runner_up": 0.08320906789409929
+},
+{
+"text": "WINN-DIXIE",
+"cleaned": "WINN-DIXIE",
+"category": "Groceries",
+"confidence": 0.8447978791864311,
+"runner_up": 0.02028241211331503
+},
+{
+"text": "POLYGON.IO* Monthly",
+"cleaned": "POLYGON.IO Monthly",
+"category": "Subscriptions",
+"confidence": 0.8313045134679535,
+"runner_up": 0.022884099837580007
+},
+{
+"text": "Laser Tag Store Campus",
+"cleaned": "Laser Tag Store Campus",
+"category": "Entertainment",
+"confidence": 0.8259491320539866,
+"runner_up": 0.042410635020454626
+},
+{
+"text": "Thrifty Hospital",
+"cleaned": "Thrifty Hospital",
+"category": "Transportation",
+"confidence": 0.7338850895486416,
+"runner_up": 0.08192554024035537
+},
+{
+"text": "Go-Kart - Dinner Time",
+"cleaned": "Go-Kart - Dinner Time",
+"category": "Entertainment",
+"confidence": 0.7459883730928127,
+"runner_up": 0.05722564919092952
+},
+{
+"text": "Big Lots Online - Evening",
+"cleaned": "Big Lots Online - Evening",
+"category": "Clothing & Shopping",
+"confidence": 0.8281942582040883,
+"runner_up": 0.03407508453128603
+},
+{
+"text": "KALPAY TALEEM",
+"cleaned": "KALPAY TALEEM",
+"category": "Loans/EMI",
+"confidence": 0.2006217246403806,
+"runner_up": 0.11486287876801542
+},
+{
+"text": "Hospital Store Center Shopping",
+"cleaned": "Hospital Store Center Shopping",
+"category": "Health",
+"confidence": 0.2672633653832949,
+"runner_up": 0.19800521203277527
+},
+{
+"text": "WINN-DIXIE 4458 QUEENS",
+"cleaned": "WINN-DIXIE QUEENS",
+"category": "Groceries",
+"confidence": 0.8405900372909442,
+"runner_up": 0.027782454670738164
+},
+{
+"text": "NANDO'S - SAN DIEGO",
+"cleaned": "NANDO'S - SAN DIEGO",
+"category": "Food & Beverage",
+"confidence": 0.41291342138999476,
+"runner_up": 0.16055860894141752
+},
+{
+"text": "SINDH FLOOD RELIEF FUND",
+"cleaned": "SINDH FLOOD RELIEF FUND",
+"category": "Charity",
+"confidence": 0.862621878742991,
+"runner_up": 0.0381370659126626
+},
+{
+"text": "Johnny & Jugnu",
+"cleaned": "Johnny & Jugnu",
+"category": "Food & Beverage",
+"confidence": 0.6000312677601105,
+"runner_up": 0.047555736777491565
+},
+{
+"text": "UNITED KING SHARFABAD KHI",
+"cleaned": "UNITED KING SHARFABAD",
+"category": "Transportation",
+"confidence": 0.20881730820062316,
+"runner_up": 0.18505014985003979
+},
+{
+"text": "Lyft Store Campus",
+"cleaned": "Lyft Store Campus",
+"category": "Transportation",
+"confidence": 0.8850795592641288,
+"runner_up": 0.02223444735318626
+},
+{
+"text": "Walk-in Clinic Store Center Campus",
+"cleaned": "Walk-in Clinic Store Center Campus",
+"category": "Health",
+"confidence": 0.9087971699823136,
+"runner_up": 0.016751072518671604
+},
+{
+"text": "sylvan learning*49hy3r3w",
+"cleaned": "sylvan learning 49hy3r3w",
+"category": "Education",
+"confidence": 0.7826086449753784,
+"runner_up": 0.02598862834245254
+},
+{
+"text": "FLORIDA POWER INTERNET",
+"cleaned": "FLORIDA POWER INTERNET",
+"category": "Utilities",
+"confidence": 0.8232441818495257,
+"runner_up": 0.023545303326835156
+},
+{
+"text": "Best Buy - Evening",
+"cleaned": "Best Buy - Evening",
+"category": "Clothing & Shopping",
+"confidence": 0.8199663869957041,
+"runner_up": 0.027771315675645676
+},
+{
+"text": "gotta pay cash for that bookshelf two hundred dollars",
+"cleaned": "gotta pay cash for that bookshelf two hundred dollars",
+"category": "Housing",
+"confidence": 0.2970035575447925,
+"runner_up": 0.1584150756402242
+},
+{
+"text": "PAYPAL *99 RANCH EGFNX41WLI",
+"cleaned": "PAYPAL 99 RANCH EGFNX41WLI",
+"category": "Groceries",
+"confidence": 0.6959589462000751,
+"runner_up": 0.04907358195465806
+},
+{
+"text": "PENNYMAC ESCROW",
+"cleaned": "PENNYMAC ESCROW",
+"category": "Housing",
+"confidence": 0.7171918846547657,
+"runner_up": 0.03064184748485212
+},
+{
+"text": "LION SUPERMARKET 0274",
+"cleaned": "LION SUPERMARKET",
+"category": "Groceries",
+"confidence": 0.9680234104194672,
+"runner_up": 0.00915784663215335
+},
+{
+"text": "MEIJER SAN",
+"cleaned": "MEIJER SAN",
+"category": "Groceries",
+"confidence": 0.9015926213143437,
+"runner_up": 0.013304615812211278
+},
+{
+"text": "Walk-in Clinic Store Branch - Evening",
+"cleaned": "Walk-in Clinic Store Branch - Evening",
+"category": "Health",
+"confidence": 0.8946506391855689,
+"runner_up": 0.020657558973408447
+},
+{
+"text": "ATTIREROBE GULBERG LHR",
+"cleaned": "ATTIREROBE GULBERG",
+"category": "Food & Beverage",
+"confidence": 0.1467611673474305,
+"runner_up": 0.1273573503556924
+},
+{
+"text": "Donation Residential",
+"cleaned": "Donation Residential",
+"category": "Charity",
+"confidence": 0.8961517634285292,
+"runner_up": 0.029843449078964635
+},
+{
+"text": "Sephora Downtown",
+"cleaned": "Sephora Downtown",
+"category": "Clothing & Shopping",
+"confidence": 0.8014104200130674,
+"runner_up": 0.03457713834962024
+},
+{
+"text": "Domino's Branch Residential",
+"cleaned": "Domino's Branch Residential",
+"category": "Food & Beverage",
+"confidence": 0.817796622674221,
+"runner_up": 0.035390271440838596
+},
+{
+"text": "brilliant.org*h3vct2adz",
+"cleaned": "brilliant.org h3vct2adz",
+"category": "Education",
+"confidence": 0.9356696760011707,
+"runner_up": 0.009104751501349158
+},
+{
+"text": "D.WATSON F7 ISLAMABAD",
+"cleaned": "D.WATSON F7",
+"category": "Health",
+"confidence": 0.28012008679105194,
+"runner_up": 0.13711648763131953
+},
+{
+"text": "Spirit Store - Evening",
+"cleaned": "Spirit Store - Evening",
+"category": "Transportation",
+"confidence": 0.7773582430171486,
+"runner_up": 0.03819352739953032
+},
+{
+"text": "PAYPAL *BONCHON 1ECBQR9FSE",
+"cleaned": "PAYPAL BONCHON 1ECBQR9FSE",
+"category": "Groceries",
+"confidence": 0.16808528862830413,
+"runner_up": 0.15223089177201257
+},
+{
+"text": "GLOBAL ENTRY DALLAS",
+"cleaned": "GLOBAL ENTRY DALLAS",
+"category": "Travel",
+"confidence": 0.7538031189449428,
+"runner_up": 0.038933009536609074
+},
+{
+"text": "pay twelve fifty for movie tickets at the cineplex",
+"cleaned": "pay twelve fifty for movie tickets at the cineplex",
+"category": "Entertainment",
+"confidence": 0.7038560651625668,
+"runner_up": 0.05216950986020749
+},
+{
+"text": "PP*TRAVELOCITY",
+"cleaned": "PP TRAVELOCITY",
+"category": "Travel",
+"confidence": 0.887388669246436,
+"runner_up": 0.017047478924931532
+},
+{
+"text": "Pilates Store Shopping",
+"cleaned": "Pilates Store Shopping",
+"category": "Entertainment",
+"confidence": 0.842792862271539,
+"runner_up": 0.029452654219924993
+},
+{
+"text": "OSN+",
+"cleaned": "OSN+",
+"category": "Food & Beverage",
+"confidence": 0.11143237968097792,
+"runner_up": 0.10926168749868072
+},
+{
+"text": "1-800-CONTACTS; SERVICE",
+"cleaned": "1-800-CONTACTS; SERVICE",
+"category": "Health",
+"confidence": 0.27476350338787975,
+"runner_up": 0.11024314645560176
+},
+{
+"text": "ReachNow Store - Dinner Time",
+"cleaned": "ReachNow Store - Dinner Time",
+"category": "Transportation",
+"confidence": 0.7786545272465322,
+"runner_up": 0.0371641964795833
+},
+{
+"text": "PAK PWD HOUSING ISLAMABAD",
+"cleaned": "PAK PWD HOUSING",
+"category": "Housing",
+"confidence": 0.657142833385565,
+"runner_up": 0.051939705920543866
+},
+{
+"text": "Deepak Perwani",
+"cleaned": "Deepak Perwani",
+"category": "Clothing & Shopping",
+"confidence": 0.2854912986155039,
+"runner_up": 0.09085880579106466
+},
+{
+"text": "PIGGLYWI BRO",
+"cleaned": "PIGGLYWI BRO",
+"category": "Groceries",
+"confidence": 0.7884763857826187,
+"runner_up": 0.026545088940094896
+},
+{
+"text": "Peter Pan Online Shopping",
+"cleaned": "Peter Pan Online Shopping",
+"category": "Transportation",
+"confidence": 0.7247275295722527,
+"runner_up": 0.06380538800167973
+},
+{
+"text": "EL POLLO LOCO AUSTIN 4406",
+"cleaned": "EL POLLO LOCO AUSTIN",
+"category": "Food & Beverage",
+"confidence": 0.47587321197376353,
+"runner_up": 0.08739203302737221
+},
+{
+"text": "RAISINGCANES SALT LAKE CITY",
+"cleaned": "RAISINGCANES SALT LAKE CITY",
+"category": "Food & Beverage",
+"confidence": 0.4825094681737117,
+"runner_up": 0.09110143417005948
+},
+{
+"text": "Mini Golf Hospital",
+"cleaned": "Mini Golf Hospital",
+"category": "Entertainment",
+"confidence": 0.826674153137344,
+"runner_up": 0.06473830632615761
+},
+{
+"text": "Brilliant.org*v1fozve1ayv",
+"cleaned": "Brilliant.org v1fozve1ayv",
+"category": "Education",
+"confidence": 0.9431037346966766,
+"runner_up": 0.008162177474750136
+},
+{
+"text": "Northgate Market 8585",
+"cleaned": "Northgate Market",
+"category": "Groceries",
+"confidence": 0.9219911315649211,
+"runner_up": 0.041504963129051935
+},
+{
+"text": "Car2Go Branch Residential",
+"cleaned": "Car2Go Branch Residential",
+"category": "Transportation",
+"confidence": 0.7870938594471696,
+"runner_up": 0.035714775562922414
+},
+{
+"text": "DR. LI PSYCHIATRY",
+"cleaned": "DR. LI PSYCHIATRY",
+"category": "Health",
+"confidence": 0.8540954583628889,
+"runner_up": 0.023837572016592895
+},
+{
+"text": "BRILLIANT.ORG - PHILADELPHIA",
+"cleaned": "BRILLIANT.ORG - PHILADELPHIA",
+"category": "Education",
+"confidence": 0.7968057080835249,
+"runner_up": 0.05516160080655959
+},
+{
+"text": "winn-dix",
+"cleaned": "winn-dix",
+"category": "Groceries",
+"confidence": 0.8114344402719297,
+"runner_up": 0.021531388533564694
+},
+{
+"text": "Surgery Online Mall",
+"cleaned": "Surgery Online Mall",
+"category": "Health",
+"confidence": 0.8572436243758736,
+"runner_up": 0.05711146719814834
+},
+{
+"text": "Whole Foods Store Business District",
+"cleaned": "Whole Foods Store Business District",
+"category": "Food & Beverage",
+"confidence": 0.6856874090788142,
+"runner_up": 0.12229809842338205
+},
+{
+"text": "Best Buy Online Shopping",
+"cleaned": "Best Buy Online Shopping",
+"category": "Clothing & Shopping",
+"confidence": 0.8692912351849382,
+"runner_up": 0.026855495762159332
+},
+{
+"text": "UCLA Medical Center - Dinner Time",
+"cleaned": "UCLA Medical Center - Dinner Time",
+"category": "Health",
+"confidence": 0.8779108310432104,
+"runner_up": 0.02202182807812974
+},
+{
+"text": "Concert (Bank Transfer)",
+"cleaned": "Concert (Bank Transfer)",
+"category": "Entertainment",
+"confidence": 0.7603683158320642,
+"runner_up": 0.043647914980860264
+},
+{
+"text": "KHYBER BAZAAR PESHAWAR",
+"cleaned": "KHYBER BAZAAR",
+"category": "Clothing & Shopping",
+"confidence": 0.44483262866071643,
+"runner_up": 0.14056864659658838
+},
+{
+"text": "SKYWAYS ISLAMABAD",
+"cleaned": "SKYWAYS",
+"category": "Transportation",
+"confidence": 0.4758661407183171,
+"runner_up": 0.07843339233242144
+},
+{
+"text": "ELEMENTS ISB",
+"cleaned": "ELEMENTS",
+"category": "Subscriptions",
+"confidence": 0.22871916710978218,
+"runner_up": 0.13111582266510655
+},
+{
+"text": "Withdrawal From Elements Massage",
+"cleaned": "Withdrawal From Elements Massage",
+"category": "Health",
+"confidence": 0.5422062553430106,
+"runner_up": 0.0975941902455432
+},
+{
+"text": "BANKISLAMI AUTO QUETTA",
+"cleaned": "BANKISLAMI AUTO",
+"category": "Loans/EMI",
+"confidence": 0.7365335176763892,
+"runner_up": 0.07599160876751443
+},
+{
+"text": "Gas Company Store Mall",
+"cleaned": "Gas Company Store Mall",
+"category": "Utilities",
+"confidence": 0.8966201958981075,
+"runner_up": 0.03532286669031027
+},
+{
+"text": "Firehouse Subs Branch Business District",
+"cleaned": "Firehouse Subs Branch Business District",
+"category": "Food & Beverage",
+"confidence": 0.805885461400549,
+"runner_up": 0.047218387349154546
+},
+{
+"text": "QESCO BILL SIBI",
+"cleaned": "QESCO BILL SIBI",
+"category": "Utilities",
+"confidence": 0.9502951132089048,
+"runner_up": 0.006889954431760121
+},
+{
+"text": "BOP AUTO GUJRANWALA",
+"cleaned": "BOP AUTO",
+"category": "Loans/EMI",
+"confidence": 0.422986093044801,
+"runner_up": 0.21176261391669554
+},
+{
+"text": "Chick-fil-A Hospital",
+"cleaned": "Chick-fil-A Hospital",
+"category": "Food & Beverage",
+"confidence": 0.8638088586271502,
+"runner_up": 0.04160143794262627
+},
+{
+"text": "SINDH RURAL SUPPORT ORG",
+"cleaned": "SINDH RURAL SUPPORT ORG",
+"category": "Charity",
+"confidence": 0.7322151924072584,
+"runner_up": 0.03338700864833472
+},
+{
+"text": "Subscription Payment: NETFLIX",
+"cleaned": "Subscription Payment: NETFLIX",
+"category": "Subscriptions",
+"confidence": 0.8415754896429781,
+"runner_up": 0.053674382184892795
+},
+{
+"text": "SAVEMART UNION CI",
+"cleaned": "SAVEMART UNION CI",
+"category": "Groceries",
+"confidence": 0.8652121667992585,
+"runner_up": 0.028088441026658806
+},
+{
+"text": "T-Mobile Branch Hospital",
+"cleaned": "T-Mobile Branch Hospital",
+"category": "Utilities",
+"confidence": 0.8655281352667945,
+"runner_up": 0.034328948513500906
+},
+{
+"text": "Barnes & Noble (Bank Transfer)",
+"cleaned": "Barnes & Noble (Bank Transfer)",
+"category": "Clothing & Shopping",
+"confidence": 0.5904101970415776,
+"runner_up": 0.17798666123942256
+},
+{
+"text": "Golf Course Online Strip Mall",
+"cleaned": "Golf Course Online Strip Mall",
+"category": "Entertainment",
+"confidence": 0.9114508380492065,
+"runner_up": 0.01934072995708996
+},
+{
+"text": "Gift Store Branch Airport",
+"cleaned": "Gift Store Branch Airport",
+"category": "Charity",
+"confidence": 0.7010398813916486,
+"runner_up": 0.06905154966100893
+},
+{
+"text": "BOHRA FOOD STREET KHI",
+"cleaned": "BOHRA FOOD STREET",
+"category": "Food & Beverage",
+"confidence": 0.570364833420304,
+"runner_up": 0.12623399047869016
+},
+{
+"text": "HBL ISLAMIC AUTO HYD",
+"cleaned": "HBL ISLAMIC AUTO HYD",
+"category": "Loans/EMI",
+"confidence": 0.5988552658545097,
+"runner_up": 0.08167351504428702
+},
+{
+"text": "NORTHERN PAKISTAN TREKS",
+"cleaned": "NORTHERN PAKISTAN TREKS",
+"category": "Travel",
+"confidence": 0.31609917311689034,
+"runner_up": 0.0919627896626869
+},
+{
+"text": "NORTHGATEM",
+"cleaned": "NORTHGATEM",
+"category": "Groceries",
+"confidence": 0.601735649132996,
+"runner_up": 0.04669909545869786
+},
+{
+"text": "THOKAR PARKING LHR",
+"cleaned": "THOKAR PARKING",
+"category": "Transportation",
+"confidence": 0.45802988294858465,
+"runner_up": 0.23102430706566954
+},
+{
+"text": "ASKARI 4 RAWALPINDI",
+"cleaned": "ASKARI",
+"category": "Loans/EMI",
+"confidence": 0.16157922496237295,
+"runner_up": 0.13204173530863053
+},
+{
+"text": "Broadband Residential",
+"cleaned": "Broadband Residential",
+"category": "Utilities",
+"confidence": 0.8294340942369032,
+"runner_up": 0.026465316057598515
+},
+{
+"text": "DUOLINGO* DUOLINGO Plus",
+"cleaned": "DUOLINGO DUOLINGO Plus",
+"category": "Subscriptions",
+"confidence": 0.8464758885897334,
+"runner_up": 0.021596610352606422
+},
+{
+"text": "Nordstrom Rack (Bank Transfer)",
+"cleaned": "Nordstrom Rack (Bank Transfer)",
+"category": "Clothing & Shopping",
+"confidence": 0.8647866840700005,
+"runner_up": 0.02553380615308656
+},
+{
+"text": "PreApproved Payment Bill User Payment: SAM'S CLUB",
+"cleaned": "PreApproved Payment Bill User Payment: SAM'S CLUB",
+"category": "Groceries",
+"confidence": 0.43979844479113506,
+"runner_up": 0.2674518115770052
+},
+{
+"text": "HAJI IDREES NIHARI KHI",
+"cleaned": "HAJI IDREES NIHARI",
+"category": "Food & Beverage",
+"confidence": 0.4024686667986146,
+"runner_up": 0.08507836829976768
+},
+{
+"text": "Greenpeace Store Strip Mall",
+"cleaned": "Greenpeace Store Strip Mall",
+"category": "Charity",
+"confidence": 0.7790860968882999,
+"runner_up": 0.052063576861533775
+},
+{
+"text": "Golf Course Online Station",
+"cleaned": "Golf Course Online Station",
+"category": "Entertainment",
+"confidence": 0.8842284262636291,
+"runner_up": 0.02799120210367142
+},
+{
+"text": "KROGER 8147 SEATTLE",
+"cleaned": "KROGER SEATTLE",
+"category": "Groceries",
+"confidence": 0.6945430186292669,
+"runner_up": 0.08327692910738091
+},
+{
+"text": "APPLE JHL",
+"cleaned": "APPLE JHL",
+"category": "Subscriptions",
+"confidence": 0.7612335500504637,
+"runner_up": 0.13090667931660138
+},
+{
+"text": "LUMHS JAMSHORO",
+"cleaned": "LUMHS JAMSHORO",
+"category": "Education",
+"confidence": 0.19209587151593296,
+"runner_up": 0.1410140229175485
+},
+{
+"text": "CHEGG.COM",
+"cleaned": "CHEGG.COM",
+"category": "Education",
+"confidence": 0.5561999800788202,
+"runner_up": 0.18675307495730492
+},
+{
+"text": "Ministry of Brands - DHA Karachi",
+"cleaned": "Ministry of Brands - DHA",
+"category": "Clothing & Shopping",
+"confidence": 0.16105994831762865,
+"runner_up": 0.1324846570549117
+},
+{
+"text": "Urgent Care Center Campus",
+"cleaned": "Urgent Care Center Campus",
+"category": "Health",
+"confidence": 0.869608781105673,
+"runner_up": 0.03311245840706623
+},
+{
+"text": "Ulta Center (Bank Transfer)",
+"cleaned": "Ulta Center (Bank Transfer)",
+"category": "Clothing & Shopping",
+"confidence": 0.5955539553876837,
+"runner_up": 0.12872796367847092
+},
+{
+"text": "Dollar Tree Store - Evening",
+"cleaned": "Dollar Tree Store - Evening",
+"category": "Clothing & Shopping",
+"confidence": 0.8367639352162406,
+"runner_up": 0.08889615335787729
+},
+{
+"text": "PreApproved Payment Bill User Payment: APPLE TV+",
+"cleaned": "PreApproved Payment Bill User Payment: APPLE TV+",
+"category": "Subscriptions",
+"confidence": 0.8094293341473849,
+"runner_up": 0.04290809785488508
+},
+{
+"text": "Masterclass; Service",
+"cleaned": "Masterclass; Service",
+"category": "Education",
+"confidence": 0.7005445124665365,
+"runner_up": 0.09410851396733513
+},
+{
+"text": "Global Entry Boston",
+"cleaned": "Global Entry Boston",
+"category": "Travel",
+"confidence": 0.7847042763488579,
+"runner_up": 0.02733250336830225
+},
+{
+"text": "PRIME DEPARTMENTAL STORE BAHRIA",
+"cleaned": "PRIME DEPARTMENTAL STORE BAHRIA",
+"category": "Housing",
+"confidence": 0.25191489821420715,
+"runner_up": 0.17054598613875865
+},
+{
+"text": "GOOGLE *FITBIT PREMIUM",
+"cleaned": "GOOGLE FITBIT PREMIUM",
+"category": "Subscriptions",
+"confidence": 0.9595978586740532,
+"runner_up": 0.007482487392211789
+},
+{
+"text": "NEEMPAYMENOW ADVANCE",
+"cleaned": "NEEMPAYMENOW ADVANCE",
+"category": "Loans/EMI",
+"confidence": 0.24805481354021874,
+"runner_up": 0.13076918846132582
+},
+{
+"text": "SEPTA Store Online Center (Bank Transfer)",
+"cleaned": "SEPTA Store Online Center (Bank Transfer)",
+"category": "Transportation",
+"confidence": 0.747671988333482,
+"runner_up": 0.06442890023877546
+},
+{
+"text": "Jersey Mike's Branch Downtown",
+"cleaned": "Jersey Mike's Branch Downtown",
+"category": "Food & Beverage",
+"confidence": 0.834214023944694,
+"runner_up": 0.039631143960248
+},
+{
+"text": "Google *cloudflare",
+"cleaned": "Google cloudflare",
+"category": "Subscriptions",
+"confidence": 0.8670900189188672,
+"runner_up": 0.017933814354024545
+},
+{
+"text": "Windstream Residential",
+"cleaned": "Windstream Residential",
+"category": "Utilities",
+"confidence": 0.7830527897383323,
+"runner_up": 0.039953343188698386
+},
+{
+"text": "Physical Therapy Residential",
+"cleaned": "Physical Therapy Residential",
+"category": "Health",
+"confidence": 0.9094119024122375,
+"runner_up": 0.013085498119615933
+},
+{
+"text": "Spotify Branch Residential",
+"cleaned": "Spotify Branch Residential",
+"category": "Entertainment",
+"confidence": 0.6664130249220257,
+"runner_up": 0.05863420238922796
+},
+{
+"text": "PP*365 market",
+"cleaned": "PP 365 market",
+"category": "Groceries",
+"confidence": 0.7158127508095269,
+"runner_up": 0.17726336063030873
+},
+{
+"text": "KASHF FOUNDATION BAHAWALPUR",
+"cleaned": "KASHF FOUNDATION",
+"category": "Charity",
+"confidence": 0.8866630923401044,
+"runner_up": 0.013870329495061024
+},
+{
+"text": "Buyer Payment: FOODMAXX",
+"cleaned": "Buyer Payment: FOODMAXX",
+"category": "Groceries",
+"confidence": 0.8182451343821908,
+"runner_up": 0.0685445206046138
+},
+{
+"text": "Arby's Branch Residential",
+"cleaned": "Arby's Branch Residential",
+"category": "Food & Beverage",
+"confidence": 0.816194107328535,
+"runner_up": 0.035573629363228304
+},
+{
+"text": "buyer payment: wok n roll",
+"cleaned": "buyer payment: wok n roll",
+"category": "Clothing & Shopping",
+"confidence": 0.1597133891912432,
+"runner_up": 0.13885780608254583
+},
+{
+"text": "CLEAR NEWARK",
+"cleaned": "CLEAR NEWARK",
+"category": "Travel",
+"confidence": 0.7626546660143775,
+"runner_up": 0.04597299822329309
+},
+{
+"text": "KABULI RESTAURANT HAYATABAD PESHAWAR",
+"cleaned": "KABULI RESTAURANT HAYATABAD",
+"category": "Food & Beverage",
+"confidence": 0.8697480979168464,
+"runner_up": 0.02295492363004842
+},
+{
+"text": "GUILD MORTGAGE HOME LOAN",
+"cleaned": "GUILD MORTGAGE HOME LOAN",
+"category": "Housing",
+"confidence": 0.8673742197628799,
+"runner_up": 0.06750046714301693
+},
+{
+"text": "travelocity 3182",
+"cleaned": "travelocity",
+"category": "Travel",
+"confidence": 0.8645401154606198,
+"runner_up": 0.02281545866374469
+},
+{
+"text": "BP Business District",
+"cleaned": "BP Business District",
+"category": "Transportation",
+"confidence": 0.6561848259835594,
+"runner_up": 0.06746120184026341
+},
+{
+"text": "ASIAN WOK F6 ISB",
+"cleaned": "ASIAN WOK F6",
+"category": "Food & Beverage",
+"confidence": 0.5124160525896208,
+"runner_up": 0.0934178032044816
+},
+{
+"text": "AMC Center - Dinner Time",
+"cleaned": "AMC Center - Dinner Time",
+"category": "Entertainment",
+"confidence": 0.7477351898822064,
+"runner_up": 0.05728275923979115
+},
+{
+"text": "Emergency Room Store Strip Mall",
+"cleaned": "Emergency Room Store Strip Mall",
+"category": "Health",
+"confidence": 0.8622866799356683,
+"runner_up": 0.03176761946187629
+},
+{
+"text": "Hawaiian Airlines Store Downtown",
+"cleaned": "Hawaiian Airlines Store Downtown",
+"category": "Transportation",
+"confidence": 0.853024800305594,
+"runner_up": 0.02946546546559179
+},
+{
+"text": "Charter Online Branch - Evening",
+"cleaned": "Charter Online Branch - Evening",
+"category": "Utilities",
+"confidence": 0.7406393901536737,
+"runner_up": 0.08134021481042451
+},
+{
+"text": "Amazon Prime Store Mall",
+"cleaned": "Amazon Prime Store Mall",
+"category": "Entertainment",
+"confidence": 0.690413879291194,
+"runner_up": 0.1762190120474475
+},
+{
+"text": "NORTHERN AREAS RENTALS",
+"cleaned": "NORTHERN AREAS RENTALS",
+"category": "Travel",
+"confidence": 0.3083539996704139,
+"runner_up": 0.23581496618286438
+},
+{
+"text": "Cox Center Residential",
+"cleaned": "Cox Center Residential",
+"category": "Utilities",
+"confidence": 0.6135305375279827,
+"runner_up": 0.08276534485305519
+},
+{
+"text": "Chick-fil-A Mall",
+"cleaned": "Chick-fil-A Mall",
+"category": "Food & Beverage",
+"confidence": 0.9220763281565902,
+"runner_up": 0.011671666583585339
+},
+{
+"text": "Bowling Alley Campus",
+"cleaned": "Bowling Alley Campus",
+"category": "Entertainment",
+"confidence": 0.8636226211297354,
+"runner_up": 0.024805568618922334
+},
+{
+"text": "UNICEF Mall",
+"cleaned": "UNICEF Mall",
+"category": "Charity",
+"confidence": 0.8148220294599523,
+"runner_up": 0.03814222072259772
+},
+{
+"text": "Safeway Pharmacy",
+"cleaned": "Safeway Pharmacy",
+"category": "Health",
+"confidence": 0.8762215279089016,
+"runner_up": 0.05628786933436957
+},
+{
+"text": "365 MARKET SAN JOSE",
+"cleaned": "MARKET SAN JOSE",
+"category": "Groceries",
+"confidence": 0.8287531590073752,
+"runner_up": 0.12573599631521867
+},
+{
+"text": "BEACONHOUSE PECHS KARACHI",
+"cleaned": "BEACONHOUSE PECHS",
+"category": "Education",
+"confidence": 0.3569191981256918,
+"runner_up": 0.17216444377354864
+},
+{
+"text": "MEEZAN MUTUAL FUND",
+"cleaned": "MEEZAN MUTUAL FUND",
+"category": "Investments",
+"confidence": 0.8342071199451948,
+"runner_up": 0.021731485089546
+},
+{
+"text": "TRADER JOE'S 5735 NASHVILLE",
+"cleaned": "TRADER JOE'S NASHVILLE",
+"category": "Groceries",
+"confidence": 0.6163121034945342,
+"runner_up": 0.24206849090530916
+},
+{
+"text": "Clinic Online Strip Mall",
+"cleaned": "Clinic Online Strip Mall",
+"category": "Health",
+"confidence": 0.9131242003544702,
+"runner_up": 0.018297413718152293
+},
+{
+"text": "HBL ASSET MGMT LAHORE",
+"cleaned": "HBL ASSET MGMT",
+"category": "Investments",
+"confidence": 0.3568755017031013,
+"runner_up": 0.07805979497438627
+},
+{
+"text": "QISSA KHAWANI SAMOSA PESHAWAR",
+"cleaned": "QISSA KHAWANI SAMOSA",
+"category": "Food & Beverage",
+"confidence": 0.48306934159074866,
+"runner_up": 0.07252130521523074
+},
+{
+"text": "TST*food factory",
+"cleaned": "TST food factory",
+"category": "Food & Beverage",
+"confidence": 0.6563980133810219,
+"runner_up": 0.10032431689801005
+},
+{
+"text": "BANKISLAMI AUTO MULTAN",
+"cleaned": "BANKISLAMI AUTO",
+"category": "Loans/EMI",
+"confidence": 0.7365335176763892,
+"runner_up": 0.07599160876751443
+},
+{
+"text": "Baja Fresh (Bank Transfer)",
+"cleaned": "Baja Fresh (Bank Transfer)",
+"category": "Food & Beverage",
+"confidence": 0.7913523608227501,
+"runner_up": 0.04346840468144355
+},
+{
+"text": "RALPH'S LAS VEGAS",
+"cleaned": "RALPH'S LAS VEGAS",
+"category": "Groceries",
+"confidence": 0.8320253964405859,
+"runner_up": 0.024966325713132596
+},
+{
+"text": "UNICEF Online Shopping",
+"cleaned": "UNICEF Online Shopping",
+"category": "Charity",
+"confidence": 0.7438729695940723,
+"runner_up": 0.06817704742659529
+},
+{
+"text": "DAIRA FINANCE",
+"cleaned": "DAIRA FINANCE",
+"category": "Loans/EMI",
+"confidence": 0.8949760680566219,
+"runner_up": 0.01995773529101134
+},
+{
+"text": "BoltBus Center Station",
+"cleaned": "BoltBus Center Station",
+"category": "Transportation",
+"confidence": 0.8989227399426001,
+"runner_up": 0.01880993116731693
+},
+{
+"text": "Allegiant Mall",
+"cleaned": "Allegiant Mall",
+"category": "Transportation",
+"confidence": 0.7631609897868898,
+"runner_up": 0.042205486801821505
+},
+{
+"text": "Safeway Center Hospital",
+"cleaned": "Safeway Center Hospital",
+"category": "Food & Beverage",
+"confidence": 0.4361022561476172,
+"runner_up": 0.26058681406137796
+},
+{
+"text": "Brigham and Women's Branch (Bank Transfer)",
+"cleaned": "Brigham and Women's Branch (Bank Transfer)",
+"category": "Health",
+"confidence": 0.7710441833590048,
+"runner_up": 0.04662100496581005
+},
+{
+"text": "SNGPL BANNU BILL",
+"cleaned": "SNGPL BANNU BILL",
+"category": "Utilities",
+"confidence": 0.959917473239723,
+"runner_up": 0.004917877673650725
+},
+{
+"text": "SEPHORA - SEATTLE",
+"cleaned": "SEPHORA - SEATTLE",
+"category": "Clothing & Shopping",
+"confidence": 0.4481249244875292,
+"runner_up": 0.09390342059791423
+},
+{
+"text": "AKHUWAT BAHAWALPUR",
+"cleaned": "AKHUWAT",
+"category": "Charity",
+"confidence": 0.3672750142296404,
+"runner_up": 0.21897317419058399
+},
+{
+"text": "HULU",
+"cleaned": "HULU",
+"category": "Entertainment",
+"confidence": 0.7159251596606916,
+"runner_up": 0.06237629909730004
+},
+{
+"text": "PUNJAB TOURISM DEVELOPMENT",
+"cleaned": "PUNJAB TOURISM DEVELOPMENT",
+"category": "Travel",
+"confidence": 0.4449741968802093,
+"runner_up": 0.21546586314555
+},
+{
+"text": "Barnes & Noble Store (Bank Transfer)",
+"cleaned": "Barnes & Noble Store (Bank Transfer)",
+"category": "Clothing & Shopping",
+"confidence": 0.6682445079124347,
+"runner_up": 0.08683065954784537
+},
+{
+"text": "Zipcar Residential",
+"cleaned": "Zipcar Residential",
+"category": "Transportation",
+"confidence": 0.8022808658212839,
+"runner_up": 0.027978760809557558
+},
+{
+"text": "Cleveland Clinic Residential",
+"cleaned": "Cleveland Clinic Residential",
+"category": "Health",
+"confidence": 0.883732814751113,
+"runner_up": 0.01979639638618483
+},
+{
+"text": "Riphah Faisalabad",
+"cleaned": "Riphah",
+"category": "Education",
+"confidence": 0.39958287276346194,
+"runner_up": 0.08478190607593161
+},
+{
+"text": "RAWALPINDI METROBUS",
+"cleaned": "RAWALPINDI METROBUS",
+"category": "Transportation",
+"confidence": 0.782431547219152,
+"runner_up": 0.049021730337300506
+},
+{
+"text": "Red Cross Store - Dinner Time",
+"cleaned": "Red Cross Store - Dinner Time",
+"category": "Charity",
+"confidence": 0.6274664616078997,
+"runner_up": 0.1474422151878804
+},
+{
+"text": "Stanford Health (Bank Transfer)",
+"cleaned": "Stanford Health (Bank Transfer)",
+"category": "Health",
+"confidence": 0.7898239817338811,
+"runner_up": 0.05001157624165267
+},
+{
+"text": "AT&T - Evening",
+"cleaned": "AT&T - Evening",
+"category": "Utilities",
+"confidence": 0.8144030079331117,
+"runner_up": 0.030781444628982794
+},
+{
+"text": "OPTP MM ALAM LHR",
+"cleaned": "OPTP MM ALAM",
+"category": "Food & Beverage",
+"confidence": 0.42572217388096434,
+"runner_up": 0.08186921825207627
+},
+{
+"text": "Staples Online Mall",
+"cleaned": "Staples Online Mall",
+"category": "Clothing & Shopping",
+"confidence": 0.9150193169533067,
+"runner_up": 0.021000398497568632
+},
+{
+"text": "WINCOFO PHI",
+"cleaned": "WINCOFO PHI",
+"category": "Groceries",
+"confidence": 0.5574034962240256,
+"runner_up": 0.04939968844675458
+},
+{
+"text": "Nueplex The Place",
+"cleaned": "Nueplex The Place",
+"category": "Entertainment",
+"confidence": 0.6180609539872555,
+"runner_up": 0.06655371878872217
+},
+{
+"text": "HBL ISLAMABAD AUTO FIN",
+"cleaned": "HBL ISLAMABAD AUTO FIN",
+"category": "Loans/EMI",
+"confidence": 0.7590268650795228,
+"runner_up": 0.07748751163608095
+},
+{
+"text": "Hotel booking e",
+"cleaned": "Hotel booking e",
+"category": "Travel",
+"confidence": 0.8813087079216314,
+"runner_up": 0.04256970441396696
+},
+{
+"text": "TURKISH AIRLINES",
+"cleaned": "TURKISH AIRLINES",
+"category": "Travel",
+"confidence": 0.8201108125126613,
+"runner_up": 0.0973814180040769
+},
+{
+"text": "Orthopedist Online - Evening",
+"cleaned": "Orthopedist Online - Evening",
+"category": "Health",
+"confidence": 0.8479469539810495,
+"runner_up": 0.026384723504956194
+},
+{
+"text": "Atlantic Broadband Center Business District",
+"cleaned": "Atlantic Broadband Center Business District",
+"category": "Utilities",
+"confidence": 0.8701143582284488,
+"runner_up": 0.02496367045831909
+},
+{
+"text": "Bambino Cinema",
+"cleaned": "Bambino Cinema",
+"category": "Entertainment",
+"confidence": 0.9101289341417039,
+"runner_up": 0.014411804572588971
+},
+{
+"text": "Chipotle Online Strip Mall",
+"cleaned": "Chipotle Online Strip Mall",
+"category": "Food & Beverage",
+"confidence": 0.8669437877322492,
+"runner_up": 0.028672656678530934
+},
+{
+"text": "LinkedIn Premium Subscription",
+"cleaned": "LinkedIn Premium Subscription",
+"category": "Subscriptions",
+"confidence": 0.9821063263613311,
+"runner_up": 0.002523117961693507
+},
+{
+"text": "Flipkart order",
+"cleaned": "Flipkart order",
+"category": "Clothing & Shopping",
+"confidence": 0.1522865363865446,
+"runner_up": 0.12480582214385229
+},
+{
+"text": "Sparklight Hospital",
+"cleaned": "Sparklight Hospital",
+"category": "Utilities",
+"confidence": 0.7665798525234057,
+"runner_up": 0.05505779766138318
+},
+{
+"text": "SNOW LEOPARD FOUNDATION GILGIT",
+"cleaned": "SNOW LEOPARD FOUNDATION GILGIT",
+"category": "Charity",
+"confidence": 0.5852650129364582,
+"runner_up": 0.06680392543970808
+},
+{
+"text": "Universal Cinemas Online",
+"cleaned": "Universal Cinemas Online",
+"category": "Entertainment",
+"confidence": 0.9005949548773174,
+"runner_up": 0.022973039124180805
+},
+{
+"text": "HBL ASSET MGMT SIALKOT",
+"cleaned": "HBL ASSET MGMT",
+"category": "Investments",
+"confidence": 0.3568755017031013,
+"runner_up": 0.07805979497438627
+},
+{
+"text": "Bergdorf Goodman Station",
+"cleaned": "Bergdorf Goodman Station",
+"category": "Clothing & Shopping",
+"confidence": 0.8104336056523492,
+"runner_up": 0.02678572233349943
+},
+{
+"text": "DSL Store Business District",
+"cleaned": "DSL Store Business District",
+"category": "Utilities",
+"confidence": 0.6671797552920145,
+"runner_up": 0.07409380439241404
+},
+{
+"text": "TINDER* TINDER Premium",
+"cleaned": "TINDER TINDER Premium",
+"category": "Subscriptions",
+"confidence": 0.7460822245265408,
+"runner_up": 0.0338713624849669
+},
+{
+"text": "Gianteagl",
+"cleaned": "Gianteagl",
+"category": "Groceries",
+"confidence": 0.6860796704072222,
+"runner_up": 0.042343547252124206
+},
+{
+"text": "Comcast Store Hospital",
+"cleaned": "Comcast Store Hospital",
+"category": "Utilities",
+"confidence": 0.7614994729230338,
+"runner_up": 0.08346281805354568
+},
+{
+"text": "National Parks",
+"cleaned": "National Parks",
+"category": "Charity",
+"confidence": 0.7552304809951492,
+"runner_up": 0.06646576257465268
+},
+{
+"text": "Kroger Pharmacy Store Business District",
+"cleaned": "Kroger Pharmacy Store Business District",
+"category": "Health",
+"confidence": 0.8984053479610261,
+"runner_up": 0.017495755059084496
+},
+{
+"text": "UNIVERSITY OF SAN DIEGO TUITION",
+"cleaned": "UNIVERSITY OF SAN DIEGO TUITION",
+"category": "Education",
+"confidence": 0.9785556155279478,
+"runner_up": 0.002760909975325084
+},
+{
+"text": "LRBT BAHAWALPUR",
+"cleaned": "LRBT",
+"category": "Health",
+"confidence": 0.13128364059850642,
+"runner_up": 0.1149115586043794
+},
+{
+"text": "Johns Hopkins Business District",
+"cleaned": "Johns Hopkins Business District",
+"category": "Health",
+"confidence": 0.7932346350943607,
+"runner_up": 0.0625249827977512
+},
+{
+"text": "H-E-B PORTLAND",
+"cleaned": "H-E-B PORTLAND",
+"category": "Groceries",
+"confidence": 0.7846102491339562,
+"runner_up": 0.029820520192771115
+},
+{
+"text": "Kroger Pharmacy Store Downtown",
+"cleaned": "Kroger Pharmacy Store Downtown",
+"category": "Health",
+"confidence": 0.9148587577901627,
+"runner_up": 0.02343109931755713
+},
+{
+"text": "SUBSCRIPTION PAYMENT: JETBLUE",
+"cleaned": "SUBSCRIPTION PAYMENT: JETBLUE",
+"category": "Travel",
+"confidence": 0.5999324431294331,
+"runner_up": 0.2674010572747038
+},
+{
+"text": "Fundraising Store Online Mall",
+"cleaned": "Fundraising Store Online Mall",
+"category": "Charity",
+"confidence": 0.8570693501073747,
+"runner_up": 0.03275361435451459
+},
+{
+"text": "BUTT KARAHI LAKSHMI CHOWK LHR",
+"cleaned": "BUTT KARAHI LAKSHMI CHOWK",
+"category": "Food & Beverage",
+"confidence": 0.2266464832402992,
+"runner_up": 0.09032265237022398
+},
+{
+"text": "KIPS SIALKOT",
+"cleaned": "KIPS",
+"category": "Education",
+"confidence": 0.5862095933413869,
+"runner_up": 0.053843381698418805
+},
+{
+"text": "BERLITZ KARACHI",
+"cleaned": "BERLITZ",
+"category": "Clothing & Shopping",
+"confidence": 0.15965731703272223,
+"runner_up": 0.1305610222503968
+},
+{
+"text": "Bonanza",
+"cleaned": "Bonanza",
+"category": "Clothing & Shopping",
+"confidence": 0.4418620604204306,
+"runner_up": 0.09251828571635776
+},
+{
+"text": "GOOGLE *OBSIDIAN",
+"cleaned": "GOOGLE OBSIDIAN",
+"category": "Subscriptions",
+"confidence": 0.8845867115720667,
+"runner_up": 0.022342118785975182
+},
+{
+"text": "Johns Hopkins Branch Campus",
+"cleaned": "Johns Hopkins Branch Campus",
+"category": "Health",
+"confidence": 0.813390230323089,
+"runner_up": 0.057711934715879376
+},
+{
+"text": "ASKARI 9 RAWALPINDI",
+"cleaned": "ASKARI",
+"category": "Loans/EMI",
+"confidence": 0.16157922496237295,
+"runner_up": 0.13204173530863053
+},
+{
+"text": "Chiropractor Hospital",
+"cleaned": "Chiropractor Hospital",
+"category": "Health",
+"confidence": 0.952648282806038,
+"runner_up": 0.007434771778328667
+},
+{
+"text": "AMAZON HYD",
+"cleaned": "AMAZON HYD",
+"category": "Subscriptions",
+"confidence": 0.5107561165585716,
+"runner_up": 0.26198141960379295
+},
+{
+"text": "Chipotle Store Online Mall",
+"cleaned": "Chipotle Store Online Mall",
+"category": "Food & Beverage",
+"confidence": 0.887207197203261,
+"runner_up": 0.028384739029986287
+},
+{
+"text": "GOOGLE *META VERIFIED",
+"cleaned": "GOOGLE META VERIFIED",
+"category": "Subscriptions",
+"confidence": 0.845479525131118,
+"runner_up": 0.0456604687431339
+},
+{
+"text": "Alamo Store Online - Dinner Time",
+"cleaned": "Alamo Store Online - Dinner Time",
+"category": "Transportation",
+"confidence": 0.7735179359586224,
+"runner_up": 0.05942719416015384
+},
+{
+"text": "KO-FI* Monthly",
+"cleaned": "KO-FI Monthly",
+"category": "Subscriptions",
+"confidence": 0.7679451579372228,
+"runner_up": 0.0398491582398714
+},
+{
+"text": "eXtra",
+"cleaned": "eXtra",
+"category": "Clothing & Shopping",
+"confidence": 0.44054013614514653,
+"runner_up": 0.06438641902404156
+},
+{
+"text": "Amtrak Store Business District",
+"cleaned": "Amtrak Store Business District",
+"category": "Transportation",
+"confidence": 0.812394134091703,
+"runner_up": 0.03746192896616166
+},
+{
+"text": "Clinic Online Downtown",
+"cleaned": "Clinic Online Downtown",
+"category": "Health",
+"confidence": 0.8881098359075003,
+"runner_up": 0.019940799641955692
+},
+{
+"text": "Online course subscription d",
+"cleaned": "Online course subscription d",
+"category": "Education",
+"confidence": 0.5178025271213167,
+"runner_up": 0.12867178053467443
+},
+{
+"text": "Market Basket 1029 Columbus",
+"cleaned": "Market Basket Columbus",
+"category": "Groceries",
+"confidence": 0.8231491444584957,
+"runner_up": 0.07812338032500316
+},
+{
+"text": "The Indus Hospital & Health Network Donation",
+"cleaned": "The Indus Hospital & Health Network Donation",
+"category": "Health",
+"confidence": 0.4413268072199552,
+"runner_up": 0.38758244935164715
+},
+{
+"text": "PLAYDIUM KARACHI",
+"cleaned": "PLAYDIUM",
+"category": "Entertainment",
+"confidence": 0.4345896613656765,
+"runner_up": 0.09667199082841645
+},
+{
+"text": "ENTERPRISE - BROOKLYN",
+"cleaned": "ENTERPRISE - BROOKLYN",
+"category": "Travel",
+"confidence": 0.5161097699960662,
+"runner_up": 0.25089150637629054
+},
+{
+"text": "PP*GIANT EAGLE",
+"cleaned": "PP GIANT EAGLE",
+"category": "Groceries",
+"confidence": 0.8243255417459715,
+"runner_up": 0.024022996517032012
+},
+{
+"text": "WOW Store Campus",
+"cleaned": "WOW Store Campus",
+"category": "Utilities",
+"confidence": 0.7603515512919466,
+"runner_up": 0.049407507261749625
+},
+{
+"text": "Taco Bell Store Airport",
+"cleaned": "Taco Bell Store Airport",
+"category": "Food & Beverage",
+"confidence": 0.851654225528548,
+"runner_up": 0.04724172044375387
+},
+{
+"text": "PSO Diesel",
+"cleaned": "PSO Diesel",
+"category": "Fuel",
+"confidence": 0.5436902602333334,
+"runner_up": 0.04978876245271246
+},
+{
+"text": "UCSF Medical Store Station",
+"cleaned": "UCSF Medical Store Station",
+"category": "Health",
+"confidence": 0.8814091894207237,
+"runner_up": 0.02201814007010699
+},
+{
+"text": "Frontier Airlines Houston",
+"cleaned": "Frontier Airlines Houston",
+"category": "Travel",
+"confidence": 0.7897646347725208,
+"runner_up": 0.1573885373378677
+},
+{
+"text": "Burlington Shopping",
+"cleaned": "Burlington Shopping",
+"category": "Clothing & Shopping",
+"confidence": 0.8433734629888124,
+"runner_up": 0.027644160458907264
+},
+{
+"text": "Hospital Online Downtown",
+"cleaned": "Hospital Online Downtown",
+"category": "Health",
+"confidence": 0.27983763753557495,
+"runner_up": 0.22599569439050582
+},
+{
+"text": "EXPRESS CHECKOUT PAYMENT: ALASKA AIRLINES",
+"cleaned": "EXPRESS CHECKOUT PAYMENT: ALASKA AIRLINES",
+"category": "Travel",
+"confidence": 0.7480131160694952,
+"runner_up": 0.14163980782670713
+},
+{
+"text": "Fundraising Store Airport",
+"cleaned": "Fundraising Store Airport",
+"category": "Charity",
+"confidence": 0.8589401551592324,
+"runner_up": 0.03283768399351144
+},
+{
+"text": "Zaxby's Center Station",
+"cleaned": "Zaxby's Center Station",
+"category": "Food & Beverage",
+"confidence": 0.8468953750469315,
+"runner_up": 0.029638501932411215
+},
+{
+"text": "Cable One Store - Evening",
+"cleaned": "Cable One Store - Evening",
+"category": "Utilities",
+"confidence": 0.8645655744521086,
+"runner_up": 0.03049418395220997
+},
+{
+"text": "WAWA 0886",
+"cleaned": "WAWA",
+"category": "Transportation",
+"confidence": 0.5395763249292624,
+"runner_up": 0.05627163123377377
+},
+{
+"text": "Veterans Organization Store Online - Evening",
+"cleaned": "Veterans Organization Store Online - Evening",
+"category": "Charity",
+"confidence": 0.9282220445864373,
+"runner_up": 0.015110561403563212
+},
+{
+"text": "DHA DEVELOPERS MULTAN",
+"cleaned": "DHA DEVELOPERS",
+"category": "Housing",
+"confidence": 0.8116985393158822,
+"runner_up": 0.03020996077053402
+},
+{
+"text": "KHAN BROTHERS SECURITIES",
+"cleaned": "KHAN BROTHERS SECURITIES",
+"category": "Investments",
+"confidence": 0.7039958278112246,
+"runner_up": 0.037847017591960574
+},
+{
+"text": "Gym Store - Evening",
+"cleaned": "Gym Store - Evening",
+"category": "Entertainment",
+"confidence": 0.7861357292357943,
+"runner_up": 0.042767254116543044
+},
+{
+"text": "Atlantic Broadband Store - Evening",
+"cleaned": "Atlantic Broadband Store - Evening",
+"category": "Utilities",
+"confidence": 0.8945443188496973,
+"runner_up": 0.0166677343692054
+},
+{
+"text": "PP*CHEGG",
+"cleaned": "PP CHEGG",
+"category": "Education",
+"confidence": 0.8434359210448351,
+"runner_up": 0.021828470821996758
+},
+{
+"text": "BETMGM DEPOSIT",
+"cleaned": "BETMGM DEPOSIT",
+"category": "Entertainment",
+"confidence": 0.21828483299511248,
+"runner_up": 0.1884542089423017
+},
+{
+"text": "Verizon - Evening",
+"cleaned": "Verizon - Evening",
+"category": "Utilities",
+"confidence": 0.7891345493816982,
+"runner_up": 0.030631407747781454
+},
+{
+"text": "PreApproved Payment Bill User Payment: SUNO",
+"cleaned": "PreApproved Payment Bill User Payment: SUNO",
+"category": "Subscriptions",
+"confidence": 0.6703816496860419,
+"runner_up": 0.07960817179559389
+},
+{
+"text": "Doctor consultation",
+"cleaned": "Doctor consultation",
+"category": "Health",
+"confidence": 0.4532178645057635,
+"runner_up": 0.14381274599726052
+},
+{
+"text": "SAUDIA ISLAMABAD",
+"cleaned": "SAUDIA",
+"category": "Travel",
+"confidence": 0.26401607858924253,
+"runner_up": 0.10418411672382347
+},
+{
+"text": "Temple Center - Dinner Time",
+"cleaned": "Temple Center - Dinner Time",
+"category": "Charity",
+"confidence": 0.8585122782812388,
+"runner_up": 0.029350086631066356
+},
+{
+"text": "Doctors Without Borders Branch Airport",
+"cleaned": "Doctors Without Borders Branch Airport",
+"category": "Charity",
+"confidence": 0.8755922529821473,
+"runner_up": 0.02311960707154902
+},
+{
+"text": "SSGC KHUZDAR BILL",
+"cleaned": "SSGC KHUZDAR BILL",
+"category": "Utilities",
+"confidence": 0.7220774051511313,
+"runner_up": 0.05834537432578902
+},
+{
+"text": "DR. CHEN CARDIOLOGY",
+"cleaned": "DR. CHEN CARDIOLOGY",
+"category": "Health",
+"confidence": 0.812677969594464,
+"runner_up": 0.06145486531846375
+},
+{
+"text": "AIRBNB.COM",
+"cleaned": "AIRBNB.COM",
+"category": "Travel",
+"confidence": 0.7338602559455851,
+"runner_up": 0.1326943647757703
+},
+{
+"text": "In-N-Out Branch Airport",
+"cleaned": "In-N-Out Branch Airport",
+"category": "Food & Beverage",
+"confidence": 0.8304548329556126,
+"runner_up": 0.025447814259616338
+},
+{
+"text": "Zoo Store Branch Residential",
+"cleaned": "Zoo Store Branch Residential",
+"category": "Entertainment",
+"confidence": 0.7102339004600159,
+"runner_up": 0.06363313776302315
+},
+{
+"text": "OPTIMUS CAPITAL MANAGEMENT",
+"cleaned": "OPTIMUS CAPITAL MANAGEMENT",
+"category": "Investments",
+"confidence": 0.3947696274995819,
+"runner_up": 0.23653944944694827
+},
+{
+"text": "Offering Online Business District",
+"cleaned": "Offering Online Business District",
+"category": "Charity",
+"confidence": 0.7131448214256942,
+"runner_up": 0.06125439361061289
+},
+{
+"text": "Sprouts Los Angeles",
+"cleaned": "Sprouts Los Angeles",
+"category": "Groceries",
+"confidence": 0.824421752589331,
+"runner_up": 0.02511517791562717
+},
+{
+"text": "Shake Shack Airport",
+"cleaned": "Shake Shack Airport",
+"category": "Food & Beverage",
+"confidence": 0.8841634295723507,
+"runner_up": 0.01783263424569381
+},
+{
+"text": "GOOGLE *RAPIDAPI",
+"cleaned": "GOOGLE RAPIDAPI",
+"category": "Subscriptions",
+"confidence": 0.8959679372330631,
+"runner_up": 0.018202631408845933
+},
+{
+"text": "SACHET PESHAWAR",
+"cleaned": "SACHET",
+"category": "Clothing & Shopping",
+"confidence": 0.1648923594709975,
+"runner_up": 0.14066156662281434
+},
+{
+"text": "Graana Home Construction",
+"cleaned": "Graana Home Construction",
+"category": "Housing",
+"confidence": 0.3759502130125931,
+"runner_up": 0.08649316627475125
+},
+{
+"text": "WISHES GIFT SHOP PEW",
+"cleaned": "WISHES GIFT SHOP PEW",
+"category": "Clothing & Shopping",
+"confidence": 0.3262738846218893,
+"runner_up": 0.2296599352531116
+},
+{
+"text": "GIANT EAGLE 7224 ORLANDO",
+"cleaned": "GIANT EAGLE ORLANDO",
+"category": "Groceries",
+"confidence": 0.7517966384851982,
+"runner_up": 0.03265199459991313
+},
+{
+"text": "TOPLINE SECURITIES PESHAWAR",
+"cleaned": "TOPLINE SECURITIES",
+"category": "Investments",
+"confidence": 0.8732958394898436,
+"runner_up": 0.01305418477085549
+},
+{
+"text": "GALATA KU",
+"cleaned": "GALATA KU",
+"category": "Entertainment",
+"confidence": 0.3263735301432985,
+"runner_up": 0.1116654475290232
+},
+{
+"text": "SEPTA Hospital",
+"cleaned": "SEPTA Hospital",
+"category": "Transportation",
+"confidence": 0.7729954160318093,
+"runner_up": 0.08676471209706446
+},
+{
+"text": "Homeless Shelter Center - Dinner Time",
+"cleaned": "Homeless Shelter Center - Dinner Time",
+"category": "Charity",
+"confidence": 0.8402551772211289,
+"runner_up": 0.03919507900396618
+},
+{
+"text": "QUETTA RAILWAY STATION",
+"cleaned": "QUETTA RAILWAY STATION",
+"category": "Transportation",
+"confidence": 0.7754792386059276,
+"runner_up": 0.06568660972830062
+},
+{
+"text": "Church Store Airport",
+"cleaned": "Church Store Airport",
+"category": "Charity",
+"confidence": 0.7924930116731745,
+"runner_up": 0.035914628454310156
+},
+{
+"text": "RAISINGCANES",
+"cleaned": "RAISINGCANES",
+"category": "Food & Beverage",
+"confidence": 0.5419869998264374,
+"runner_up": 0.06567155386957393
+},
+{
+"text": "Saylani Ramadan Appeal",
+"cleaned": "Saylani Ramadan Appeal",
+"category": "Charity",
+"confidence": 0.36784837531439063,
+"runner_up": 0.09488317686699813
+},
+{
+"text": "SIMPLY SUFI XPRS MODEL TOWN LHR",
+"cleaned": "SIMPLY SUFI XPRS MODEL TOWN",
+"category": "Food & Beverage",
+"confidence": 0.4673370473962398,
+"runner_up": 0.11357059380361142
+},
+{
+"text": "Breakout",
+"cleaned": "Breakout",
+"category": "Clothing & Shopping",
+"confidence": 0.45819367386565213,
+"runner_up": 0.12898617328619622
+},
+{
+"text": "AMAZON KINDLE*GWPQ1D2SC05",
+"cleaned": "AMAZON KINDLE GWPQ1D2SC05",
+"category": "Education",
+"confidence": 0.5832409054772008,
+"runner_up": 0.2187524048204226
+},
+{
+"text": "EDENROBE CENTAURUS ISB",
+"cleaned": "EDENROBE CENTAURUS",
+"category": "Clothing & Shopping",
+"confidence": 0.5594526746989893,
+"runner_up": 0.05231612148294966
+},
+{
+"text": "Swimming Pool",
+"cleaned": "Swimming Pool",
+"category": "Entertainment",
+"confidence": 0.78379077145527,
+"runner_up": 0.03336095768344338
+},
+{
+"text": "Exam fee dc",
+"cleaned": "Exam fee dc",
+"category": "Education",
+"confidence": 0.6545133276972158,
+"runner_up": 0.04523639798187166
+},
+{
+"text": "Pilates Center Business District",
+"cleaned": "Pilates Center Business District",
+"category": "Entertainment",
+"confidence": 0.8170947409761821,
+"runner_up": 0.04036909272864526
+},
+{
+"text": "Veterans Organization Store Station",
+"cleaned": "Veterans Organization Store Station",
+"category": "Charity",
+"confidence": 0.9227857993758016,
+"runner_up": 0.014219408573053885
+},
+{
+"text": "FOOD LION 2880 SAN DIEGO",
+"cleaned": "FOOD LION SAN DIEGO",
+"category": "Groceries",
+"confidence": 0.8059617762234813,
+"runner_up": 0.0651291968611716
+},
+{
+"text": "University of Sargodha",
+"cleaned": "University of Sargodha",
+"category": "Education",
+"confidence": 0.8489583490208781,
+"runner_up": 0.020523939210524512
+},
+{
+"text": "Riphah Lahore",
+"cleaned": "Riphah",
+"category": "Education",
+"confidence": 0.39958287276346194,
+"runner_up": 0.08478190607593161
+},
+{
+"text": "PreApproved Payment Bill User Payment: DISNEY CRUISE",
+"cleaned": "PreApproved Payment Bill User Payment: DISNEY CRUISE",
+"category": "Subscriptions",
+"confidence": 0.4530048704148431,
+"runner_up": 0.40119308490750366
+},
+{
+"text": "WITHDRAWAL FROM HOLIDAY INN",
+"cleaned": "WITHDRAWAL FROM HOLIDAY INN",
+"category": "Travel",
+"confidence": 0.8534983657816234,
+"runner_up": 0.03482265636110832
+},
+{
+"text": "PESHAWAR CANTT HOUSING",
+"cleaned": "PESHAWAR CANTT HOUSING",
+"category": "Housing",
+"confidence": 0.5816823614780584,
+"runner_up": 0.13908414723166512
+},
+{
+"text": "POLYCLINIC ISLAMABAD",
+"cleaned": "POLYCLINIC",
+"category": "Health",
+"confidence": 0.6618040172594872,
+"runner_up": 0.06628940848540184
+},
+{
+"text": "spirit airlines; billing",
+"cleaned": "spirit airlines; billing",
+"category": "Travel",
+"confidence": 0.8297153564715195,
+"runner_up": 0.10936794904007886
+},
+{
+"text": "Getaround Mall",
+"cleaned": "Getaround Mall",
+"category": "Transportation",
+"confidence": 0.8602282450742569,
+"runner_up": 0.023661511026224945
+},
+{
+"text": "Uber *trip Union City Tk38e6",
+"cleaned": "Uber trip Union City Tk38e6",
+"category": "Transportation",
+"confidence": 0.6574923106107907,
+"runner_up": 0.12578753190054034
+},
+{
+"text": "Disney+ - Evening",
+"cleaned": "Disney+ - Evening",
+"category": "Entertainment",
+"confidence": 0.7927094956626998,
+"runner_up": 0.052842456268610685
+},
+{
+"text": "PANDA GARDEN*RZ7IVCQ1F66",
+"cleaned": "PANDA GARDEN RZ7IVCQ1F66",
+"category": "Food & Beverage",
+"confidence": 0.848359204770554,
+"runner_up": 0.07730489487510568
+},
+{
+"text": "ORIX LEASE LAHORE",
+"cleaned": "ORIX LEASE",
+"category": "Loans/EMI",
+"confidence": 0.2670125059026761,
+"runner_up": 0.18159401752580012
+},
+{
+"text": "NEW YORK TIMES* NEW YORK TIMES Plus",
+"cleaned": "NEW YORK TIMES NEW YORK TIMES Plus",
+"category": "Subscriptions",
+"confidence": 0.4743087741220315,
+"runner_up": 0.13286433656026392
+},
+{
+"text": "pay eighty five dollars cash for the sat registration fee",
+"cleaned": "pay eighty five dollars cash for the sat registration fee",
+"category": "Education",
+"confidence": 0.5897061930730498,
+"runner_up": 0.1031974221940314
+},
+{
+"text": "WiFi Hotspot Online Center Campus",
+"cleaned": "WiFi Hotspot Online Center Campus",
+"category": "Utilities",
+"confidence": 0.9439705394754038,
+"runner_up": 0.010622122192907967
+},
+{
+"text": "KARACHI SUPER MART SAADI TOWN",
+"cleaned": "KARACHI SUPER MART SAADI TOWN",
+"category": "Groceries",
+"confidence": 0.586947217766394,
+"runner_up": 0.07937914162349015
+},
+{
+"text": "Bahria University Karachi",
+"cleaned": "Bahria University",
+"category": "Education",
+"confidence": 0.8300809226968983,
+"runner_up": 0.08022035954295742
+},
+{
+"text": "LINCOLN PROPERTY RENT PMT",
+"cleaned": "LINCOLN PROPERTY RENT PMT",
+"category": "Housing",
+"confidence": 0.9688267348961668,
+"runner_up": 0.005724434684782677
+},
+{
+"text": "Cold Stone Creamery Shopping",
+"cleaned": "Cold Stone Creamery Shopping",
+"category": "Food & Beverage",
+"confidence": 0.8586602801066612,
+"runner_up": 0.027087974118949157
+},
+{
+"text": "Nahdi Medical",
+"cleaned": "Nahdi Medical",
+"category": "Health",
+"confidence": 0.7965817113580356,
+"runner_up": 0.029895758929154574
+},
+{
+"text": "Religious Organization Store Online Mall",
+"cleaned": "Religious Organization Store Online Mall",
+"category": "Charity",
+"confidence": 0.9317893790463209,
+"runner_up": 0.017446235191117557
+},
+{
+"text": "SNGPL KHANEWAL CITY",
+"cleaned": "SNGPL KHANEWAL CITY",
+"category": "Utilities",
+"confidence": 0.5899463235393944,
+"runner_up": 0.06112699281126798
+},
+{
+"text": "Verizon Online Branch Shopping",
+"cleaned": "Verizon Online Branch Shopping",
+"category": "Utilities",
+"confidence": 0.7790285923274369,
+"runner_up": 0.05682523043777655
+},
+{
+"text": "Trader Joe's Branch Strip Mall",
+"cleaned": "Trader Joe's Branch Strip Mall",
+"category": "Food & Beverage",
+"confidence": 0.7521788571766128,
+"runner_up": 0.08402136961133651
+},
+{
+"text": "PRINCESS CRUISES - UNION CITY",
+"cleaned": "PRINCESS CRUISES - UNION CITY",
+"category": "Travel",
+"confidence": 0.8362428016822889,
+"runner_up": 0.02614922554794035
+},
+{
+"text": "FLAGSTAR BANK MORTGAGE",
+"cleaned": "FLAGSTAR BANK MORTGAGE",
+"category": "Housing",
+"confidence": 0.7399582215826784,
+"runner_up": 0.03283867411431372
+},
+{
+"text": "Foodmaxx Orlando",
+"cleaned": "Foodmaxx Orlando",
+"category": "Groceries",
+"confidence": 0.8235128024104185,
+"runner_up": 0.048480219717828885
+},
+{
+"text": "Cleveland Clinic Store Airport",
+"cleaned": "Cleveland Clinic Store Airport",
+"category": "Health",
+"confidence": 0.898381117772479,
+"runner_up": 0.018634081636663868
+},
+{
+"text": "Al Meezan Mutual Funds",
+"cleaned": "Al Meezan Mutual Funds",
+"category": "Investments",
+"confidence": 0.758762671468889,
+"runner_up": 0.03352096671355959
+},
+{
+"text": "Satellite Internet Store Hospital",
+"cleaned": "Satellite Internet Store Hospital",
+"category": "Utilities",
+"confidence": 0.8404886619229823,
+"runner_up": 0.04645583632017439
+},
+{
+"text": "Carnival Shopping",
+"cleaned": "Carnival Shopping",
+"category": "Entertainment",
+"confidence": 0.7798406869678429,
+"runner_up": 0.040993466370576055
+},
+{
+"text": "GCUF Admissions",
+"cleaned": "GCUF Admissions",
+"category": "Education",
+"confidence": 0.8647945909210959,
+"runner_up": 0.017512213246624074
+},
+{
+"text": "WESTERN DENTAL*ESEPQI808N",
+"cleaned": "WESTERN DENTAL ESEPQI808N",
+"category": "Health",
+"confidence": 0.49288160652370183,
+"runner_up": 0.28611460477527983
+},
+{
+"text": "FABY LAND",
+"cleaned": "FABY LAND",
+"category": "Entertainment",
+"confidence": 0.2588032596608826,
+"runner_up": 0.11641672315743357
+},
+{
+"text": "WHOLEFDS FRE CHARLOTT",
+"cleaned": "WHOLEFDS FRE CHARLOTT",
+"category": "Groceries",
+"confidence": 0.8827638410789349,
+"runner_up": 0.02572289982903702
+},
+{
+"text": "HYDE REALTORS KARACHI",
+"cleaned": "HYDE REALTORS",
+"category": "Housing",
+"confidence": 0.20152275694181246,
+"runner_up": 0.08643797394298025
+},
+{
+"text": "avalon communities rent",
+"cleaned": "avalon communities rent",
+"category": "Housing",
+"confidence": 0.7039337276133197,
+"runner_up": 0.07385274207317544
+},
+{
+"text": "KURI ROAD HOUSING SCHEME",
+"cleaned": "KURI ROAD HOUSING SCHEME",
+"category": "Housing",
+"confidence": 0.6483852128064499,
+"runner_up": 0.07268131506891758
+},
+{
+"text": "ALKHIDMAT FOOD BANK",
+"cleaned": "ALKHIDMAT FOOD BANK",
+"category": "Charity",
+"confidence": 0.8040570085282831,
+"runner_up": 0.05222538012953662
+},
+{
+"text": "Electric Company Shopping",
+"cleaned": "Electric Company Shopping",
+"category": "Utilities",
+"confidence": 0.9746657167140047,
+"runner_up": 0.005570733396257956
+},
+{
+"text": "SNGPL VEHARI BILL",
+"cleaned": "SNGPL VEHARI BILL",
+"category": "Utilities",
+"confidence": 0.9370003191578642,
+"runner_up": 0.007283605083080455
+},
+{
+"text": "WAWA",
+"cleaned": "WAWA",
+"category": "Transportation",
+"confidence": 0.5395763249292624,
+"runner_up": 0.05627163123377377
+},
+{
+"text": "MASTERCLASS*5GFH0XGGD",
+"cleaned": "MASTERCLASS 5GFH0XGGD",
+"category": "Education",
+"confidence": 0.8787214734998273,
+"runner_up": 0.026681836166282728
+},
+{
+"text": "Caltex Havoline",
+"cleaned": "Caltex Havoline",
+"category": "Fuel",
+"confidence": 0.20555182584392148,
+"runner_up": 0.11135267079636421
+},
+{
+"text": "Bojangles Online - Evening",
+"cleaned": "Bojangles Online - Evening",
+"category": "Food & Beverage",
+"confidence": 0.8019251475289743,
+"runner_up": 0.040260286240364936
+},
+{
+"text": "ROCKET MORTGAGE HOME LOAN",
+"cleaned": "ROCKET MORTGAGE HOME LOAN",
+"category": "Housing",
+"confidence": 0.8299309774998622,
+"runner_up": 0.08327441761699297
+},
+{
+"text": "El Momento",
+"cleaned": "El Momento",
+"category": "Food & Beverage",
+"confidence": 0.16810743228106803,
+"runner_up": 0.15084594522762826
+},
+{
+"text": "Domino's Campus",
+"cleaned": "Domino's Campus",
+"category": "Food & Beverage",
+"confidence": 0.8821390974582166,
+"runner_up": 0.02171609182733532
+},
+{
+"text": "PREAUTHORIZED WITHDRAWAL TO SPIRIT AIRLINES",
+"cleaned": "PREAUTHORIZED WITHDRAWAL TO SPIRIT AIRLINES",
+"category": "Travel",
+"confidence": 0.7930482564583188,
+"runner_up": 0.14226919770635202
+},
+{
+"text": "UDR INC APT RENT",
+"cleaned": "UDR INC APT RENT",
+"category": "Housing",
+"confidence": 0.7632638831587116,
+"runner_up": 0.07028815766749065
+},
+{
+"text": "OPTP JOHAR TOWN LHR",
+"cleaned": "OPTP JOHAR TOWN",
+"category": "Food & Beverage",
+"confidence": 0.5277837268034045,
+"runner_up": 0.07822446740247194
+},
+{
+"text": "Carnival - Evening",
+"cleaned": "Carnival - Evening",
+"category": "Entertainment",
+"confidence": 0.8156774707280233,
+"runner_up": 0.03377282554207025
+},
+{
+"text": "GLOBAL ENTRY MINNEAPOLIS",
+"cleaned": "GLOBAL ENTRY MINNEAPOLIS",
+"category": "Travel",
+"confidence": 0.7522660582496645,
+"runner_up": 0.03715328667839599
+},
+{
+"text": "Harmony Without Borders (Saudi donors)",
+"cleaned": "Harmony Without Borders (Saudi donors)",
+"category": "Charity",
+"confidence": 0.8942126579707264,
+"runner_up": 0.015498204564868294
+},
+{
+"text": "AIRPORT PARKING TAMPA",
+"cleaned": "AIRPORT PARKING TAMPA",
+"category": "Transportation",
+"confidence": 0.49149580374518625,
+"runner_up": 0.33398451350437525
+},
+{
+"text": "CenturyLink (Bank Transfer)",
+"cleaned": "CenturyLink (Bank Transfer)",
+"category": "Utilities",
+"confidence": 0.7710848073954282,
+"runner_up": 0.04579170820120889
+},
+{
+"text": "GoFundMe Shopping",
+"cleaned": "GoFundMe Shopping",
+"category": "Charity",
+"confidence": 0.8144060189346258,
+"runner_up": 0.029249843238191534
+},
+{
+"text": "Cane's Store Campus",
+"cleaned": "Cane's Store Campus",
+"category": "Food & Beverage",
+"confidence": 0.9211797383945484,
+"runner_up": 0.01854031403725949
+},
+{
+"text": "Hot Breads Bakery",
+"cleaned": "Hot Breads Bakery",
+"category": "Food & Beverage",
+"confidence": 0.8684539707213313,
+"runner_up": 0.021496553398307174
+},
+{
+"text": "Water Company Store Hospital",
+"cleaned": "Water Company Store Hospital",
+"category": "Utilities",
+"confidence": 0.922089145517043,
+"runner_up": 0.022126036193286926
+},
+{
+"text": "PREAPPROVED PAYMENT BILL USER PAYMENT: SHAW'S",
+"cleaned": "PREAPPROVED PAYMENT BILL USER PAYMENT: SHAW'S",
+"category": "Groceries",
+"confidence": 0.3894621934833227,
+"runner_up": 0.3397707596886824
+},
+{
+"text": "UBER EATS COLUMBUS",
+"cleaned": "UBER EATS COLUMBUS",
+"category": "Transportation",
+"confidence": 0.22129866128064551,
+"runner_up": 0.1672325930015651
+},
+{
+"text": "ASKARI TRAVELS BAHAWALPUR",
+"cleaned": "ASKARI TRAVELS",
+"category": "Travel",
+"confidence": 0.77436442464999,
+"runner_up": 0.049531733972125486
+},
+{
+"text": "Five Guys Online Strip Mall",
+"cleaned": "Five Guys Online Strip Mall",
+"category": "Food & Beverage",
+"confidence": 0.783747838087208,
+"runner_up": 0.0623654869866582
+},
+{
+"text": "AGA KHAN FOUNDATION ISB",
+"cleaned": "AGA KHAN FOUNDATION",
+"category": "Charity",
+"confidence": 0.8762585789761398,
+"runner_up": 0.01928034653499239
+},
+{
+"text": "FIRST CAPITAL ADVISORS",
+"cleaned": "FIRST CAPITAL ADVISORS",
+"category": "Investments",
+"confidence": 0.2256550718568812,
+"runner_up": 0.12037101508455576
+},
+{
+"text": "FOODMAXX 1764 BOSTON",
+"cleaned": "FOODMAXX BOSTON",
+"category": "Groceries",
+"confidence": 0.8754247481943428,
+"runner_up": 0.039387535429737504
+},
+{
+"text": "Starbucks Online - Evening",
+"cleaned": "Starbucks Online - Evening",
+"category": "Food & Beverage",
+"confidence": 0.8379812029791224,
+"runner_up": 0.03512875403974863
+},
+{
+"text": "Safeway Pharmacy Store (Bank Transfer)",
+"cleaned": "Safeway Pharmacy Store (Bank Transfer)",
+"category": "Health",
+"confidence": 0.8562257222929553,
+"runner_up": 0.059162712528458804
+},
+{
+"text": "PYPL*Jetblue",
+"cleaned": "PYPL Jetblue",
+"category": "Travel",
+"confidence": 0.7755620517278992,
+"runner_up": 0.1233716030563539
+},
+{
+"text": "Dillard's Online Shopping",
+"cleaned": "Dillard's Online Shopping",
+"category": "Clothing & Shopping",
+"confidence": 0.8655165890370587,
+"runner_up": 0.030485026795512495
+},
+{
+"text": "FRONTIER AIRLINES; SUBSCRIPTION",
+"cleaned": "FRONTIER AIRLINES; SUBSCRIPTION",
+"category": "Travel",
+"confidence": 0.7867622620385109,
+"runner_up": 0.07794192976303188
+},
+{
+"text": "Hum TV Streaming",
+"cleaned": "Hum TV Streaming",
+"category": "Entertainment",
+"confidence": 0.23887717381718354,
+"runner_up": 0.1611458441123431
+},
+{
+"text": "Easypaisa Subscription",
+"cleaned": "Easypaisa Subscription",
+"category": "Subscriptions",
+"confidence": 0.5267321295291273,
+"runner_up": 0.0988015067792389
+},
+{
+"text": "Saks Off 5th Hospital",
+"cleaned": "Saks Off 5th Hospital",
+"category": "Clothing & Shopping",
+"confidence": 0.8637892694517706,
+"runner_up": 0.04522255620966407
+},
+{
+"text": "Lab",
+"cleaned": "Lab",
+"category": "Health",
+"confidence": 0.9688392822958938,
+"runner_up": 0.004344006067650813
+},
+{
+"text": "KHAN ACADEMY - SALT LAKE CITY",
+"cleaned": "KHAN ACADEMY - SALT LAKE CITY",
+"category": "Education",
+"confidence": 0.8145735957664137,
+"runner_up": 0.03336570679839396
+},
+{
+"text": "SHAHID MLT",
+"cleaned": "SHAHID MLT",
+"category": "Subscriptions",
+"confidence": 0.7575711378951643,
+"runner_up": 0.047807719607069955
+},
+{
+"text": "Theme Park Online - Evening",
+"cleaned": "Theme Park Online - Evening",
+"category": "Entertainment",
+"confidence": 0.9108743651267044,
+"runner_up": 0.020651134237685283
+},
+{
+"text": "Panda Express Mall",
+"cleaned": "Panda Express Mall",
+"category": "Food & Beverage",
+"confidence": 0.6027623789954998,
+"runner_up": 0.12404239026845115
+},
+{
+"text": "BRILLIANT.ORG*H9KCM3YG",
+"cleaned": "BRILLIANT.ORG H9KCM3YG",
+"category": "Education",
+"confidence": 0.9174006304558837,
+"runner_up": 0.011571732560072396
+},
+{
+"text": "BAHRIA TOWN PHASE 5",
+"cleaned": "BAHRIA TOWN PHASE",
+"category": "Housing",
+"confidence": 0.7649022633725644,
+"runner_up": 0.11119165515209099
+},
+{
+"text": "Cedars-Sinai Center Shopping",
+"cleaned": "Cedars-Sinai Center Shopping",
+"category": "Health",
+"confidence": 0.8231379817032224,
+"runner_up": 0.03217915726257475
+},
+{
+"text": "PAYPAL INST XFER STUBHUB",
+"cleaned": "PAYPAL INST XFER STUBHUB",
+"category": "Subscriptions",
+"confidence": 0.6530916110370617,
+"runner_up": 0.06503264847186979
+},
+{
+"text": "mitsuwa 5781 salt lake city",
+"cleaned": "mitsuwa salt lake city",
+"category": "Groceries",
+"confidence": 0.7692669360593124,
+"runner_up": 0.03817731213508118
+},
+{
+"text": "PYPL*MCGRAW HILL",
+"cleaned": "PYPL MCGRAW HILL",
+"category": "Education",
+"confidence": 0.8394193968669458,
+"runner_up": 0.02552242424222032
+},
+{
+"text": "Cinemark Online Center Airport",
+"cleaned": "Cinemark Online Center Airport",
+"category": "Entertainment",
+"confidence": 0.9273470007886091,
+"runner_up": 0.01979439701246327
+},
+{
+"text": "MEEZAN CAR IJARAH",
+"cleaned": "MEEZAN CAR IJARAH",
+"category": "Loans/EMI",
+"confidence": 0.34977095791703866,
+"runner_up": 0.11081803279464404
+},
+{
+"text": "Tennis Court Online - Dinner Time",
+"cleaned": "Tennis Court Online - Dinner Time",
+"category": "Entertainment",
+"confidence": 0.8306580870023199,
+"runner_up": 0.03500850076300148
+},
+{
+"text": "Regal Mall",
+"cleaned": "Regal Mall",
+"category": "Entertainment",
+"confidence": 0.8171036617826077,
+"runner_up": 0.05162190155482636
+},
+{
+"text": "NHP FOUNDATION RENT PMT",
+"cleaned": "NHP FOUNDATION RENT PMT",
+"category": "Housing",
+"confidence": 0.7453580249345584,
+"runner_up": 0.17347759742025579
+},
+{
+"text": "SPIRIT AIRLINES ATLANTA",
+"cleaned": "SPIRIT AIRLINES ATLANTA",
+"category": "Travel",
+"confidence": 0.7733366574202788,
+"runner_up": 0.19971966308390898
+},
+{
+"text": "HAZECO BILL KOHISTAN",
+"cleaned": "HAZECO BILL KOHISTAN",
+"category": "Utilities",
+"confidence": 0.5380524517371724,
+"runner_up": 0.07501122131471173
+},
+{
+"text": "NATIONAL SAVINGS CHAKWAL",
+"cleaned": "NATIONAL SAVINGS CHAKWAL",
+"category": "Investments",
+"confidence": 0.5297162377676465,
+"runner_up": 0.06983792999200741
+},
+{
+"text": "Spotify Residential",
+"cleaned": "Spotify Residential",
+"category": "Entertainment",
+"confidence": 0.6331006202979645,
+"runner_up": 0.09646046104492581
+},
+{
+"text": "Starbucks Center - Dinner Time",
+"cleaned": "Starbucks Center - Dinner Time",
+"category": "Food & Beverage",
+"confidence": 0.8301807715823788,
+"runner_up": 0.03099507803466195
+},
+{
+"text": "Tamasha Sports",
+"cleaned": "Tamasha Sports",
+"category": "Subscriptions",
+"confidence": 0.35838976534613204,
+"runner_up": 0.08941164545884377
+},
+{
+"text": "HALAN MICROLOAN LAHORE",
+"cleaned": "HALAN MICROLOAN",
+"category": "Loans/EMI",
+"confidence": 0.7764091628296494,
+"runner_up": 0.031141740128989966
+},
+{
+"text": "CAFE FLO KHI",
+"cleaned": "CAFE FLO",
+"category": "Food & Beverage",
+"confidence": 0.8301743474664414,
+"runner_up": 0.02076585766013408
+},
+{
+"text": "WITHDRAWAL FROM IRVINE COMPANY RENT",
+"cleaned": "WITHDRAWAL FROM IRVINE COMPANY RENT",
+"category": "Housing",
+"confidence": 0.5434218848587302,
+"runner_up": 0.21720798972066924
+},
+{
+"text": "AFC",
+"cleaned": "AFC",
+"category": "Food & Beverage",
+"confidence": 0.25382108403018094,
+"runner_up": 0.10131043538376247
+},
+{
+"text": "TRIPS PK MULTAN",
+"cleaned": "TRIPS",
+"category": "Travel",
+"confidence": 0.35808395839523255,
+"runner_up": 0.20081768669338945
+},
+{
+"text": "Jimmy John's Branch Hospital",
+"cleaned": "Jimmy John's Branch Hospital",
+"category": "Food & Beverage",
+"confidence": 0.7466815898158622,
+"runner_up": 0.11708067673209688
+},
+{
+"text": "Call Courier",
+"cleaned": "Call Courier",
+"category": "Transportation",
+"confidence": 0.39656402604532226,
+"runner_up": 0.07873596456808735
+},
+{
+"text": "AL FATAH HUSSAIN CHOWK",
+"cleaned": "AL FATAH HUSSAIN CHOWK",
+"category": "Groceries",
+"confidence": 0.6651558256516457,
+"runner_up": 0.06800067944525402
+},
+{
+"text": "MTA Online Station",
+"cleaned": "MTA Online Station",
+"category": "Transportation",
+"confidence": 0.8425733672742193,
+"runner_up": 0.031787928560776446
+},
+{
+"text": "Noodles & Company Mall",
+"cleaned": "Noodles & Company Mall",
+"category": "Food & Beverage",
+"confidence": 0.8044712085253027,
+"runner_up": 0.055212488100079726
+},
+{
+"text": "Tennis Court Mall",
+"cleaned": "Tennis Court Mall",
+"category": "Entertainment",
+"confidence": 0.8476967126372325,
+"runner_up": 0.028450500360488663
+},
+{
+"text": "GULBERG GREENS MAINTENANCE",
+"cleaned": "GULBERG GREENS MAINTENANCE",
+"category": "Housing",
+"confidence": 0.5714963695427565,
+"runner_up": 0.07613209574121271
+},
+{
+"text": "FOOD CENTRE KHI",
+"cleaned": "FOOD CENTRE",
+"category": "Food & Beverage",
+"confidence": 0.31471308556179456,
+"runner_up": 0.2565461939258436
+},
+{
+"text": "National Online - Dinner Time",
+"cleaned": "National Online - Dinner Time",
+"category": "Transportation",
+"confidence": 0.5291132930949242,
+"runner_up": 0.2492159552578605
+},
+{
+"text": "SOS CHILDRENS HOME KHARIAN",
+"cleaned": "SOS CHILDRENS HOME KHARIAN",
+"category": "Charity",
+"confidence": 0.5176745689371194,
+"runner_up": 0.10061779624833257
+},
+{
+"text": "Equinox Center Station",
+"cleaned": "Equinox Center Station",
+"category": "Entertainment",
+"confidence": 0.7286508222444865,
+"runner_up": 0.08912211538562341
+},
+{
+"text": "WITHDRAWAL FROM NATIONAL CAR RENTAL",
+"cleaned": "WITHDRAWAL FROM NATIONAL CAR RENTAL",
+"category": "Travel",
+"confidence": 0.6528648087135968,
+"runner_up": 0.11403378537679563
+},
+{
+"text": "Cable Internet Shopping",
+"cleaned": "Cable Internet Shopping",
+"category": "Utilities",
+"confidence": 0.9744700276344503,
+"runner_up": 0.0036469194646617177
+},
+{
+"text": "Walmart 9795 Sacramento",
+"cleaned": "Walmart Sacramento",
+"category": "Clothing & Shopping",
+"confidence": 0.5691206264009881,
+"runner_up": 0.15955765174613504
+},
+{
+"text": "24 Hour Fitness Store Online - Dinner Time",
+"cleaned": "Hour Fitness Store Online - Dinner Time",
+"category": "Entertainment",
+"confidence": 0.8445722849219429,
+"runner_up": 0.046875825300266856
+},
+{
+"text": "paid cash for the you to me course thirty nine ninety nine",
+"cleaned": "paid cash for the you to me course thirty nine ninety nine",
+"category": "Education",
+"confidence": 0.6415747434801345,
+"runner_up": 0.16628257540321717
+},
+{
+"text": "Cable Internet (Bank Transfer)",
+"cleaned": "Cable Internet (Bank Transfer)",
+"category": "Utilities",
+"confidence": 0.9614680146723131,
+"runner_up": 0.006326041812631842
+},
+{
+"text": "Olive Garden Store Campus",
+"cleaned": "Olive Garden Store Campus",
+"category": "Food & Beverage",
+"confidence": 0.877640081480176,
+"runner_up": 0.02271359170312067
+},
+{
+"text": "Burger King Store Station",
+"cleaned": "Burger King Store Station",
+"category": "Food & Beverage",
+"confidence": 0.8549112147721729,
+"runner_up": 0.04233914095948503
+},
+{
+"text": "Gulberg Residencia",
+"cleaned": "Gulberg Residencia",
+"category": "Housing",
+"confidence": 0.7233712320494133,
+"runner_up": 0.060710170861249343
+},
+{
+"text": "T-Mobile - Evening",
+"cleaned": "T-Mobile - Evening",
+"category": "Utilities",
+"confidence": 0.8990696111384291,
+"runner_up": 0.02631514335198527
+},
+{
+"text": "brilliant.org*cffmzykz8",
+"cleaned": "brilliant.org cffmzykz8",
+"category": "Education",
+"confidence": 0.9338077039992099,
+"runner_up": 0.009440243787599459
+},
+{
+"text": "H&M Store Branch Mall",
+"cleaned": "H&M Store Branch Mall",
+"category": "Clothing & Shopping",
+"confidence": 0.8483853992029619,
+"runner_up": 0.027111976911478677
+},
+{
+"text": "CODECADEMY*IS6YFZCH",
+"cleaned": "CODECADEMY IS6YFZCH",
+"category": "Education",
+"confidence": 0.9348825814328787,
+"runner_up": 0.006795520827054702
+},
+{
+"text": "BUITEMS",
+"cleaned": "BUITEMS",
+"category": "Education",
+"confidence": 0.2027450971322964,
+"runner_up": 0.13955645595612268
+},
+{
+"text": "Raising Cane's - Dinner Time",
+"cleaned": "Raising Cane's - Dinner Time",
+"category": "Food & Beverage",
+"confidence": 0.9047286126089943,
+"runner_up": 0.024688408707600137
+},
+{
+"text": "airport parking union city",
+"cleaned": "airport parking union city",
+"category": "Travel",
+"confidence": 0.4146637647187968,
+"runner_up": 0.3926354774858484
+},
+{
+"text": "Homeless Shelter Online (Bank Transfer)",
+"cleaned": "Homeless Shelter Online (Bank Transfer)",
+"category": "Charity",
+"confidence": 0.805691308499566,
+"runner_up": 0.05047411211616996
+},
+{
+"text": "Eye Care Store Residential",
+"cleaned": "Eye Care Store Residential",
+"category": "Health",
+"confidence": 0.7709052432789798,
+"runner_up": 0.06767942830957903
+},
+{
+"text": "Mosque Online Campus",
+"cleaned": "Mosque Online Campus",
+"category": "Charity",
+"confidence": 0.7933298723549393,
+"runner_up": 0.041804024221203016
+},
+{
+"text": "Popeyes Campus",
+"cleaned": "Popeyes Campus",
+"category": "Food & Beverage",
+"confidence": 0.8213731519176619,
+"runner_up": 0.02490324706965989
+},
+{
+"text": "Maven - Evening",
+"cleaned": "Maven - Evening",
+"category": "Transportation",
+"confidence": 0.8280597119064619,
+"runner_up": 0.030519671532803768
+},
+{
+"text": "Water Park Campus",
+"cleaned": "Water Park Campus",
+"category": "Entertainment",
+"confidence": 0.8527900894247916,
+"runner_up": 0.06425343085953929
+},
+{
+"text": "JAZZCASH LWMC PAYMENT",
+"cleaned": "JAZZCASH LWMC PAYMENT",
+"category": "Utilities",
+"confidence": 0.5579204812963379,
+"runner_up": 0.07550942148115941
+},
+{
+"text": "Oxfam Online Branch - Dinner Time",
+"cleaned": "Oxfam Online Branch - Dinner Time",
+"category": "Charity",
+"confidence": 0.7030619608221523,
+"runner_up": 0.06841868048702048
+},
+{
+"text": "Swimming Pool Store - Evening",
+"cleaned": "Swimming Pool Store - Evening",
+"category": "Entertainment",
+"confidence": 0.8463286985072416,
+"runner_up": 0.03215651110771896
+},
+{
+"text": "UOL Admissions",
+"cleaned": "UOL Admissions",
+"category": "Education",
+"confidence": 0.8714084101457565,
+"runner_up": 0.016450106990102593
+},
+{
+"text": "HughesNet Residential",
+"cleaned": "HughesNet Residential",
+"category": "Utilities",
+"confidence": 0.7695734663525281,
+"runner_up": 0.03174952182408915
+},
+{
+"text": "Train Center Downtown",
+"cleaned": "Train Center Downtown",
+"category": "Transportation",
+"confidence": 0.7809821460204237,
+"runner_up": 0.04620671091301975
+},
+{
+"text": "Adidas Center Station",
+"cleaned": "Adidas Center Station",
+"category": "Clothing & Shopping",
+"confidence": 0.7562009480822394,
+"runner_up": 0.05148493617200651
+},
+{
+"text": "Park Towers",
+"cleaned": "Park Towers",
+"category": "Entertainment",
+"confidence": 0.21247888001916607,
+"runner_up": 0.1995120181736917
+},
+{
+"text": "SPOTIFY RYK",
+"cleaned": "SPOTIFY RYK",
+"category": "Subscriptions",
+"confidence": 0.6918082690833791,
+"runner_up": 0.155850349431236
+},
+{
+"text": "Surgery Store Shopping",
+"cleaned": "Surgery Store Shopping",
+"category": "Health",
+"confidence": 0.8078666472992166,
+"runner_up": 0.07258416881542343
+},
+{
+"text": "Target Online Strip Mall",
+"cleaned": "Target Online Strip Mall",
+"category": "Clothing & Shopping",
+"confidence": 0.7948773251428144,
+"runner_up": 0.10177612215451556
+},
+{
+"text": "comprei o caderno de exercícios de cálculo por oitenta e cinco",
+"cleaned": "comprei o caderno de exercícios de cálculo por oitenta e cinco",
+"category": "Education",
+"confidence": 0.47458751565417767,
+"runner_up": 0.12485311754906821
+},
+{
+"text": "Wendy's Online Shopping",
+"cleaned": "Wendy's Online Shopping",
+"category": "Food & Beverage",
+"confidence": 0.8325522248143943,
+"runner_up": 0.045913094581442195
+},
+{
+"text": "KFC - Evening",
+"cleaned": "KFC - Evening",
+"category": "Food & Beverage",
+"confidence": 0.7653524101351779,
+"runner_up": 0.04522232317904411
+},
+{
+"text": "Blood Test Store Mall",
+"cleaned": "Blood Test Store Mall",
+"category": "Health",
+"confidence": 0.8502242896443918,
+"runner_up": 0.040918553069272924
+},
+{
+"text": "Arcade - Evening",
+"cleaned": "Arcade - Evening",
+"category": "Entertainment",
+"confidence": 0.842295080015038,
+"runner_up": 0.026477949557402
+},
+{
+"text": "Ross Center Residential",
+"cleaned": "Ross Center Residential",
+"category": "Clothing & Shopping",
+"confidence": 0.5965372729875789,
+"runner_up": 0.10477380081095973
+},
+{
+"text": "Gift Mall",
+"cleaned": "Gift Mall",
+"category": "Charity",
+"confidence": 0.7995639756771163,
+"runner_up": 0.05387588526057977
+},
+{
+"text": "Charter Online Center Campus",
+"cleaned": "Charter Online Center Campus",
+"category": "Utilities",
+"confidence": 0.7219831053687047,
+"runner_up": 0.08766612909051696
+},
+{
+"text": "Greenvalley Online",
+"cleaned": "Greenvalley Online",
+"category": "Groceries",
+"confidence": 0.45698094746278267,
+"runner_up": 0.08508429278422051
+},
+{
+"text": "ASPCA Online Station",
+"cleaned": "ASPCA Online Station",
+"category": "Charity",
+"confidence": 0.8923008971090407,
+"runner_up": 0.02483175201875003
+},
+{
+"text": "WiFi Hotspot Online Residential",
+"cleaned": "WiFi Hotspot Online Residential",
+"category": "Utilities",
+"confidence": 0.9329131725931513,
+"runner_up": 0.012450730436598079
+},
+{
+"text": "Suddenlink Store Shopping",
+"cleaned": "Suddenlink Store Shopping",
+"category": "Utilities",
+"confidence": 0.8519555576696884,
+"runner_up": 0.03185158469641903
+},
+{
+"text": "Zara Center Station",
+"cleaned": "Zara Center Station",
+"category": "Clothing & Shopping",
+"confidence": 0.7249967774690539,
+"runner_up": 0.05743644530131145
+},
+{
+"text": "YOUTUBE PESH",
+"cleaned": "YOUTUBE PESH",
+"category": "Subscriptions",
+"confidence": 0.7378631340829714,
+"runner_up": 0.11860253317260692
+},
+{
+"text": "BART Store Online Campus",
+"cleaned": "BART Store Online Campus",
+"category": "Transportation",
+"confidence": 0.7587225369539531,
+"runner_up": 0.08484741191862545
+},
+{
+"text": "Mass General Station",
+"cleaned": "Mass General Station",
+"category": "Health",
+"confidence": 0.8109350866571681,
+"runner_up": 0.07514743717811624
+},
+{
+"text": "NATURAL GROCERS NEWARK",
+"cleaned": "NATURAL GROCERS NEWARK",
+"category": "Groceries",
+"confidence": 0.9158564915258943,
+"runner_up": 0.012756402975242854
+},
+{
+"text": "Golf Course Online Downtown",
+"cleaned": "Golf Course Online Downtown",
+"category": "Entertainment",
+"confidence": 0.8771080834111283,
+"runner_up": 0.02316561393988534
+},
+{
+"text": "PAK SUZUKI MULTAN",
+"cleaned": "PAK SUZUKI",
+"category": "Transportation",
+"confidence": 0.3432590914767407,
+"runner_up": 0.08161066318845721
+},
+{
+"text": "Kindle Unltd*WG67THMQ5",
+"cleaned": "Kindle Unltd WG67THMQ5",
+"category": "Clothing & Shopping",
+"confidence": 0.6119435880698795,
+"runner_up": 0.1452464907403095
+},
+{
+"text": "Sprouts 3283 Phoenix",
+"cleaned": "Sprouts Phoenix",
+"category": "Groceries",
+"confidence": 0.8053721231758216,
+"runner_up": 0.02519682672062876
+},
+{
+"text": "Snack Purchase",
+"cleaned": "Snack Purchase",
+"category": "Clothing & Shopping",
+"confidence": 0.15878549957756144,
+"runner_up": 0.14947080932049436
+},
+{
+"text": "BEACONHOUSE SIALKOT",
+"cleaned": "BEACONHOUSE",
+"category": "Education",
+"confidence": 0.45559908034210794,
+"runner_up": 0.15656592830954097
+},
+{
+"text": "KIPS MULTAN CANTT",
+"cleaned": "KIPS MULTAN CANTT",
+"category": "Education",
+"confidence": 0.2452735043354911,
+"runner_up": 0.21260570268102152
+},
+{
+"text": "Popeyes Online Campus",
+"cleaned": "Popeyes Online Campus",
+"category": "Food & Beverage",
+"confidence": 0.7983605160209346,
+"runner_up": 0.037916691979448865
+},
+{
+"text": "SPCA Center Hospital",
+"cleaned": "SPCA Center Hospital",
+"category": "Charity",
+"confidence": 0.7706047949376363,
+"runner_up": 0.10031690086953993
+},
+{
+"text": "T-Mobile",
+"cleaned": "T-Mobile",
+"category": "Utilities",
+"confidence": 0.9092550023369941,
+"runner_up": 0.017890298702402444
+},
+{
+"text": "CRESCENT LEASING PESHAWAR",
+"cleaned": "CRESCENT LEASING",
+"category": "Loans/EMI",
+"confidence": 0.3207522300951859,
+"runner_up": 0.22062912323838216
+},
+{
+"text": "Advanced Diagnostic Centre",
+"cleaned": "Advanced Diagnostic Centre",
+"category": "Health",
+"confidence": 0.3744296190538821,
+"runner_up": 0.09603842131535839
+},
+{
+"text": "CVS Branch Hospital",
+"cleaned": "CVS Branch Hospital",
+"category": "Health",
+"confidence": 0.6266432146356181,
+"runner_up": 0.25377231689741914
+},
+{
+"text": "COMMecs INSTITUTE KARACHI",
+"cleaned": "COMMecs INSTITUTE",
+"category": "Education",
+"confidence": 0.6794559192600701,
+"runner_up": 0.0516247733993753
+},
+{
+"text": "BUDGET LLC",
+"cleaned": "BUDGET LLC",
+"category": "Travel",
+"confidence": 0.7501406564303046,
+"runner_up": 0.11085671256904125
+},
+{
+"text": "Domino's",
+"cleaned": "Domino's",
+"category": "Food & Beverage",
+"confidence": 0.9083533587273054,
+"runner_up": 0.012330261750407941
+},
+{
+"text": "The Educators",
+"cleaned": "The Educators",
+"category": "Education",
+"confidence": 0.22654990972839334,
+"runner_up": 0.13540442740434536
+},
+{
+"text": "FAYSAL CAR FINANCE FSD",
+"cleaned": "FAYSAL CAR FINANCE FSD",
+"category": "Loans/EMI",
+"confidence": 0.9326509407313904,
+"runner_up": 0.009478467751410766
+},
+{
+"text": "wholefds charlott",
+"cleaned": "wholefds charlott",
+"category": "Groceries",
+"confidence": 0.8452275744599601,
+"runner_up": 0.029232137559302172
+},
+{
+"text": "Upwork-9541394Membe",
+"cleaned": "Upwork- Membe",
+"category": "Subscriptions",
+"confidence": 0.47406391305835205,
+"runner_up": 0.06876984376142078
+},
+{
+"text": "Islamic Relief Islamabad",
+"cleaned": "Islamic Relief",
+"category": "Charity",
+"confidence": 0.6088523951792819,
+"runner_up": 0.04821219375727899
+},
+{
+"text": "PreApproved Payment Bill User Payment: SMARTSHEET",
+"cleaned": "PreApproved Payment Bill User Payment: SMARTSHEET",
+"category": "Subscriptions",
+"confidence": 0.6359370044075998,
+"runner_up": 0.12983210773110587
+},
+{
+"text": "Quiznos Airport",
+"cleaned": "Quiznos Airport",
+"category": "Food & Beverage",
+"confidence": 0.8037547935752242,
+"runner_up": 0.03244544002996445
+},
+{
+"text": "PAYPAL INST XFER MATCH.COM",
+"cleaned": "PAYPAL INST XFER MATCH.COM",
+"category": "Subscriptions",
+"confidence": 0.8153198745310104,
+"runner_up": 0.0379774920294901
+},
+{
+"text": "MCB HOME LOAN ISB",
+"cleaned": "MCB HOME LOAN",
+"category": "Loans/EMI",
+"confidence": 0.9183952761020978,
+"runner_up": 0.04304282898521137
+},
+{
+"text": "PYPL*PRIORITY PASS",
+"cleaned": "PYPL PRIORITY PASS",
+"category": "Travel",
+"confidence": 0.9214335004274093,
+"runner_up": 0.009917450438680179
+},
+{
+"text": "FAYSAL CAR FINANCE LHR",
+"cleaned": "FAYSAL CAR FINANCE",
+"category": "Loans/EMI",
+"confidence": 0.9591819602262129,
+"runner_up": 0.00844698596277772
+},
+{
+"text": "Pharmacy Airport",
+"cleaned": "Pharmacy Airport",
+"category": "Health",
+"confidence": 0.9746310388784251,
+"runner_up": 0.0036665275842723407
+},
+{
+"text": "Aldrees Station 12",
+"cleaned": "Aldrees Station",
+"category": "Fuel",
+"confidence": 0.4534922443370226,
+"runner_up": 0.08380284182925005
+},
+{
+"text": "Netflix Basic",
+"cleaned": "Netflix Basic",
+"category": "Subscriptions",
+"confidence": 0.3625114694275153,
+"runner_up": 0.2996103378443312
+},
+{
+"text": "AMERICAS BEST",
+"cleaned": "AMERICAS BEST",
+"category": "Transportation",
+"confidence": 0.2232902192464017,
+"runner_up": 0.16610840674877844
+},
+{
+"text": "OfficeMax Shopping",
+"cleaned": "OfficeMax Shopping",
+"category": "Clothing & Shopping",
+"confidence": 0.8995504671650227,
+"runner_up": 0.015409141642487047
+},
+{
+"text": "GOOGLE *HINGE",
+"cleaned": "GOOGLE HINGE",
+"category": "Subscriptions",
+"confidence": 0.885668467816831,
+"runner_up": 0.022584602898109117
+},
+{
+"text": "SIALKOT SWEETS CANTT",
+"cleaned": "SIALKOT SWEETS CANTT",
+"category": "Food & Beverage",
+"confidence": 0.6415531724499272,
+"runner_up": 0.12340435533221188
+},
+{
+"text": "TARGET CHICAGO",
+"cleaned": "TARGET CHICAGO",
+"category": "Clothing & Shopping",
+"confidence": 0.5417392560162031,
+"runner_up": 0.19267508537129854
+},
+{
+"text": "UNIVERSITY OF DIR",
+"cleaned": "UNIVERSITY OF DIR",
+"category": "Education",
+"confidence": 0.9707259563326572,
+"runner_up": 0.004000627543165707
+},
+{
+"text": "FGEHA HOUSING ISLAMABAD",
+"cleaned": "FGEHA HOUSING",
+"category": "Housing",
+"confidence": 0.8119779518562319,
+"runner_up": 0.03290143130206217
+},
+{
+"text": "MRI Branch Business District",
+"cleaned": "MRI Branch Business District",
+"category": "Health",
+"confidence": 0.5491317357916004,
+"runner_up": 0.08613750474984759
+},
+{
+"text": "Fiber Shopping",
+"cleaned": "Fiber Shopping",
+"category": "Utilities",
+"confidence": 0.7937261133379758,
+"runner_up": 0.04211400292336458
+},
+{
+"text": "Primary Care Downtown",
+"cleaned": "Primary Care Downtown",
+"category": "Health",
+"confidence": 0.8596037913653728,
+"runner_up": 0.027422697206394207
+},
+{
+"text": "ALFA PAYMENT GATEWAY Karachi PK",
+"cleaned": "ALFA PAYMENT GATEWAY",
+"category": "Groceries",
+"confidence": 0.17054539409756436,
+"runner_up": 0.16073116123327552
+},
+{
+"text": "Gas Company Residential",
+"cleaned": "Gas Company Residential",
+"category": "Utilities",
+"confidence": 0.8253972389323,
+"runner_up": 0.043948114770714676
+},
+{
+"text": "Sixt Center Hospital",
+"cleaned": "Sixt Center Hospital",
+"category": "Transportation",
+"confidence": 0.6670358175808947,
+"runner_up": 0.14064418659946418
+},
+{
+"text": "Dermatologist - Dinner Time",
+"cleaned": "Dermatologist - Dinner Time",
+"category": "Health",
+"confidence": 0.9506594479178321,
+"runner_up": 0.010140256908882817
+},
+{
+"text": "AL KHIDMAT SINDH",
+"cleaned": "AL KHIDMAT SINDH",
+"category": "Charity",
+"confidence": 0.6665561595253977,
+"runner_up": 0.03226208404811537
+},
+{
+"text": "KASHMIR ORPHAN RELIEF",
+"cleaned": "KASHMIR ORPHAN RELIEF",
+"category": "Charity",
+"confidence": 0.7874034854439127,
+"runner_up": 0.02827869995413152
+},
+{
+"text": "Von Maur Branch Airport",
+"cleaned": "Von Maur Branch Airport",
+"category": "Clothing & Shopping",
+"confidence": 0.789103784903698,
+"runner_up": 0.03524203900931112
+},
+{
+"text": "STC Bank SME Finance",
+"cleaned": "STC Bank SME Finance",
+"category": "Loans/EMI",
+"confidence": 0.9853955558181192,
+"runner_up": 0.0019227215761757459
+},
+{
+"text": "MEPCO Rahim Yar Khan",
+"cleaned": "MEPCO Rahim Yar Khan",
+"category": "Utilities",
+"confidence": 0.5586862716515918,
+"runner_up": 0.05864852026829916
+},
+{
+"text": "Lowe's Center Downtown",
+"cleaned": "Lowe's Center Downtown",
+"category": "Clothing & Shopping",
+"confidence": 0.741802043168975,
+"runner_up": 0.07814894125093595
+},
+{
+"text": "AMC Store Campus",
+"cleaned": "AMC Store Campus",
+"category": "Entertainment",
+"confidence": 0.8203603185913841,
+"runner_up": 0.039004350513479925
+},
+{
+"text": "Habitat for Humanity Store Online - Dinner Time",
+"cleaned": "Habitat for Humanity Store Online - Dinner Time",
+"category": "Charity",
+"confidence": 0.9010472945345198,
+"runner_up": 0.019012873407341955
+},
+{
+"text": "PAYPAL INST XFER MING'S KITCHEN",
+"cleaned": "PAYPAL INST XFER MING'S KITCHEN",
+"category": "Food & Beverage",
+"confidence": 0.6182111450400087,
+"runner_up": 0.13600181289077534
+},
+{
+"text": "Suddenlink Online Campus",
+"cleaned": "Suddenlink Online Campus",
+"category": "Utilities",
+"confidence": 0.8597518326044237,
+"runner_up": 0.025898649109202473
+},
+{
+"text": "Festival Store (Bank Transfer)",
+"cleaned": "Festival Store (Bank Transfer)",
+"category": "Entertainment",
+"confidence": 0.800588203073234,
+"runner_up": 0.03904870628221202
+},
+{
+"text": "Best Buy Store Station",
+"cleaned": "Best Buy Store Station",
+"category": "Clothing & Shopping",
+"confidence": 0.8230733986842712,
+"runner_up": 0.03213415361014258
+},
+{
+"text": "NBP RETIREMENT FUND",
+"cleaned": "NBP RETIREMENT FUND",
+"category": "Investments",
+"confidence": 0.7350551772893907,
+"runner_up": 0.030438001696822824
+},
+{
+"text": "DATACAMP*QMH4T10V9Z",
+"cleaned": "DATACAMP QMH4T10V9Z",
+"category": "Education",
+"confidence": 0.8670571484226923,
+"runner_up": 0.018308639534490478
+},
+{
+"text": "WITHDRAWAL FROM BECU MTG PYMT",
+"cleaned": "WITHDRAWAL FROM BECU MTG PYMT",
+"category": "Housing",
+"confidence": 0.7279874798527658,
+"runner_up": 0.0544606915398299
+},
+{
+"text": "AMC Center Downtown",
+"cleaned": "AMC Center Downtown",
+"category": "Entertainment",
+"confidence": 0.7414933127643867,
+"runner_up": 0.05870406865956079
+},
+{
+"text": "GRAMMARLY* Credit Report",
+"cleaned": "GRAMMARLY Credit Report",
+"category": "Subscriptions",
+"confidence": 0.7582629616323044,
+"runner_up": 0.030414972769590178
+},
+{
+"text": "KASHMIR DISASTER RELIEF",
+"cleaned": "KASHMIR DISASTER RELIEF",
+"category": "Charity",
+"confidence": 0.5130231887121058,
+"runner_up": 0.07225446989820997
+},
+{
+"text": "SKARDU TRAVEL TOURS",
+"cleaned": "SKARDU TRAVEL TOURS",
+"category": "Travel",
+"confidence": 0.9883410308981031,
+"runner_up": 0.0015855632279471268
+},
+{
+"text": "Qdoba Online - Dinner Time",
+"cleaned": "Qdoba Online - Dinner Time",
+"category": "Food & Beverage",
+"confidence": 0.7526943692866414,
+"runner_up": 0.05369606481016282
+},
+{
+"text": "QURTUBA UNIVERSITY DI KHAN",
+"cleaned": "QURTUBA UNIVERSITY DI KHAN",
+"category": "Education",
+"confidence": 0.884274336653662,
+"runner_up": 0.02342663216357921
+},
+{
+"text": "BRILLIANT.ORG*4D3XUJF6H",
+"cleaned": "BRILLIANT.ORG 4D3XUJF6H",
+"category": "Education",
+"confidence": 0.9431037346966766,
+"runner_up": 0.008162177474750136
+},
+{
+"text": "Equinox Mall",
+"cleaned": "Equinox Mall",
+"category": "Entertainment",
+"confidence": 0.7522624835880577,
+"runner_up": 0.09432811253174397
+},
+{
+"text": "SPCA Store Online Campus",
+"cleaned": "SPCA Store Online Campus",
+"category": "Charity",
+"confidence": 0.7776365271887726,
+"runner_up": 0.05361326507698407
+},
+{
+"text": "Walmart Supercenter Branch Business District",
+"cleaned": "Walmart Supercenter Branch Business District",
+"category": "Food & Beverage",
+"confidence": 0.6895016004088463,
+"runner_up": 0.10566186279916362
+},
+{
+"text": "Netflix Station",
+"cleaned": "Netflix Station",
+"category": "Entertainment",
+"confidence": 0.749906421700264,
+"runner_up": 0.06906105751052716
+},
+{
+"text": "MICROSOFT SGR",
+"cleaned": "MICROSOFT SGR",
+"category": "Subscriptions",
+"confidence": 0.840444521075889,
+"runner_up": 0.01811919889751338
+},
+{
+"text": "SACHET LAHORE",
+"cleaned": "SACHET",
+"category": "Clothing & Shopping",
+"confidence": 0.1648923594709975,
+"runner_up": 0.14066156662281434
+},
+{
+"text": "oitenta e cinco pra taxa de inscrição do toefl",
+"cleaned": "oitenta e cinco pra taxa de inscrição do toefl",
+"category": "Education",
+"confidence": 0.6282136883166725,
+"runner_up": 0.07032756713605846
+},
+{
+"text": "United Way Online Branch Mall",
+"cleaned": "United Way Online Branch Mall",
+"category": "Charity",
+"confidence": 0.5786487268115158,
+"runner_up": 0.19616518966267826
+},
+{
+"text": "Hospital bill",
+"cleaned": "Hospital bill",
+"category": "Utilities",
+"confidence": 0.817539437891023,
+"runner_up": 0.08988799641978211
+},
+{
+"text": "Moe's Southwest Grill Center Downtown",
+"cleaned": "Moe's Southwest Grill Center Downtown",
+"category": "Food & Beverage",
+"confidence": 0.833990958021112,
+"runner_up": 0.06391418934283118
+},
+{
+"text": "MEPCO SADIQABAD BILL",
+"cleaned": "MEPCO SADIQABAD BILL",
+"category": "Utilities",
+"confidence": 0.9705654506971609,
+"runner_up": 0.0034966974610285625
+},
+{
+"text": "Library fee",
+"cleaned": "Library fee",
+"category": "Education",
+"confidence": 0.47843382117157707,
+"runner_up": 0.07585142466118144
+},
+{
+"text": "Nike - Evening",
+"cleaned": "Nike - Evening",
+"category": "Clothing & Shopping",
+"confidence": 0.8251131806893388,
+"runner_up": 0.03577999685313575
+},
+{
+"text": "Subscription Payment: HUGGING FACE",
+"cleaned": "Subscription Payment: HUGGING FACE",
+"category": "Subscriptions",
+"confidence": 0.8144556610234306,
+"runner_up": 0.03816833787681556
+},
+{
+"text": "QESCO BILL KHUZDAR",
+"cleaned": "QESCO BILL KHUZDAR",
+"category": "Utilities",
+"confidence": 0.8110299806462611,
+"runner_up": 0.0362648543175332
+},
+{
+"text": "Flight ticket booking fac",
+"cleaned": "Flight ticket booking fac",
+"category": "Travel",
+"confidence": 0.5596779991898823,
+"runner_up": 0.14933468510995038
+},
+{
+"text": "INVITATION HOMES RENT PAYMENT",
+"cleaned": "INVITATION HOMES RENT PAYMENT",
+"category": "Housing",
+"confidence": 0.8478430303011727,
+"runner_up": 0.02828703668410663
+},
+{
+"text": "National Center - Dinner Time",
+"cleaned": "National Center - Dinner Time",
+"category": "Transportation",
+"confidence": 0.46186815138060905,
+"runner_up": 0.3208164424781989
+},
+{
+"text": "Subscription Payment: MEDIUM.COM",
+"cleaned": "Subscription Payment: MEDIUM.COM",
+"category": "Subscriptions",
+"confidence": 0.8967238482684717,
+"runner_up": 0.02688976423112498
+},
+{
+"text": "SIR SYED UNIVERSITY",
+"cleaned": "SIR SYED UNIVERSITY",
+"category": "Education",
+"confidence": 0.886702547258679,
+"runner_up": 0.014312800788168845
+},
+{
+"text": "SEPTA - Dinner Time",
+"cleaned": "SEPTA - Dinner Time",
+"category": "Transportation",
+"confidence": 0.8286981986749821,
+"runner_up": 0.0376214441876998
+},
+{
+"text": "Dairy Queen Campus",
+"cleaned": "Dairy Queen Campus",
+"category": "Food & Beverage",
+"confidence": 0.820018692365255,
+"runner_up": 0.037232592520405706
+},
+{
+"text": "Turo Hospital",
+"cleaned": "Turo Hospital",
+"category": "Transportation",
+"confidence": 0.6165629249971024,
+"runner_up": 0.13554551802621082
+},
+{
+"text": "Lyft",
+"cleaned": "Lyft",
+"category": "Transportation",
+"confidence": 0.8972968594291705,
+"runner_up": 0.01743266820234894
+},
+{
+"text": "BIPL SECURITIES GUJRANWALA",
+"cleaned": "BIPL SECURITIES",
+"category": "Investments",
+"confidence": 0.8384643857486731,
+"runner_up": 0.01601304370961699
+},
+{
+"text": "FlixBus Center - Evening",
+"cleaned": "FlixBus Center - Evening",
+"category": "Transportation",
+"confidence": 0.867517697900205,
+"runner_up": 0.02976144541804127
+},
+{
+"text": "Orange Theory Store - Dinner Time",
+"cleaned": "Orange Theory Store - Dinner Time",
+"category": "Entertainment",
+"confidence": 0.8180816437354153,
+"runner_up": 0.061753888282029656
+},
+{
+"text": "ALFALAH AUTO PESHAWAR",
+"cleaned": "ALFALAH AUTO",
+"category": "Loans/EMI",
+"confidence": 0.6117372512980321,
+"runner_up": 0.1150013800175108
+},
+{
+"text": "CAFE BOGIE KHI",
+"cleaned": "CAFE BOGIE",
+"category": "Food & Beverage",
+"confidence": 0.8126651011290502,
+"runner_up": 0.02442875201864286
+},
+{
+"text": "Bloomingdale's Online Hospital",
+"cleaned": "Bloomingdale's Online Hospital",
+"category": "Clothing & Shopping",
+"confidence": 0.8345066240521021,
+"runner_up": 0.055432178716512105
+},
+{
+"text": "Bumble",
+"cleaned": "Bumble",
+"category": "Subscriptions",
+"confidence": 0.3758417947457521,
+"runner_up": 0.08613645113445517
+},
+{
+"text": "Optix",
+"cleaned": "Optix",
+"category": "Subscriptions",
+"confidence": 0.19359462120159046,
+"runner_up": 0.1750521276778275
+},
+{
+"text": "POS PANDA RET 1234 RIYADH",
+"cleaned": "PANDA RET",
+"category": "Groceries",
+"confidence": 0.4587486726341322,
+"runner_up": 0.29304811740597364
+},
+{
+"text": "Panda Ret",
+"cleaned": "Panda Ret",
+"category": "Groceries",
+"confidence": 0.4587486726341322,
+"runner_up": 0.29304811740597364
+},
+{
+"text": "Aldrees 12",
+"cleaned": "Aldrees",
+"category": "Fuel",
+"confidence": 0.2626321311147492,
+"runner_up": 0.1054482243530265
+},
+{
+"text": "SASCO 114",
+"cleaned": "SASCO",
+"category": "Fuel",
+"confidence": 0.2972177582347583,
+"runner_up": 0.0973323883475736
+},
+{
+"text": "NAFT Serv",
+"cleaned": "NAFT Serv",
+"category": "Fuel",
+"confidence": 0.3504221600334694,
+"runner_up": 0.06956553132385769
+},
+{
+"text": "STC pay",
+"cleaned": "STC pay",
+"category": "Clothing & Shopping",
+"confidence": 0.121437971408241,
+"runner_up": 0.1121816838815004
+},
+{
+"text": "Shell",
+"cleaned": "Shell",
+"category": "Transportation",
+"confidence": 0.6275185463085454,
+"runner_up": 0.1584374834002188
+},
+{
+"text": "  KFC  ",
+"cleaned": "KFC",
+"category": "Food & Beverage",
+"confidence": 0.8913338699161131,
+"runner_up": 0.01758943604656334
+},
+{
+"text": "www.noon.com",
+"cleaned": "",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "NOON.COM*ORDER 8472",
+"cleaned": "NOON.COM ORDER",
+"category": "Clothing & Shopping",
+"confidence": 0.3675752992485655,
+"runner_up": 0.2547395192064308
+},
+{
+"text": "john@example.com",
+"cleaned": "",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "STORE 77 JARIR BOO",
+"cleaned": "JARIR BOO",
+"category": "Clothing & Shopping",
+"confidence": 0.26353539042352914,
+"runner_up": 0.09012785288905244
+},
+{
+"text": "ref: 12345 Careem",
+"cleaned": "Careem",
+"category": "Health",
+"confidence": 0.23518974696086942,
+"runner_up": 0.16816322306788306
+},
+{
+"text": "TERMINAL#9 Al Dawaa",
+"cleaned": "Al Dawaa",
+"category": "Health",
+"confidence": 0.23147444624467137,
+"runner_up": 0.09459530191389778
+},
+{
+"text": "1208LAHORE Mart",
+"cleaned": "LAHORE Mart",
+"category": "Groceries",
+"confidence": 0.44667490857881337,
+"runner_up": 0.11588932857733067
+},
+{
+"text": "(AHMED)",
+"cleaned": "AHMED",
+"category": "Clothing & Shopping",
+"confidence": 0.3789387298219546,
+"runner_up": 0.07074874033234183
+},
+{
+"text": "ecom: Netflix.com",
+"cleaned": "Netflix.com",
+"category": "Subscriptions",
+"confidence": 0.8569984179503947,
+"runner_up": 0.0652529153288869
+},
+{
+"text": "paid to Hungerstation",
+"cleaned": "Hungerstation",
+"category": "Food & Beverage",
+"confidence": 0.37096841030240735,
+"runner_up": 0.1259405294365468
+},
+{
+"text": "Starbucks Dubai",
+"cleaned": "Starbucks",
+"category": "Food & Beverage",
+"confidence": 0.8987499698461028,
+"runner_up": 0.014400128877040735
+},
+{
+"text": "Uber Lahore PK",
+"cleaned": "Uber",
+"category": "Transportation",
+"confidence": 0.7425166504318798,
+"runner_up": 0.0504667039902754
+},
+{
+"text": "الدرعية",
+"cleaned": "الدرعية",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "بنده ريتيل ١٢٣",
+"cleaned": "بنده ريتيل",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "مطعم البيك ٤٥٦",
+"cleaned": "مطعم البيك",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "نادي  اللياقة",
+"cleaned": "نادي اللياقة",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "H&M",
+"cleaned": "H&M",
+"category": "Clothing & Shopping",
+"confidence": 0.8675941742401118,
+"runner_up": 0.020705022536082165
+},
+{
+"text": "McDonald's #4412",
+"cleaned": "McDonald's",
+"category": "Food & Beverage",
+"confidence": 0.9203306373882303,
+"runner_up": 0.009808074742272688
+},
+{
+"text": "7-Eleven",
+"cleaned": "7-Eleven",
+"category": "Transportation",
+"confidence": 0.7833973335112683,
+"runner_up": 0.029175651398210954
+},
+{
+"text": "A",
+"cleaned": "A",
+"category": "Transportation",
+"confidence": 0.1791335646588675,
+"runner_up": 0.12037272475203784
+},
+{
+"text": "12/05",
+"cleaned": "",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "",
+"cleaned": "",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "   ",
+"cleaned": "",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "*** ___ |||",
+"cleaned": "",
+"category": null,
+"confidence": null,
+"runner_up": null
+},
+{
+"text": "Amazon.sa ‏",
+"cleaned": "Amazon.sa ‏",
+"category": "Clothing & Shopping",
+"confidence": 0.7403964651595359,
+"runner_up": 0.08788765175010185
+},
+{
+"text": "ÉCOLE Café",
+"cleaned": "ÉCOLE Café",
+"category": "Food & Beverage",
+"confidence": 0.551041352739622,
+"runner_up": 0.056194257864112813
+},
+{
+"text": "Zürich Apotheke",
+"cleaned": "Zürich Apotheke",
+"category": "Clothing & Shopping",
+"confidence": 0.1690780745327676,
+"runner_up": 0.16801465329880055
+},
+{
+"text": "İstanbul Taksi",
+"cleaned": "İstanbul Taksi",
+"category": "Transportation",
+"confidence": 0.34364741711719193,
+"runner_up": 0.11952493825656113
+}
+]
+}

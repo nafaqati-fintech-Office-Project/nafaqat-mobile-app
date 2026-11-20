@@ -109,6 +109,13 @@ export async function saveTransaction(processed: ProcessedSms): Promise<boolean>
   return upgraded.changes > 0;
 }
 
+// The row id of a transaction that was just saved, so a banner can open its category screen. null if not found.
+export async function findTransactionId(txn: ParsedTxn): Promise<number | null> {
+  const db = await getDb();
+  const row = await db.getFirstAsync<{ id: number }>('SELECT id FROM transactions WHERE dedupe_key = ?', [transactionKey(txn)]);
+  return row?.id ?? null;
+}
+
 // Rows still waiting for the model, newest first, skipping those the server refused maxAttempts times.
 export async function listPendingPredictions(maxAttempts: number, limit: number): Promise<PendingPrediction[]> {
   const db = await getDb();

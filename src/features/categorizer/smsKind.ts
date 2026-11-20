@@ -9,11 +9,11 @@ const FINE_RE = /traffic\s+violation|\bmoi\b|\babsher\b|مخالفة\s*مرور|
 const INTERNAL_RE =
   /\bown\s+account\b|\bbetween\s+(?:your\s+)?(?:own\s+)?accounts\b|\bself[-\s]?transfer\b|\bcredit\s+card\s+(?:payment|bill|settlement|repayment)\b|\bcard\s+(?:payment|settlement|repayment)\s+(?:to|for|of)\b|\bpayment\s+(?:received|credited)\b[^.]{0,60}\bcard\b|\bcard[-\s]to[-\s](?:bank|account)\b|تحويل\s*بين\s*حساباتك|سداد\s*بطاقة|تسديد\s*بطاقة/i;
 // Money handed back for a payment that was reversed or refunded.
-const REFUND_RE = /\b(?:refund(?:ed)?|reversal|reversed|credited\s+back)\b|استرداد|إرجاع|عكس\s*عملية/i;
+const REFUND_RE = /\b(?:refund(?:ed)?|reversal|reversed|reverse\s+transaction|credited\s+back)\b|استرداد|إرجاع|عكس\s*عملية/i;
 // A charge the bank itself makes. "International fee" inside a purchase message does not count: the caller
 // only applies the rule when the message names no merchant.
 const FEE_RE = /\b(?:bank|service|annual|sms|card|maintenance|transfer|processing|international|late|renewal)\s+(?:fees?|charges?)\b|\bfees?\s+(?:of|charged|debited)\b|رسوم/i;
-const TRANSFER_RE = /\b(?:raast|ibft|iban|ips|fund\s+transfer)\b|تحويل/i;
+const TRANSFER_RE = /\b(?:raast|ibft|iban|ips|fund\s+transfer|(?:debit|credit|bank)\s+transfer)\b|تحويل/i;
 const BILL_RE = /\bbill\b|\bsadad\b|سداد|فاتورة/i;
 const ONLINE_RE = /\bonline\b|e-?commerce|\becom\b|internet\s+(?:purchase|transaction)/i;
 const POS_RE = /\bpos\b|point\s+of\s+sale/i;

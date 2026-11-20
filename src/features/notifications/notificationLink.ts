@@ -18,6 +18,11 @@ export function notificationLink(
     if (!notification.referenceId) return '/transactions';
     return { pathname: '/transactions', params: { highlight: notification.referenceId, at: String(at) } };
   }
+  // "Please check this transaction": the category screen of that transaction, or the list when there are several.
+  if (notification.referenceType === 'RECHECK') {
+    if (!notification.referenceId) return '/transactions';
+    return { pathname: '/change-category', params: { id: notification.referenceId } };
+  }
   if (notification.referenceType === 'SUBSCRIPTION') return '/subscriptions';
   // An invitation, a role change or a removal: the family list shows invitations, and a family opens its page.
   if (notification.type === 'FAMILY' || notification.referenceType === 'FAMILY') {

@@ -7,8 +7,8 @@ import { processSms, type ProcessedSms } from './processSms';
 import { checkSmsPermission } from './smsPermission';
 import type { SmsMessage } from './smsReader';
 import { checkBudgetOnPhone } from '@/features/notifications/budgetAlertService';
-import { ensureNotificationPermission, notifyTransaction } from '@/features/notifications/notify';
-import { emitTransactionsChanged, saveTransaction } from '@/features/transactions/transactionsRepo';
+import { ensureNotificationPermission, notifyRecheck, notifyTransaction } from '@/features/notifications/notify';
+import { emitTransactionsChanged, findTransactionId, saveTransaction } from '@/features/transactions/transactionsRepo';
 import { saveIfMissed } from '@/features/transactions/unparsedRepo';
 
 // Reading the bank SMS for the signed-in user, without any screen having to be open: once the SMS permission is granted
@@ -33,7 +33,14 @@ export async function saveProcessed(result: ProcessedSms): Promise<boolean> {
   const isNew = await saveTransaction(result).catch(() => true);
   if (isNew) {
     emitTransactionsChanged();
-    await notifyTransaction(result);
+    // A transaction the model could not categorize (and is not waiting to be asked again) asks the user to
+    // check it, instead of the usual banner. Ones waiting for the model are announced when the retry ends.
+    if (result.category === 'Uncategorized' && !result.retry) {
+      const id = await findTransactionId(result.txn).catch(() => null);
+      await notifyRecheck([{ id, label: result.txn.merchant ?? result.txn.bank, amount: result.txn.amount, currency: result.txn.currency }]);
+    } else {
+      await notifyTransaction(result);
+    }
     if (result.txn.type === 'DEBIT') await checkBudgetOnPhone();
   }
   return isNew;

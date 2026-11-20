@@ -106,6 +106,14 @@ export const rules: BankRule[] = [
     bank: GENERIC_BANK,
     senderMatch: /^/,
     patterns: [
+      // Saudi bank alerts list one labelled field per line ("At", "Authorized by", "To:"); parseSms joins the lines
+      // first. The merchant ends where the next field starts: the card line, "In <country>" or the date.
+      rx('POS\\s+Purchase\\s+Amount\\s+{AMT}\\s+{CUR}\\s+At\\s+(?<merchant>.+?)(?=\\s+(?:By\\s+(?:Credit|Debit)\\s+Card|Mada\\b)|\\s+on\\s+\\d|\\s*$)'),
+      rx('Online\\s+Purchase.*?Amount\\s+{AMT}\\s+{CUR}.*?Authorized\\s+by\\s+(?<merchant>.+?)(?=(?:\\s+In\\s+[A-Z]{3})?\\s+on\\s+\\d)'),
+      rx('Outgoing\\s+IPS.*?\\bTo:\\s*(?<merchant>.+?)\\s+Amount:\\s*{AMT}\\s*{CUR}'),
+      rx('Debit\\s+Transfer\\s+Internal\\s+Amount\\s+{AMT}\\s+{CUR}\\s+Beneficiary\\s+(?<merchant>.+?)\\s+To\\s+\\*'),
+      rx('Credit\\s+Transfer\\s+Local\\s+Amount\\s+{AMT}\\s+{CUR}\\s+Remitter\\s+(?<merchant>.+?)\\s+From\\s+\\*'),
+      rx('Reverse\\s+Transaction.*?Amount\\s+{AMT}\\s+{CUR}\\s+At\\s+(?<merchant>.+?)\\s+Date\\b'),
       rx('{CUR}\\s*{AMT}\\s+has\\s+been\\s+successfully\\s+sent\\s+to\\s+(?<merchant>.+?)\\s+of\\s+IBAN\\b'),
       rx('{CUR}\\s*{AMT}.*?\\bat\\s+(?!\\s*\\d{1,2}[:.]\\d{2})(?<merchant>.+?){END}'),
       rx('{AMT}\\s*{CUR}.*?\\bat\\s+(?!\\s*\\d{1,2}[:.]\\d{2})(?<merchant>.+?){END}'),

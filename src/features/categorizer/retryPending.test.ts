@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MAX_ATTEMPTS, retryPendingPredictions } from './retryPending';
 import type { Categorized } from './categorize';
 
-const { categorizeMerchant, categorizeRedacted, userCategory, repo } = vi.hoisted(() => ({
+const { categorizeMerchant, categorizeRedacted, userCategory, notifyRecheck, repo } = vi.hoisted(() => ({
+  notifyRecheck: vi.fn(),
   categorizeMerchant: vi.fn(),
   categorizeRedacted: vi.fn(),
   userCategory: vi.fn(),
@@ -15,6 +16,7 @@ const { categorizeMerchant, categorizeRedacted, userCategory, repo } = vi.hoiste
 }));
 vi.mock('./categorize', () => ({ categorizeMerchant, categorizeRedacted, userCategory }));
 vi.mock('@/features/transactions/transactionsRepo', () => repo);
+vi.mock('@/features/notifications/notify', () => ({ notifyRecheck }));
 
 const row = (id: number, merchant: string | null, retryText: string | null = null) => ({ id, merchant, retryText });
 const answer = (category: string): Categorized => ({ category, source: 'model', confidence: 0.9 });
@@ -101,5 +103,15 @@ describe('retryPendingPredictions', () => {
   it('never throws when the database fails', async () => {
     repo.listPendingPredictions.mockRejectedValue(new Error('disk'));
     expect(await retryPendingPredictions()).toBe(0);
+  });
+
+  it('asks the user once to recheck the rows that ended without a category', async () => {
+    repo.listPendingPredictions.mockResolvedValue([row(1, 'ZQXJ'), row(2, 'Starbucks'), row(3, null)]);
+    categorizeMerchant.mockImplementation(async (merchant: string) =>
+      merchant === 'Starbucks' ? answer('Food & Beverage') : { category: 'Uncategorized', source: 'fallback' },
+    );
+    await retryPendingPredictions();
+    expect(notifyRecheck).toHaveBeenCalledTimes(1);
+    expect(notifyRecheck.mock.calls[0]![0].map((item: { id: number }) => item.id).sort()).toEqual([1, 3]);
   });
 });

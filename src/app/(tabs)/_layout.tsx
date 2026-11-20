@@ -5,6 +5,7 @@ import { Icon, type IconName } from '@/components/Icon';
 import { AUTH_BYPASS } from '@/config/flags';
 import { usePendingDeletion } from '@/features/account/usePendingDeletion';
 import { useFeedbackSync } from '@/features/categorizer/feedback/useFeedbackSync';
+import { useLocalModelUpdate } from '@/features/categorizer/useLocalModelUpdate';
 import { useRecategorizeOldRows } from '@/features/categorizer/useRecategorizeOldRows';
 import { useRetryPendingPredictions } from '@/features/categorizer/useRetryPendingPredictions';
 import { useAlertTaps } from '@/features/notifications/useAlertTaps';
@@ -27,6 +28,8 @@ export default function TabsLayout() {
   const { status, user } = useAuth();
   const { t } = useLanguage();
   useRetryPendingPredictions(status === 'authenticated');
+  // The merchant model runs on the phone; this keeps it the same as the server's (no app update needed).
+  useLocalModelUpdate(status === 'authenticated' && !AUTH_BYPASS);
   // Once per account: transactions saved before the categories improved get another look.
   useRecategorizeOldRows(status === 'authenticated' && !AUTH_BYPASS);
   // Bypass mode has a mock user and no token, so there is no account to sync to.

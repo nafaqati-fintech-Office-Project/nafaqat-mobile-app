@@ -1,4 +1,5 @@
 import { lookupCategory } from './lookup';
+import { predictOnDevice } from './localModelStore';
 import { extractMerchant, predictCategory, type ModelContext, type ModelFailure } from './modelClient';
 import { redactForModel } from './redact';
 import { smsKind, type SmsKind } from './smsKind';
@@ -29,6 +30,7 @@ const TRANSFERS = 'Transfers';
 const CASH_WITHDRAWALS = 'Cash Withdrawals';
 const GOVERNMENT_FINES = 'Government & Fines';
 const BANK_FEES = 'Bank Fees';
+const UTILITIES = 'Utilities';
 const INTERNAL_TRANSFERS = 'Internal Transfers';
 const REFUNDS = 'Refunds';
 const TRANSFER_RE = /\b(?:raast|ibft|iban)\b/i;
@@ -64,9 +66,11 @@ async function ruleCategory(txn: ParsedTxn, merchant: string | undefined, kind: 
   if (kind === 'atm') return { category: CASH_WITHDRAWALS, source: 'lookup' };
   if (kind === 'fine') return { category: GOVERNMENT_FINES, source: 'lookup' };
   if (kind === 'fee' && !merchant) return { category: BANK_FEES, source: 'lookup' };
+  // A SADAD bill payment names only a biller number ("Biller 044"), never a shop.
+  if (kind === 'bill' && !merchant) return { category: UTILITIES, source: 'lookup' };
 
   // NayaPay retail receipts also say "Channel Raast", but they are shop payments, not transfers.
-  if (!LLM_ONLY && TRANSFER_RE.test(txn.raw) && !RETAIL_RE.test(txn.raw)) {
+  if (!LLM_ONLY && (kind === 'transfer' || TRANSFER_RE.test(txn.raw)) && !RETAIL_RE.test(txn.raw)) {
     devLog('[categorize] person-to-person transfer -> Transfers (no model call)');
     return { category: TRANSFERS, source: 'lookup' };
   }
@@ -120,6 +124,16 @@ export async function categorizeMerchant(merchant: string, context?: ModelContex
   if (hit) {
     devLog(`[categorize] lookup hit: ${merchant} -> ${hit}`);
     return { category: hit, source: 'lookup' };
+  }
+
+  // The model runs on the phone. A confident answer needs no server call at all; an unsure one goes to the
+  // server, which checks its verified list and then asks the LLM. (The LLM-only experiment skips this step.)
+  if (!LLM_ONLY) {
+    const local = await predictOnDevice(merchant);
+    if (local) {
+      devLog(`[categorize] on-device model: ${merchant} -> ${local.category} (${local.confidence.toFixed(2)})`);
+      return { category: local.category, source: 'model', confidence: local.confidence };
+    }
   }
 
   // In the experiment names also reach the LLM, so digits and account-like parts are removed first.

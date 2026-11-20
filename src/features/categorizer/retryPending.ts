@@ -1,4 +1,5 @@
 import { categorizeMerchant, categorizeRedacted, userCategory, type Categorized } from './categorize';
+import { notifyRecheck, type RecheckItem } from '@/features/notifications/notify';
 import { devLog } from '@/utils/devLog';
 import {
   emitTransactionsChanged,
@@ -49,11 +50,16 @@ async function run(): Promise<number> {
 
   const groups = new Map<string, PendingPrediction[]>();
   let resolved = 0;
+  // Rows the retry ended without a category: the user is asked once, at the end, to check them.
+  const recheck: RecheckItem[] = [];
+  const stillUncategorized = (row: PendingPrediction) =>
+    recheck.push({ id: row.id, label: row.merchant ?? 'a transaction' });
   for (const row of rows) {
     const key = groupKey(row);
     if (key === null) {
       // Nothing left to ask the model with.
       await saveRetryResult(row.id, { category: 'Uncategorized', source: 'fallback' });
+      stillUncategorized(row);
       resolved += 1;
       continue;
     }
@@ -66,7 +72,10 @@ async function run(): Promise<number> {
     const batch = entries.slice(i, i + BATCH_SIZE);
     const results = await Promise.all(batch.map((group) => ask(group[0])));
     for (const [index, result] of results.entries()) {
-      for (const row of batch[index]) await saveRetryResult(row.id, result);
+      for (const row of batch[index]) {
+        await saveRetryResult(row.id, result);
+        if (!result.retry && result.category === 'Uncategorized') stillUncategorized(row);
+      }
       if (!result.retry) resolved += batch[index].length;
     }
     // The model is unreachable: stop here and try the rest on the next run.
@@ -78,5 +87,6 @@ async function run(): Promise<number> {
 
   devLog(`[retry] ${resolved} rows resolved`);
   if (resolved > 0) emitTransactionsChanged();
+  await notifyRecheck(recheck);
   return resolved;
 }

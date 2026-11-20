@@ -146,6 +146,14 @@ function failure(error: unknown, label: string): ModelFailure {
   return status === undefined || RETRYABLE_STATUS.has(status) ? 'unavailable' : 'rejected';
 }
 
+// A plain GET of a model server path (the on-device model file and its version). Not limited or
+// cached like the prediction calls; the caller handles errors. The file is about 0.8 MB compressed.
+export async function getModelJson(path: string): Promise<unknown> {
+  devLog(`[model] GET ${PREFIX}${path}`);
+  const response = await http.get<unknown>(`${PREFIX}${path}`, { timeout: 60_000 });
+  return response.data;
+}
+
 // Asks the server to name the merchant in an already-redacted SMS body; merchant is null when it
 // found none. Never throws.
 export function extractMerchant(redactedText: string): Promise<{ merchant: string | null } | ModelFailure> {
