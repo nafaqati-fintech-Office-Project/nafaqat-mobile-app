@@ -36,7 +36,7 @@
       "env": {
         "APP_VARIANT": "production",
         "EXPO_PUBLIC_AUTH_BYPASS": "false",
-        "EXPO_PUBLIC_MERCHANT_FALLBACK": "false",
+        "EXPO_PUBLIC_MERCHANT_FALLBACK": "true",
         "EXPO_PUBLIC_LLM_ONLY": "false",
         "EXPO_PUBLIC_SMS_TOOLS": "true"
       }

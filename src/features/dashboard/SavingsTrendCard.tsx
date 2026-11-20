@@ -4,7 +4,9 @@ import { barHeight } from './barHeight';
 import { monthPeriod } from './drill';
 import { InfoCard } from './InfoCard';
 import type { DashboardData } from './types';
+import { AnimatedMoney } from '@/components/AnimatedMoney';
 import { AppText } from '@/components/AppText';
+import { GrowBar } from '@/components/GrowBar';
 import { DrillPressable } from '@/features/transactions/DrillPressable';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { colors, fontSizes, radius, sizes, spacing } from '@/theme';
@@ -33,10 +35,12 @@ export function SavingsTrendCard({ data }: { data: DashboardData }) {
               style={styles.col}
               label={`${monthName(m.month, m.year, language)}, ${formatMoney(m.net, data.currency, language)}`}>
               <View style={styles.track}>
-                <View
+                <GrowBar
+                  axis="height"
+                  to={barHeight(Math.abs(values[i]), peak)}
+                  delay={i * 60}
                   style={[
                     styles.bar,
-                    { height: barHeight(Math.abs(values[i]), peak) },
                     values[i] === 0 && styles.barEmpty,
                     negative && styles.barNegative,
                     i === best && !negative && styles.barBest,
@@ -49,9 +53,10 @@ export function SavingsTrendCard({ data }: { data: DashboardData }) {
         })}
       </View>
       {current && (
-        <AppText style={styles.hint}>
-          {`${t('dashboard.thisMonth')}: ${formatMoney(current.net, data.currency, language)}`}
-        </AppText>
+        <View style={styles.hintRow}>
+          <AppText style={styles.hint}>{`${t('dashboard.thisMonth')}: `}</AppText>
+          <AnimatedMoney amount={current.net} currency={data.currency} style={styles.hint} />
+        </View>
       )}
     </InfoCard>
   );
@@ -67,4 +72,5 @@ const styles = StyleSheet.create({
   barBest: { backgroundColor: colors.violet },
   month: { fontSize: fontSizes.xs, color: colors.textSecondary },
   hint: { fontSize: fontSizes.xs, color: colors.textSecondary },
+  hintRow: { flexDirection: 'row', alignItems: 'center' },
 });

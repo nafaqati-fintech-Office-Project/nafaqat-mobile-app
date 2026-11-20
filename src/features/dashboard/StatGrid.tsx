@@ -34,6 +34,7 @@ export function StatGrid({ data }: { data: DashboardData }) {
         tintSoft={colors.primarySoft}
         label={t('dashboard.transactions')}
         value={String(data.transactionCount)}
+        count={{ value: data.transactionCount }}
         onPress={() => all(t('dashboard.transactions'))}
       />
       <StatCard
@@ -42,6 +43,11 @@ export function StatGrid({ data }: { data: DashboardData }) {
         tintSoft={colors.violetSoft}
         label={t('dashboard.budget')}
         value={budget}
+        count={
+          data.budgetState === 'ready' && data.budgetUsedPercent !== null
+            ? { value: data.budgetUsedPercent, suffix: '%' }
+            : undefined
+        }
         onPress={() => router.push('/budget')}
       />
       <StatCard
@@ -50,6 +56,11 @@ export function StatGrid({ data }: { data: DashboardData }) {
         tintSoft={colors.orangeSoft}
         label={t('dashboard.subscriptions')}
         value={subscriptions}
+        count={
+          data.subscriptionsState === 'ready'
+            ? { value: data.activeSubscriptions, suffix: ` ${t('dashboard.active')}` }
+            : undefined
+        }
         onPress={() => router.push('/subscriptions')}
       />
       <StatCard
@@ -58,6 +69,7 @@ export function StatGrid({ data }: { data: DashboardData }) {
         tintSoft={colors.successSoft}
         label={t('dashboard.savings')}
         value={formatMoney(data.savings, data.currency, language)}
+        amount={{ value: data.savings, currency: data.currency }}
         onPress={() => all(t('dashboard.savings'))}
       />
     </View>

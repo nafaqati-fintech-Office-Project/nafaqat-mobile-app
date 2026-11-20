@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { dashboardPeriod } from './drill';
 import type { DashboardData } from './types';
 import { WeeklyBars } from './WeeklyBars';
+import { AnimatedMoney } from '@/components/AnimatedMoney';
 import { AppText } from '@/components/AppText';
 import { Icon } from '@/components/Icon';
 import { DrillPressable } from '@/features/transactions/DrillPressable';
@@ -38,9 +39,14 @@ export function SpendingCard({ data }: { data: DashboardData }) {
         })`}
       </AppText>
       <View style={styles.amountRow}>
-        <AppText weight="bold" style={styles.amount} numberOfLines={1} adjustsFontSizeToFit>
-          {formatMoney(data.totalSpending, data.currency, language)}
-        </AppText>
+        <AnimatedMoney
+          amount={data.totalSpending}
+          currency={data.currency}
+          weight="bold"
+          style={styles.amount}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+        />
         <View
           style={[styles.chip, { backgroundColor: down ? colors.successSoft : colors.dangerSoft }]}
           accessible

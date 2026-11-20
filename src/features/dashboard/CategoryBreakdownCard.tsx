@@ -4,7 +4,10 @@ import { StyleSheet, View } from 'react-native';
 import { DashboardSection } from './DashboardSection';
 import { dashboardPeriod } from './drill';
 import type { CategoryShare, DashboardData } from './types';
+import { AnimatedMoney } from '@/components/AnimatedMoney';
+import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { AppText } from '@/components/AppText';
+import { GrowBar } from '@/components/GrowBar';
 import { Icon } from '@/components/Icon';
 import { categoryLabelKey } from '@/features/transactions/categoryDisplay';
 import { DrillPressable } from '@/features/transactions/DrillPressable';
@@ -16,7 +19,7 @@ import { formatMoney } from '@/utils/money';
 
 const BAR_HEIGHT = 6;
 
-function CategoryRow({ item, currency, period }: { item: CategoryShare; currency: string; period: { title: string; from: string; to: string } }) {
+function CategoryRow({ item, currency, period, index }: { item: CategoryShare; currency: string; period: { title: string; from: string; to: string }; index: number }) {
   const { language, t } = useLanguage();
   const look = categoryLook(item.category);
   const labelKey = categoryLabelKey(item.category);
@@ -40,15 +43,13 @@ function CategoryRow({ item, currency, period }: { item: CategoryShare; currency
           <AppText weight="semibold" style={styles.name} numberOfLines={1}>
             {name}
           </AppText>
-          <AppText weight="bold" style={styles.amount}>
-            {money}
-          </AppText>
+          <AnimatedMoney amount={item.amount} currency={currency} weight="bold" style={styles.amount} />
         </View>
         <View style={styles.line}>
           <View style={styles.track}>
-            <View style={[styles.fill, { width: `${item.percent}%`, backgroundColor: look.tint }]} />
+            <GrowBar axis="width" to={item.percent} delay={index * 70} style={[styles.fill, { backgroundColor: look.tint }]} />
           </View>
-          <AppText style={styles.percent}>{`${item.percent}%`}</AppText>
+          <AnimatedNumber value={item.percent} suffix="%" style={styles.percent} />
         </View>
       </View>
     </DrillPressable>
@@ -67,8 +68,8 @@ export function CategoryBreakdownCard({ data }: { data: DashboardData }) {
 
   return (
     <DashboardSection title={t('dashboard.byCategory')} onSeeAll={() => router.navigate('/insights')} note={note}>
-      {data.categories.map((item) => (
-        <CategoryRow key={item.category} item={item} currency={data.currency} period={period} />
+      {data.categories.map((item, index) => (
+        <CategoryRow key={item.category} item={item} currency={data.currency} period={period} index={index} />
       ))}
     </DashboardSection>
   );

@@ -17,9 +17,11 @@ import { endSession, refreshSession, startSession } from './session';
 import { getRefreshToken, loadPersistedTokens } from './tokenStore';
 import { showToast } from '@/components/Toast';
 import { AUTH_BYPASS } from '@/config/flags';
+import { prefetchDashboards, resetDashboards } from '@/features/dashboard/dashboardStore';
 import { unregisterPush } from '@/features/notifications/push';
 import { getProfile } from '@/features/profile/profileApi';
 import { t } from '@/i18n';
+import { clearDashboardCache } from '@/storage/dashboardCache';
 
 export type AuthUser = Pick<authApi.AuthResponse, 'id' | 'username' | 'email' | 'role'> & {
   firstName?: string;
@@ -70,9 +72,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [userId, setFirstName]);
 
+  // The moment an account is known (a restored session, a sign-in), its dashboards start loading in the background, so
+  // Home opens with numbers and moving between ranges waits for nothing.
+  useEffect(() => {
+    if (AUTH_BYPASS || status !== 'authenticated' || !userId) return;
+    void prefetchDashboards(userId);
+  }, [status, userId]);
+
   useEffect(
     () =>
       onSessionExpired(() => {
+        resetDashboards();
         setUser(null);
         setStatus('unauthenticated');
         showToast(t('errors.sessionExpired'));
@@ -118,6 +128,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     const token = getRefreshToken();
+    resetDashboards();
+    await clearDashboardCache();
     await endSession();
     setUser(null);
     setStatus('unauthenticated');

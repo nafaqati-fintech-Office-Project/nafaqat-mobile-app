@@ -13,6 +13,12 @@ vi.mock('./dashboardApi', () => ({
   getCurrentBudget: vi.fn(),
   getActiveSubscriptionCount: vi.fn(),
 }));
+vi.mock('@/storage/dashboardCache', () => ({
+  readCachedPreferences: vi.fn(async () => null),
+  writeCachedPreferences: vi.fn(async () => undefined),
+  writeCachedDashboard: vi.fn(async () => undefined),
+}));
+vi.mock('@/auth/currentUser', () => ({ getCurrentUserId: () => 'user-1' }));
 vi.mock('@/config/flags', () => ({ AUTH_BYPASS: false, DASHBOARD_MOCK_FAIL: false }));
 vi.mock('@/features/insights/insightsApi', () => ({ getMonthlyComparison: vi.fn() }));
 vi.mock('@/features/transactions/transactionsApi', () => ({ fetchTransactionPage: vi.fn() }));
@@ -97,6 +103,16 @@ describe('getDashboard', () => {
     api.getCurrentBudget.mockResolvedValue(null);
     const data = await getDashboard();
     expect(data).toMatchObject({ budgetUsedPercent: null, budgetState: 'ready' });
+  });
+
+  it('uses the cached preferences without waiting for the server, and saves the result for next time', async () => {
+    const cache = vi.mocked(await import('@/storage/dashboardCache'));
+    cache.readCachedPreferences.mockResolvedValueOnce({ currency: 'AED', timezone: 'Asia/Dubai' });
+    api.getPreferences.mockReturnValue(new Promise(() => undefined)); // never answers
+    const data = await getDashboard();
+    expect(api.getIncomeVsExpenses.mock.calls[0][1]).toBe('Asia/Dubai');
+    expect(data).toBeDefined();
+    expect(cache.writeCachedDashboard).toHaveBeenCalledWith('user-1', 1, data);
   });
 
   it('still loads when the preferences cannot be read', async () => {

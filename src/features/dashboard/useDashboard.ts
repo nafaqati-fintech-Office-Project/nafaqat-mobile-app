@@ -1,59 +1,96 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 
-import { getDashboard } from './dashboardService';
+import {
+  hydrateDashboard,
+  isDashboardLoading,
+  loadDashboard,
+  peekDashboard,
+  subscribeDashboards,
+} from './dashboardStore';
 import type { DashboardData } from './types';
+import { getCurrentUserId } from '@/auth/currentUser';
+import { AUTH_BYPASS } from '@/config/flags';
+import { getDashboard } from './dashboardService';
 import type { Period } from '@/features/insights/insightsBuilder';
 
-// onLoaded: called when a load for `period` finishes (not for silent reloads), so a screen can decide to look
-// at a wider period when this one is empty.
+// onLoaded: called once per range when its numbers are first on screen (saved or fresh), so a screen can decide to look
+// at a wider range when this one is empty.
+//
+// The numbers come from the dashboard store, which the app fills right after sign-in (see prefetchDashboards): a range
+// that is loaded shows at once and changing range waits for nothing. A range being fetched again never shows a spinner;
+// its new numbers simply replace the old ones.
 export function useDashboard(period: Period, onLoaded?: (period: Period, data: DashboardData) => void) {
   const loadedCallback = useRef(onLoaded);
   useEffect(() => {
     loadedCallback.current = onLoaded;
   });
-  // The period the data was loaded for; data of another period is not shown (the skeleton is).
-  const [loaded, setLoaded] = useState<{ period: Period; data: DashboardData } | null>(null);
-  const data = loaded?.period === period ? loaded.data : null;
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    try {
-      setLoaded({ period, data: await getDashboard(period) });
-      setError(false);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [period]);
+  const subscribe = useCallback((listener: () => void) => subscribeDashboards(listener), []);
+  const stored = useSyncExternalStore(subscribe, () => peekDashboard(period));
+  const fetching = useSyncExternalStore(subscribe, () => isDashboardLoading(period));
 
-  // No spinner, and a failure keeps what is on screen: used when the tab is shown again.
-  const reloadSilently = useCallback(async () => {
-    try {
-      setLoaded({ period, data: await getDashboard(period) });
-      setError(false);
-    } catch {
-      // the next pull to refresh shows the error
-    }
-  }, [period]);
+  // The demo session has no server; it keeps its own mock result here.
+  const [mock, setMock] = useState<{ period: Period; data: DashboardData } | null>(null);
+  const data = AUTH_BYPASS ? (mock?.period === period ? mock.data : null) : stored;
+  const [failed, setFailed] = useState<Period | null>(null);
+  const reported = useRef<Period | null>(null);
 
   useEffect(() => {
     let active = true;
-    getDashboard(period)
-      .then((result) => {
-        if (!active) return;
-        setLoaded({ period, data: result });
-        setError(false);
-        loadedCallback.current?.(period, result);
-      })
-      .catch(() => active && setError(true))
-      .finally(() => active && setLoading(false));
+    if (AUTH_BYPASS) {
+      getDashboard(period)
+        .then((result) => {
+          if (!active) return;
+          setMock({ period, data: result });
+          setFailed(null);
+        })
+        .catch(() => active && setFailed(period));
+      return () => {
+        active = false;
+      };
+    }
+    // Saved copy first (if the store has nothing yet), then a fetch unless the numbers are fresh.
+    void hydrateDashboard(getCurrentUserId(), period);
+    loadDashboard(period)
+      .then(() => active && setFailed(null))
+      .catch(() => active && setFailed(period));
     return () => {
       active = false;
     };
   }, [period]);
 
-  return { data, loading, error, refresh, reloadSilently };
+  useEffect(() => {
+    if (!data || reported.current === period) return;
+    reported.current = period;
+    loadedCallback.current?.(period, data);
+  }, [data, period]);
+
+  // Pull to refresh: always asks the server.
+  const refresh = useCallback(async () => {
+    try {
+      if (AUTH_BYPASS) setMock({ period, data: await getDashboard(period) });
+      else await loadDashboard(period, { force: true });
+      setFailed(null);
+    } catch {
+      setFailed(period);
+    }
+  }, [period]);
+
+  // A failure keeps what is on screen: used when the tab is shown again.
+  const reloadSilently = useCallback(async () => {
+    try {
+      if (AUTH_BYPASS) return;
+      await loadDashboard(period);
+    } catch {
+      // the next pull to refresh shows the error
+    }
+  }, [period]);
+
+  return {
+    data,
+    loading: data === null && (AUTH_BYPASS ? failed !== period : fetching),
+    error: data === null && failed === period,
+    refresh,
+    reloadSilently,
+  };
 }

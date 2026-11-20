@@ -1,4 +1,4 @@
-# Phase 07 – Dashboard connected to the backend (reports, budget, subscriptions)
+﻿# Phase 07 – Dashboard connected to the backend (reports, budget, subscriptions)
 
 ## 1. New files created
 | Path | Purpose |
@@ -97,3 +97,16 @@ Manual test list:
 3. Stop budget-service: only the Budget tile changes to "Coming soon".
 4. Stop reports-analytics-service: the dashboard shows "Could not load your dashboard"; start it and tap Retry.
 5. Switch the app language to Arabic: "Coming soon" appears as "قريبًا".
+
+## Faster opening (added later)
+
+The dashboard is still built only from the backend (reports, budget and subscription services); no API contract changed. Only when and how the app asks for it:
+- **Loads at app open.** As soon as an account is known (a restored session, a sign-in), `prefetchDashboards` (`src/features/dashboard/dashboardStore.ts`) fetches the 1, 3 and 6 month dashboards in the background. The splash screen restores the saved login while it plays instead of after it, so the numbers are usually ready when Home appears. Nothing waits for them: Home never holds the splash.
+- **In-memory store for every range.** Home and the range tabs read from the store, so moving 1M, 3M, 6M and back needs no request. Data younger than 2 minutes is not fetched again; older data is shown and replaced quietly when the new numbers arrive. A range that is being fetched again never shows a spinner (only a pull-down by the person does).
+- **Saved copy on the phone.** `src/storage/dashboardCache.ts` keeps the last dashboards and the account's preferences, so a cold start shows numbers at once. Cleared on sign out.
+- **Kept current, so old numbers are rare.** All ranges are fetched again after a transaction sync that sent rows, after adding or deleting a cash expense or changing a category, and when the app returns to the foreground (if older than 2 minutes).
+- **Fewer waves.** Cached preferences no longer block the reports, and the optional sections start together with the four core reports.
+- **Animation.** A shimmer skeleton for the very first load and cards that fade up one after another. Every number on the dashboard (total spending, the four tiles, income, expenses, net, each category amount and percent, this month's savings) rolls up from 0 to its value, and rolls to the new value when it changes. The weekday bars, the savings trend bars, the income/expense bars and the category bars grow to their size (and slide when the range changes); the heatmap cells pop in one after another. All respect the phone's "reduce motion" setting.
+- **Insights** also keeps the last result of each range in memory: coming back to the tab or a range shows it at once and fetches again behind it. Transactions and the other tabs still load on open.
+- Test: open the app, close it, turn off the network, open again: the last numbers show. Sign out and in as another user: nothing from the first account appears. Switch 1M, 3M, 6M, 1M: no waiting.
+

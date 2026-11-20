@@ -42,7 +42,7 @@ the needed monthly saving is covered.
   or a comma-separated `GEMINI_API_KEYS`. The same for Groq: `GROQ_API_KEY`, `GROQ_API_KEY_2`, …
 - Default order: all Gemini keys, then all Groq keys (`GROQ_MODEL`, default `llama-3.3-70b-versatile`).
 - Another OpenAI-compatible provider: set `<NAME>_API_KEY` (and `_2`, `_3` …), `<NAME>_BASE_URL` and
-  `<NAME>_MODEL`; it is tried after Gemini and Groq. `LLM_PROVIDER_ORDER=groq,gemini,<name>` changes the order.
+  `<NAME>_MODEL`; it is tried after Groq and Gemini. `LLM_PROVIDER_ORDER=groq,gemini,<name>` changes the order.
 
 ### Settings
 | Variable | Default | Meaning |
@@ -51,7 +51,7 @@ the needed monthly saving is covered.
 | `ASSISTANT_USER_DAILY_LIMIT` | 40 | Messages a day per user (by the gateway's `X-User-Id`, hashed) |
 | `LLM_KEY_COOLDOWN_SECONDS` | 3600 | How long a failed key rests |
 | `LLM_TOTAL_DEADLINE_SECONDS` | 25 | Stop trying keys after this long |
-| `LLM_PROVIDER_ORDER` | gemini,groq | Provider order |
+| `LLM_PROVIDER_ORDER` | groq,gemini | Provider order |
 
 ## 3. Mobile
 

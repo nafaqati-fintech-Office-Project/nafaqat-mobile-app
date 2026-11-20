@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/components/AppText';
+import { FadeInCard } from '@/components/FadeInCard';
 import { PeriodTabs } from '@/components/PeriodTabs';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { BudgetAlertStrip } from '@/features/dashboard/BudgetAlertStrip';
@@ -45,6 +46,16 @@ export default function DashboardRoute() {
     [auto],
   );
   const { data, loading, error, refresh, reloadSilently } = useDashboard(period, widen);
+  // The pull-down spinner only shows for a pull by the person, never for the load that runs on its own.
+  const [pulling, setPulling] = useState(false);
+  const pull = useCallback(async () => {
+    setPulling(true);
+    try {
+      await refresh();
+    } finally {
+      setPulling(false);
+    }
+  }, [refresh]);
   const pick = (next: Period) => {
     setAuto(false);
     setPeriod(next);
@@ -67,9 +78,9 @@ export default function DashboardRoute() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={loading && data !== null} onRefresh={refresh} />}>
+        refreshControl={<RefreshControl refreshing={pulling} onRefresh={pull} />}>
         <DashboardHeader />
-        <Greeting name={user?.firstName ?? user?.username ?? ''} />
+        <Greeting name={user?.firstName ?? ''} />
         <SmsDevEntry />
         <CaptureReminderBanner />
         <BudgetAlertStrip />
@@ -79,13 +90,27 @@ export default function DashboardRoute() {
         )}
         {data ? (
           <>
-            <SpendingCard data={data} />
-            <StatGrid data={data} />
-            <CashFlowCard data={data} />
-            <HeatmapCard data={data} />
-            <SavingsTrendCard data={data} />
-            <CategoryBreakdownCard data={data} />
-            <RecentTransactionsCard data={data} />
+            <FadeInCard index={0}>
+              <SpendingCard data={data} />
+            </FadeInCard>
+            <FadeInCard index={1}>
+              <StatGrid data={data} />
+            </FadeInCard>
+            <FadeInCard index={2}>
+              <CashFlowCard data={data} />
+            </FadeInCard>
+            <FadeInCard index={3}>
+              <HeatmapCard data={data} />
+            </FadeInCard>
+            <FadeInCard index={4}>
+              <SavingsTrendCard data={data} />
+            </FadeInCard>
+            <FadeInCard index={5}>
+              <CategoryBreakdownCard data={data} />
+            </FadeInCard>
+            <FadeInCard index={6}>
+              <RecentTransactionsCard data={data} />
+            </FadeInCard>
           </>
         ) : error ? (
           <View style={styles.error}>

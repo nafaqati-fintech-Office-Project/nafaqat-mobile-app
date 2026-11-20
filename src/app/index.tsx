@@ -34,9 +34,12 @@ export default function SplashRoute() {
 
     let active = true;
     const resolveTarget = async (): Promise<Target> => {
+      // The saved login is restored while the splash plays, not after it: the account's dashboards start loading
+      // straight away (see AuthProvider), so they are ready or nearly ready when Home appears. Nothing waits longer.
+      const restoring = restoreSession();
       const [seen] = await Promise.all([getOnboardingSeen(), wait(SPLASH_MS)]);
       // A login saved with "Remember me" goes straight in, whatever else a new visitor is shown.
-      if (await restoreSession()) return '/home';
+      if (await restoring) return '/home';
       if (!seen) return '/onboarding';
       if (!chosen) return '/language';
       return '/login';

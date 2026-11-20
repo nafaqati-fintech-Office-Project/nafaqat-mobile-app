@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { barHeight } from './barHeight';
 import type { WeeklyAmount } from './types';
 import { AppText } from '@/components/AppText';
+import { GrowBar } from '@/components/GrowBar';
 import { DrillPressable } from '@/features/transactions/DrillPressable';
 import type { TransactionLink } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -23,13 +24,11 @@ export function WeeklyBars({ weekly, linkFor }: { weekly: WeeklyAmount[]; linkFo
         {weekly.map((w, i) => (
           <DrillPressable key={w.day} link={linkFor ? linkFor(w.day) : null} style={styles.col} label={weekdayShort(w.day, language)}>
             <View style={styles.track}>
-              <View
-                style={[
-                  styles.bar,
-                  { height: barHeight(values[i], peak) },
-                  values[i] <= 0 && styles.barEmpty,
-                  i === tallest && styles.barTop,
-                ]}
+              <GrowBar
+                axis="height"
+                to={barHeight(values[i], peak)}
+                delay={i * 60}
+                style={[styles.bar, values[i] <= 0 && styles.barEmpty, i === tallest && styles.barTop]}
               />
             </View>
             <AppText style={styles.day}>{weekdayShort(w.day, language)}</AppText>

@@ -17,6 +17,7 @@ import {
   type TransactionQuery,
 } from './transactionsApi';
 import { AUTH_BYPASS } from '@/config/flags';
+import { refreshDashboards } from '@/features/dashboard/dashboardStore';
 
 const MOCK_DELAY_MS = 400;
 const wait = () => new Promise<void>((resolve) => setTimeout(resolve, MOCK_DELAY_MS));
@@ -73,7 +74,11 @@ export async function getTransaction(id: string): Promise<TransactionItem> {
 }
 
 export async function addCashExpense(body: NewCashExpense): Promise<TransactionItem> {
-  if (!AUTH_BYPASS) return createCashExpense(body);
+  if (!AUTH_BYPASS) {
+    const added = await createCashExpense(body);
+    void refreshDashboards();
+    return added;
+  }
   await wait();
   const added: TransactionItem = {
     id: `m${Date.now()}`,
@@ -90,7 +95,11 @@ export async function addCashExpense(body: NewCashExpense): Promise<TransactionI
 }
 
 export async function removeTransaction(id: string): Promise<void> {
-  if (!AUTH_BYPASS) return deleteTransaction(id);
+  if (!AUTH_BYPASS) {
+    await deleteTransaction(id);
+    void refreshDashboards();
+    return;
+  }
   await wait();
   mock = mock.filter((row) => row.id !== id);
 }
@@ -100,7 +109,9 @@ export async function setTransactionCategory(id: string, category: string): Prom
   if (!AUTH_BYPASS) {
     const code = codeForCategory(category);
     if (!code) throw new Error('Category has no service code');
-    return updateCategory(id, code);
+    await updateCategory(id, code);
+    void refreshDashboards();
+    return;
   }
   await wait();
   mock = mock.map((row) => (row.id === id ? { ...row, category } : row));

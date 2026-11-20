@@ -43,7 +43,7 @@ npx eas-cli@latest build --profile production --platform android
 | Setting | Value | Why |
 |---|---|---|
 | `EXPO_PUBLIC_AUTH_BYPASS` | `false` (and refused if `true`) | no mock session |
-| `EXPO_PUBLIC_MERCHANT_FALLBACK` | `false` | sends a redacted copy of a bank SMS to the server; turn it on only after the user has consented in the app |
+| `EXPO_PUBLIC_MERCHANT_FALLBACK` | `true` | sends a redacted copy of a bank SMS to the server so unknown merchants get categorized; there is no consent screen in the app, so mention it in the privacy policy |
 | `EXPO_PUBLIC_SMS_TOOLS` | `true` | Android reads bank SMS (READ_SMS, RECEIVE_SMS) |
 | plain-http traffic | off | the production server must use https |
 | over-the-air updates | channel `production` | publish with `eas update --channel production` |

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { ReduceMotion, ZoomIn } from 'react-native-reanimated';
 
 import { dayPeriod } from './drill';
 import { InfoCard } from './InfoCard';
@@ -19,6 +20,7 @@ const LEVEL_COLORS: Record<HeatLevel, string> = {
   4: colors.indigo800,
 };
 const WEEK = [0, 1, 2, 3, 4, 5, 6];
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function HeatmapCard({ data }: { data: DashboardData }) {
   const { t, language } = useLanguage();
@@ -47,8 +49,9 @@ export function HeatmapCard({ data }: { data: DashboardData }) {
         <View key={w} style={styles.row}>
           {week.map((cell, i) =>
             cell ? (
-              <Pressable
+              <AnimatedPressable
                 key={cell.day}
+                entering={ZoomIn.delay(cell.day * 18).duration(260).reduceMotion(ReduceMotion.System)}
                 onPress={() => setPicked(cell.day === picked ? null : cell.day)}
                 style={[
                   styles.cell,
@@ -58,7 +61,7 @@ export function HeatmapCard({ data }: { data: DashboardData }) {
                 accessibilityRole="button"
                 accessibilityLabel={`${cell.day} ${month}, ${formatMoney(cell.amount, data.currency, language)}`}>
                 <AppText style={[styles.day, cell.level >= 3 && styles.dayOnDark]}>{cell.day}</AppText>
-              </Pressable>
+              </AnimatedPressable>
             ) : (
               <View key={`empty-${i}`} style={styles.cell} />
             ),

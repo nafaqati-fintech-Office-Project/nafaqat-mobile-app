@@ -4,7 +4,9 @@ import { StyleSheet, View } from 'react-native';
 import { dashboardPeriod } from './drill';
 import { InfoCard } from './InfoCard';
 import type { DashboardData } from './types';
+import { AnimatedMoney } from '@/components/AnimatedMoney';
 import { AppText } from '@/components/AppText';
+import { GrowBar } from '@/components/GrowBar';
 import { DrillPressable } from '@/features/transactions/DrillPressable';
 import type { TransactionLink } from '@/features/transactions/transactionLinks';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -13,17 +15,15 @@ import { formatMoney } from '@/utils/money';
 
 const BAR_HEIGHT = 10;
 
-function FlowBar({ label, value, share, color, link }: { label: string; value: string; share: number; color: string; link: TransactionLink }) {
+function FlowBar({ label, amount, currency, text, share, color, link, delay }: { label: string; amount: string; currency: string; text: string; share: number; color: string; link: TransactionLink; delay: number }) {
   return (
-    <DrillPressable link={link} style={styles.bar} label={`${label}, ${value}`}>
+    <DrillPressable link={link} style={styles.bar} label={`${label}, ${text}`}>
       <View style={styles.line}>
         <AppText style={styles.label}>{label}</AppText>
-        <AppText weight="semibold" style={styles.value}>
-          {value}
-        </AppText>
+        <AnimatedMoney amount={amount} currency={currency} weight="semibold" style={styles.value} />
       </View>
       <View style={styles.track}>
-        <View style={[styles.fill, { width: `${share}%`, backgroundColor: color }]} />
+        <GrowBar axis="width" to={share} delay={delay} style={[styles.fill, { backgroundColor: color }]} />
       </View>
     </DrillPressable>
   );
@@ -66,23 +66,32 @@ export function CashFlowCard({ data }: { data: DashboardData }) {
       action={{ label: t('reports.title'), onPress: () => router.push('/reports') }}>
       <FlowBar
         label={t('dashboard.income')}
-        value={money(income)}
+        amount={income}
+        currency={data.currency}
+        text={money(income)}
+        delay={0}
         share={share(incomeValue)}
         color={colors.success}
         link={link(t('dashboard.income'), 'income')}
       />
       <FlowBar
         label={t('dashboard.expenses')}
-        value={money(expenses)}
+        amount={expenses}
+        currency={data.currency}
+        text={money(expenses)}
+        delay={120}
         share={share(expensesValue)}
         color={colors.danger}
         link={link(t('dashboard.expenses'), 'expenses')}
       />
       <DrillPressable link={link(t('dashboard.net'))} style={styles.netRow} label={`${t('dashboard.net')}, ${money(net)}`}>
         <AppText style={styles.label}>{t('dashboard.net')}</AppText>
-        <AppText weight="bold" style={[styles.net, { color: positive ? colors.success : colors.danger }]}>
-          {money(net)}
-        </AppText>
+        <AnimatedMoney
+          amount={net}
+          currency={data.currency}
+          weight="bold"
+          style={[styles.net, { color: positive ? colors.success : colors.danger }]}
+        />
       </DrillPressable>
       <AppText style={styles.summary}>{summary}</AppText>
     </InfoCard>

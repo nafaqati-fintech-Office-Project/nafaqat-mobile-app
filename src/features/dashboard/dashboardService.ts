@@ -21,7 +21,13 @@ import type { DashboardData, SectionState } from './types';
 import { AUTH_BYPASS, DASHBOARD_MOCK_FAIL } from '@/config/flags';
 import { getMonthlyComparison } from '@/features/insights/insightsApi';
 import { combineComparisons, lastMonths as periodMonths, type Period } from '@/features/insights/insightsBuilder';
+import { getCurrentUserId } from '@/auth/currentUser';
 import { fetchTransactionPage } from '@/features/transactions/transactionsApi';
+import {
+  readCachedPreferences,
+  writeCachedDashboard,
+  writeCachedPreferences,
+} from '@/storage/dashboardCache';
 
 const MOCK_DELAY_MS = 500;
 
@@ -32,7 +38,19 @@ async function getMockDashboard(): Promise<DashboardData> {
 }
 
 // Preferences only refine currency and time zone, so a failure here never blocks the dashboard.
-const optionalPreferences = (): Promise<Preferences | null> => getPreferences().catch(() => null);
+// The last answer is kept on the phone: opening the app again starts the reports at once instead of waiting for
+// this call first, and a fresh answer is fetched behind it for the next time.
+async function optionalPreferences(): Promise<Preferences | null> {
+  const userId = getCurrentUserId();
+  const fresh = getPreferences()
+    .then((preferences) => {
+      if (preferences) void writeCachedPreferences(userId, preferences);
+      return preferences;
+    })
+    .catch(() => null);
+  const cached = await readCachedPreferences(userId);
+  return cached ?? fresh;
+}
 
 const monthKey = ({ year, month }: { year: number; month: number }) => `${year}-${String(month).padStart(2, '0')}`;
 
@@ -62,22 +80,16 @@ export async function getDashboard(months: Period = 1): Promise<DashboardData> {
   };
 
   // Core numbers: if any of these fail the dashboard shows its error state.
-  const [current, previous, summary, daily] = await Promise.all([
+  const corePromise = Promise.all([
     getIncomeVsExpenses(range, timeZone),
     getIncomeVsExpenses(previousRange, timeZone),
     getSpendingSummary(range, timeZone),
     getDailySpending(range, timeZone),
   ]);
 
-  // Optional sections: each one falls back on its own ("Coming soon" tiles, a note in the card).
-  const [
-    budgetResult,
-    subscriptionsResult,
-    comparisonResult,
-    recentResult,
-    monthDailyResult,
-    trendResult,
-  ] = await Promise.allSettled([
+  // Optional sections: each one falls back on its own ("Coming soon" tiles, a note in the card). They start together
+  // with the core numbers (nothing here depends on them), so the screen waits for one round of requests, not two.
+  const optionalPromise = Promise.allSettled([
     getCurrentBudget(),
     getActiveSubscriptionCount(),
     Promise.all(covered.map((m) => getMonthlyComparison(monthKey(m), timeZone))).then(combineComparisons),
@@ -91,10 +103,13 @@ export async function getDashboard(months: Period = 1): Promise<DashboardData> {
       })),
     ),
   ]);
+  const [current, previous, summary, daily] = await corePromise;
+  const [budgetResult, subscriptionsResult, comparisonResult, recentResult, monthDailyResult, trendResult] =
+    await optionalPromise;
   const state = (result: PromiseSettledResult<unknown>): SectionState =>
     result.status === 'fulfilled' ? 'ready' : 'unavailable';
 
-  return buildDashboard({
+  const dashboard = buildDashboard({
     period,
     months,
     preferredCurrency: preferences?.currency ?? null,
@@ -127,4 +142,7 @@ export async function getDashboard(months: Period = 1): Promise<DashboardData> {
       items: recentResult.status === 'fulfilled' ? recentResult.value.items : [],
     },
   });
+  // Kept for the next open, which shows it at once while this is fetched again.
+  void writeCachedDashboard(getCurrentUserId(), months, dashboard);
+  return dashboard;
 }
