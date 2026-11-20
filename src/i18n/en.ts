@@ -248,6 +248,8 @@ export const en = {
   'sms.denied': 'Permission was denied. You can try again.',
   'sms.blocked': 'Permission is blocked. Turn on SMS access in Settings.',
   'sms.openSettings': 'Open Settings',
+  'sms.restricted':
+    'Cannot turn it on? Android blocks some permissions for apps installed from a link. Open Settings, tap Apps, choose Nafaqati, tap the ⋮ menu (top right), choose "Allow restricted settings", then come back and allow SMS access.',
   'sms.androidOnly': 'SMS reading is only available on Android.',
   'sms.debug.title': 'Bank SMS',
   'sms.debug.listen': 'Listen for new SMS',

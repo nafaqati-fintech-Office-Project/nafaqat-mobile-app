@@ -64,6 +64,9 @@ export function SmsPermissionScreen() {
           </AppText>
           <AppText style={styles.text}>{t('sms.body')}</AppText>
           {notice && <AppText style={styles.notice}>{notice}</AppText>}
+          {Platform.OS === 'android' && (status === 'blocked' || status === 'denied') && (
+            <AppText style={styles.steps}>{t('sms.restricted')}</AppText>
+          )}
         </View>
         <View style={styles.footer}>
           {status === 'blocked' && (

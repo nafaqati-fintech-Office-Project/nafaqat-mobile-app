@@ -32,5 +32,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   notice: { fontSize: fontSizes.sm, color: colors.danger, textAlign: 'center' },
+  steps: { fontSize: fontSizes.sm, color: colors.textSecondary, textAlign: 'center', lineHeight: fontSizes.sm * 1.5 },
   footer: { paddingHorizontal: spacing.xl, paddingVertical: spacing.lg, gap: spacing.md },
 });

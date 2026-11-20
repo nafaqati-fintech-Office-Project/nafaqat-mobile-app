@@ -1,3 +1,4 @@
+// @ts-expect-error The app has no Node type definitions; this test only runs under Vitest (Node).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
