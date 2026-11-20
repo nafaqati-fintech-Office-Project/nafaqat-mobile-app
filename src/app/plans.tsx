@@ -130,6 +130,15 @@ export default function PlansRoute() {
       showToast(t('plans.upgraded'));
       if (locked && router.canGoBack()) router.back();
     } catch (error) {
+      if (__DEV__) {
+        const body: unknown = isAxiosError(error) ? error.response?.data : undefined;
+        console.warn('Upgrade failed:', isAxiosError(error) ? error.response?.status : 'no response', error, body);
+      }
+      if (isAxiosError(error) && error.response?.status === 409) {
+        // Already Premium on the server (an earlier tap granted it): just show the new plan.
+        await refresh();
+        return void showToast(t('plans.upgraded'));
+      }
       if (isAxiosError(error) && error.response?.status === 403) {
         Alert.alert(t('plans.comingSoonTitle'), t('plans.comingSoonBody'));
       } else {
