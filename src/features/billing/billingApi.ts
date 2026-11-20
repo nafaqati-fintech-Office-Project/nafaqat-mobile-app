@@ -56,14 +56,19 @@ export async function getPremiumPrices(): Promise<PlanPrice[]> {
 export async function checkout(
   interval: 'MONTHLY' | 'YEARLY',
   currency: string,
-): Promise<{ paymentId: string | null; checkoutUrl: string | null }> {
+): Promise<{ paymentId: string | null; checkoutUrl: string | null; paid: boolean }> {
   const key = `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
-  const { data } = await api.post<{ payment?: { id?: string; checkoutUrl?: string } | null }>(
+  const { data } = await api.post<{ payment?: { id?: string; checkoutUrl?: string; status?: string } | null }>(
     '/api/billing/checkout',
     { interval, currency },
     { headers: { 'Idempotency-Key': key } },
   );
-  return { paymentId: data.payment?.id ?? null, checkoutUrl: data.payment?.checkoutUrl ?? null };
+  return {
+    paymentId: data.payment?.id ?? null,
+    checkoutUrl: data.payment?.checkoutUrl ?? null,
+    // The server already settled it: the "free" provider (no gateway account yet) grants Premium at checkout.
+    paid: data.payment?.status === 'SUCCEEDED',
+  };
 }
 
 // Development only: the mock payment provider. The server refuses this outside dev (403) and for other users.

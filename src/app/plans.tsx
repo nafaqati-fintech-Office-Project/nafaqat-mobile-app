@@ -109,8 +109,13 @@ export default function PlansRoute() {
       if (AUTH_BYPASS) {
         await setPlan('premium');
       } else {
-        const { paymentId, checkoutUrl } = await checkout(billing === 'yearly' ? 'YEARLY' : 'MONTHLY', price.currency);
-        if (checkoutUrl) {
+        const { paymentId, checkoutUrl, paid } = await checkout(billing === 'yearly' ? 'YEARLY' : 'MONTHLY', price.currency);
+        if (paid) {
+          // NO PAYMENT GATEWAY YET: billing-service runs with BILLING_PAYMENT_PROVIDER=free, so the checkout is already
+          // settled and the user is Premium. Nothing to pay. The gateway branch below stays for when payments are
+          // switched on (the server then answers with a payment page instead of a settled payment).
+          await refresh();
+        } else if (checkoutUrl) {
           // The customer pays on the gateway's page; the gateway tells the server, and the server makes them Premium.
           await WebBrowser.openBrowserAsync(checkoutUrl);
           const confirmed = await waitForPremium();
